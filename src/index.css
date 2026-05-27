@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* v2 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    @apply font-sans text-[13px] bg-surface text-text;
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+    cursor: default;
+  }
+
+  /* Re-enable selection and text cursor where needed */
+  input, textarea, [contenteditable] {
+    user-select: text;
+    cursor: text;
+  }
+
+  /* Thin scrollbars globally */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,.12) transparent;
+  }
+  *::-webkit-scrollbar { width: 4px; height: 4px; }
+  *::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 4px; }
+}
+
+@layer utilities {
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+
+  /* JetBrains Mono for numbers */
+  .font-num { font-family: 'JetBrains Mono', monospace; }
+}

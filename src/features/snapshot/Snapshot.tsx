@@ -1,0 +1,435 @@
+import { useMemo, useState, useRef, useEffect } from 'react'
+import { Card, CardHeader, CardTitle, CardBody, Field, Modal } from '@/components/ui'
+import { StrategyPanel, hasPanel } from './StrategyPanel'
+import { inputCls } from '@/components/ui/Field'
+import { calcSavings, calcSavingsRows } from '@/lib/calculations'
+import { SKS, STRATEGY_LABELS, FILING_STATUSES, ETYPES, STATES, CUR_YEAR, SAVS_TO_SKS } from '@/lib/constants'
+import { fmt, ageInYear } from '@/lib/utils'
+import type { ClientData, Entity, EntityType, StrategyKey } from '@/lib/types'
+
+const BLANK_ENTITY = (): Entity => ({
+  name: '', type: 'S-Corporation', state: 'CA',
+  payData: { xQ1: '', xQ1a: false, xQ1v: false, xQ2: '', xQ2a: false, xQ2v: false, xQ3: '', xQ3a: false, xQ3v: false, xQ4: '', xQ4a: false, xQ4v: false, pJ: '', pJa: false, pJv: false, pD: '', pDa: false, pDv: false },
+})
+
+interface SnapshotProps {
+  client: ClientData
+  onChange: (data: ClientData) => void
+}
+
+export function Snapshot({ client: c, onChange }: SnapshotProps) {
+  const set = (updates: Partial<ClientData>) => onChange({ ...c, ...updates })
+  const [entityModal, setEntityModal] = useState(false)
+  const [draftEntity, setDraftEntity] = useState<Entity>(BLANK_ENTITY())
+
+  const tot = useMemo(() => calcSavings(c), [c])
+  const stratCount = useMemo(() => SKS.filter(k => c.strat[k]?.y).length, [c])
+  const age = ageInYear(c.dob, CUR_YEAR)
+
+  const entNames = (c.entities ?? []).map(e => e.name).filter(Boolean)
+
+  const combinedRate = (() => {
+    const f = parseFloat(c.fr) || 0
+    const s = parseFloat(c.sr) || 0
+    if (!f && !s) return '—'
+    return (f + s).toFixed(1) + '%'
+  })()
+
+  const rateDetail = [c.fr ? c.fr + '% Fed' : null, c.sr ? c.sr + '% State' : null]
+    .filter(Boolean).join(' · ')
+
+  return (
+    <div className="flex flex-col gap-3.5">
+      {/* Hero */}
+      <div className="bg-navy rounded-[10px] shadow-md px-7 pt-6 pb-5">
+        <h2 className="font-serif text-[26px] text-white tracking-tight leading-tight mb-2.5">
+          {c.name || 'New Client'}
+        </h2>
+        <div className="flex flex-wrap gap-1.5">
+          {entNames.map(n => <HeroTag key={n}>{n}</HeroTag>)}
+          {c.filing && <HeroTag>{c.filing}</HeroTag>}
+          {age !== null && <HeroTag>Age {age}</HeroTag>}
+        </div>
+      </div>
+
+      {/* KPI row */}
+      <div className="grid grid-cols-4 gap-2.5">
+        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} mono />
+        <KpiCard
+          label="Strategies Active"
+          value={String(stratCount)}
+          sub={`/ ${SKS.length} total`}
+        />
+        <KpiCard label="Combined Rate" value={combinedRate} sub={rateDetail} />
+        <KpiCard
+          label="Advisor"
+          value={c.adv || '—'}
+          sub={c.mgr ? `Mgr: ${c.mgr}` : undefined}
+          valueClass="font-sans font-semibold text-[17px] tracking-tight"
+        />
+      </div>
+
+      {/* Strategies */}
+      <StrategiesCard client={c} onChange={onChange} />
+
+      {/* Client information */}
+      <Card accent>
+        <CardHeader>
+          <CardTitle>Client Information</CardTitle>
+        </CardHeader>
+        <CardBody>
+          <div className="grid grid-cols-3 gap-x-4 gap-y-4">
+            <Field label="Primary taxpayer" className="col-span-2">
+              <input
+                className={inputCls}
+                value={c.name}
+                onChange={e => set({ name: e.target.value })}
+                placeholder="—"
+              />
+            </Field>
+            <Field label="Date of birth">
+              <input
+                className={inputCls}
+                value={c.dob ?? ''}
+                onChange={e => set({ dob: e.target.value })}
+                placeholder="MM/DD/YYYY"
+              />
+            </Field>
+
+            <Field label="Spouse name" className="col-span-2">
+              <input
+                className={inputCls}
+                value={c.spouse ?? ''}
+                onChange={e => set({ spouse: e.target.value })}
+                placeholder="—"
+              />
+            </Field>
+            <Field label="Spouse date of birth">
+              <input
+                className={inputCls}
+                value={c.spouseDob ?? ''}
+                onChange={e => set({ spouseDob: e.target.value })}
+                placeholder="MM/DD/YYYY"
+              />
+            </Field>
+
+            <Field label="Filing status">
+              <select
+                className={inputCls}
+                value={c.filing}
+                onChange={e => set({ filing: e.target.value })}
+              >
+                {FILING_STATUSES.map(s => <option key={s}>{s}</option>)}
+              </select>
+            </Field>
+            <Field label="Federal rate (%)">
+              <input
+                className={inputCls}
+                value={c.fr}
+                onChange={e => set({ fr: e.target.value })}
+                placeholder="—"
+              />
+            </Field>
+            <Field label="State rate (%)">
+              <input
+                className={inputCls}
+                value={c.sr}
+                onChange={e => set({ sr: e.target.value })}
+                placeholder="—"
+              />
+            </Field>
+
+            <Field label="Advisor">
+              <input
+                className={inputCls}
+                value={c.adv}
+                onChange={e => set({ adv: e.target.value })}
+                placeholder="—"
+              />
+            </Field>
+            <Field label="Manager">
+              <input
+                className={inputCls}
+                value={c.mgr}
+                onChange={e => set({ mgr: e.target.value })}
+                placeholder="—"
+              />
+            </Field>
+          </div>
+        </CardBody>
+      </Card>
+
+      {/* Entities */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Entities</CardTitle>
+        </CardHeader>
+        <CardBody className="flex flex-col gap-3">
+          {(c.entities ?? []).map((ent, i) => (
+            <div
+              key={i}
+              className={i > 0 ? 'pt-3 border-t border-border' : ''}
+            >
+              <div className="grid grid-cols-[1fr_160px_80px_32px] gap-2 items-end">
+                {i === 0 && (
+                  <>
+                    <label className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">Entity name</label>
+                    <label className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">Type</label>
+                    <label className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">State</label>
+                    <div />
+                  </>
+                )}
+                <input
+                  className={inputCls}
+                  value={ent.name}
+                  onChange={e => {
+                    const entities = [...c.entities]
+                    entities[i] = { ...ent, name: e.target.value }
+                    set({ entities })
+                  }}
+                  placeholder="Entity name"
+                />
+                <select
+                  className={inputCls}
+                  value={ent.type}
+                  onChange={e => {
+                    const entities = [...c.entities]
+                    entities[i] = { ...ent, type: e.target.value as typeof ent.type }
+                    set({ entities })
+                  }}
+                >
+                  {ETYPES.map(t => <option key={t}>{t}</option>)}
+                </select>
+                <select
+                  className={inputCls}
+                  value={ent.state}
+                  onChange={e => {
+                    const entities = [...c.entities]
+                    entities[i] = { ...ent, state: e.target.value }
+                    set({ entities })
+                  }}
+                >
+                  {STATES.map(s => <option key={s}>{s}</option>)}
+                </select>
+                {i > 0 ? (
+                  <button
+                    onClick={() => {
+                      const entities = c.entities.filter((_, idx) => idx !== i)
+                      set({ entities })
+                    }}
+                    className="text-text-lt hover:text-danger text-lg leading-none"
+                    aria-label="Remove entity"
+                  >
+                    ×
+                  </button>
+                ) : <div />}
+              </div>
+            </div>
+          ))}
+
+          <button
+            onClick={() => { setDraftEntity(BLANK_ENTITY()); setEntityModal(true) }}
+            className="text-[12px] font-semibold text-accent hover:text-accent-lt transition-colors"
+          >
+            + Add entity
+          </button>
+        </CardBody>
+      </Card>
+
+      <Modal
+        open={entityModal}
+        title="Add entity"
+        confirmLabel="Add entity"
+        onConfirm={() => {
+          if (!draftEntity.name.trim()) return
+          set({ entities: [...c.entities, { ...draftEntity }] })
+          setEntityModal(false)
+        }}
+        onCancel={() => setEntityModal(false)}
+      >
+        <div className="flex flex-col gap-4">
+          <Field label="Entity name">
+            <input
+              className={inputCls}
+              value={draftEntity.name}
+              onChange={e => setDraftEntity(d => ({ ...d, name: e.target.value }))}
+              placeholder="e.g. Smith Dental, Inc."
+              autoFocus
+            />
+          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Type">
+              <select
+                className={inputCls}
+                value={draftEntity.type}
+                onChange={e => setDraftEntity(d => ({ ...d, type: e.target.value as EntityType }))}
+              >
+                {ETYPES.map(t => <option key={t}>{t}</option>)}
+              </select>
+            </Field>
+            <Field label="State">
+              <select
+                className={inputCls}
+                value={draftEntity.state}
+                onChange={e => setDraftEntity(d => ({ ...d, state: e.target.value }))}
+              >
+                {STATES.map(s => <option key={s}>{s}</option>)}
+              </select>
+            </Field>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  )
+}
+
+function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange: (d: ClientData) => void }) {
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const [openPanel, setOpenPanel] = useState<StrategyKey | null>(null)
+  const pickerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!pickerOpen) return
+    function handleOutside(e: MouseEvent) {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleOutside)
+    return () => document.removeEventListener('mousedown', handleOutside)
+  }, [pickerOpen])
+  const active = SKS.filter(k => c.strat[k]?.y)
+  const inactive = SKS.filter(k => !c.strat[k]?.y)
+  const savRows = useMemo(() => calcSavingsRows(c), [c])
+  const total = useMemo(() => savRows.reduce((s, r) => s + r.amount, 0), [savRows])
+
+  const stratAmounts = useMemo(() => {
+    const map: Partial<Record<string, number>> = {}
+    for (const row of savRows) {
+      const sk = SAVS_TO_SKS[row.key as keyof typeof SAVS_TO_SKS]
+      if (sk) map[sk] = (map[sk] ?? 0) + row.amount
+    }
+    return map
+  }, [savRows])
+
+  function activate(k: typeof SKS[number]) {
+    onChange({ ...c, strat: { ...c.strat, [k]: { ...c.strat[k], y: true, n: false } } })
+    setPickerOpen(false)
+  }
+  function deactivate(k: typeof SKS[number]) {
+    onChange({ ...c, strat: { ...c.strat, [k]: { ...c.strat[k], y: false, n: true } } })
+  }
+
+  return (
+    <>
+    <Card>
+      <CardHeader>
+        <CardTitle>Tax Savings by Strategy</CardTitle>
+        <div className="relative" ref={pickerRef}>
+          <button
+            onClick={() => setPickerOpen(v => !v)}
+            className="flex items-center gap-1 px-3 py-1.5 border border-dashed border-border rounded-md text-[12px] font-semibold text-text-lt hover:border-accent hover:text-accent transition-colors"
+          >
+            <span className="text-[15px] leading-none">+</span> Add strategy
+          </button>
+          {pickerOpen && inactive.length > 0 && (
+            <div className="absolute top-full right-0 mt-1.5 z-20 bg-white border border-border rounded-[10px] shadow-lg py-1.5 min-w-[180px]">
+              {inactive.map(k => (
+                <button
+                  key={k}
+                  onClick={() => activate(k)}
+                  className="w-full text-left px-4 py-2 text-[13px] text-text hover:bg-surface transition-colors"
+                >
+                  {STRATEGY_LABELS[k]}
+                </button>
+              ))}
+            </div>
+          )}
+          {pickerOpen && inactive.length === 0 && (
+            <div className="absolute top-full right-0 mt-1.5 z-20 bg-white border border-border rounded-[10px] shadow-lg px-4 py-3 text-[12px] text-text-lt min-w-[160px]">
+              All strategies active
+            </div>
+          )}
+        </div>
+      </CardHeader>
+      <CardBody className="p-0">
+        {active.length === 0 ? (
+          <p className="px-5 py-4 text-[13px] text-text-lt italic">No strategies active — use + Add strategy to get started.</p>
+        ) : (
+          <>
+            {active.map((k, i) => {
+              const amount = stratAmounts[k] ?? null
+              const clickable = hasPanel(k)
+              return (
+                <div
+                  key={k}
+                  className={`flex items-center gap-3 px-5 py-3 ${i < active.length - 1 ? 'border-b border-border' : ''} ${clickable ? 'cursor-pointer hover:bg-surface transition-colors group' : ''}`}
+                  onClick={clickable ? () => setOpenPanel(k) : undefined}
+                >
+                  <span className="flex-1 text-[13px] font-medium text-text">{STRATEGY_LABELS[k]}</span>
+                  {clickable && (
+                    <span className="text-[11px] text-text-lt opacity-0 group-hover:opacity-100 transition-opacity mr-1">Open →</span>
+                  )}
+                  <span className="font-serif text-[16px] text-navy tracking-tight whitespace-nowrap">
+                    {amount != null && amount > 0 ? fmt(amount) : '—'}
+                  </span>
+                  {total > 0 && amount != null && amount > 0 && (
+                    <>
+                      <div className="w-24 h-1.5 rounded-full bg-border overflow-hidden">
+                        <div className="h-full rounded-full bg-accent" style={{ width: `${Math.round((amount / total) * 100)}%` }} />
+                      </div>
+                      <span className="text-[11px] font-semibold text-text-lt w-8 text-right">
+                        {Math.round((amount / total) * 100)}%
+                      </span>
+                    </>
+                  )}
+                  <button
+                    onClick={e => { e.stopPropagation(); deactivate(k) }}
+                    className="w-5 h-5 flex items-center justify-center rounded-full text-text-lt hover:bg-red-50 hover:text-danger transition-colors text-[14px] leading-none ml-1"
+                    aria-label={`Remove ${STRATEGY_LABELS[k]}`}
+                  >×</button>
+                </div>
+              )
+            })}
+            <div className="flex items-center px-5 py-3 bg-navy rounded-b-[10px]">
+              <span className="flex-1 text-[11px] font-bold uppercase tracking-[.05em] text-white/50">Total Est. Tax Savings</span>
+              <span className="font-serif text-[18px] text-accent tracking-tight">{fmt(total)}</span>
+            </div>
+          </>
+        )}
+      </CardBody>
+    </Card>
+
+    <StrategyPanel
+      stratKey={openPanel}
+      client={c}
+      onChange={onChange}
+      onClose={() => setOpenPanel(null)}
+    />
+    </>
+  )
+}
+
+function HeroTag({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-[11px] font-medium text-white/50 bg-white/8 px-2.5 py-1 rounded-full">
+      {children}
+    </span>
+  )
+}
+
+function KpiCard({
+  label, value, sub, mono, valueClass,
+}: {
+  label: string; value: string; sub?: string; mono?: boolean; valueClass?: string
+}) {
+  return (
+    <div className="bg-white border border-border rounded-[10px] shadow px-4 py-3.5 flex flex-col gap-1">
+      <span className="text-[10px] font-bold uppercase tracking-[.07em] text-text-lt">{label}</span>
+      <span className={valueClass ?? (mono ? 'font-serif text-[22px] text-navy tracking-tight leading-tight' : 'font-serif text-[22px] text-navy tracking-tight leading-tight')}>
+        {value}
+      </span>
+      {sub && <span className="text-[11px] text-text-lt mt-0.5">{sub}</span>}
+    </div>
+  )
+}

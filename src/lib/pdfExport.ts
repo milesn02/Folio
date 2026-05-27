@@ -1,0 +1,106 @@
+import type { ClientData } from './types'
+import { calcSavings, calcSavingsRows } from './calculations'
+import { STRATEGY_LABELS, SKS } from './constants'
+import { fmt } from './utils'
+
+export function exportClientSummary(c: ClientData, firmName: string) {
+  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  const entList = (c.entities ?? []).map(e => e.name).filter(Boolean).join(' · ')
+  const totalSavings = calcSavings(c)
+  const savRows = calcSavingsRows(c)
+  const activeStrats = SKS.filter(k => c.strat[k]?.y)
+  const fr = parseFloat(c.fr) || 0
+  const sr = parseFloat(c.sr) || 0
+
+  const savRowsHtml = savRows.map(r => `
+    <tr>
+      <td style="padding:10px 14px;border-top:1px solid #f0f0f0;font-size:13px;color:#374151;font-weight:500">${r.name}</td>
+      <td style="padding:10px 14px;border-top:1px solid #f0f0f0;text-align:right;font-family:'DM Serif Display',serif;font-size:15px;color:#0f1e35">${fmt(r.amount)}</td>
+      <td style="padding:10px 14px;border-top:1px solid #f0f0f0;text-align:right;font-size:12px;color:#9ca3af">${r.totPct}%</td>
+    </tr>
+  `).join('')
+
+  const stratHtml = activeStrats.map(k => `
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f3f4f6">
+      <div style="width:7px;height:7px;border-radius:50%;background:#c8a96e;flex-shrink:0"></div>
+      <span style="font-size:13px;color:#374151">${STRATEGY_LABELS[k]}</span>
+      ${c.strat[k].d ? `<span style="margin-left:auto;font-size:11px;color:#9ca3af">${c.strat[k].d}</span>` : ''}
+    </div>
+  `).join('')
+
+  const kpiCards = [
+    ['Est. Tax Savings', totalSavings ? fmt(totalSavings) : '—'],
+    ['Strategies Active', `${activeStrats.length} / ${SKS.length}`],
+    ['Combined Rate', fr || sr ? `${(fr + sr).toFixed(1)}%` : '—'],
+    ['Advisor', c.adv || '—'],
+  ].map(([label, value]) => `
+    <div style="background:#f7f6f3;border-radius:9px;padding:14px 16px;border:1px solid #e4e1da">
+      <div style="font-size:10px;color:#9ca3af;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">${label}</div>
+      <div style="font-size:16px;font-family:'DM Serif Display',serif;color:#0f1e35">${value}</div>
+    </div>
+  `).join('')
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Client Summary — ${c.name || 'Client'}</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;color:#1a1a2e;background:#fff;padding:48px;max-width:900px;margin:0 auto}
+  @media print{body{padding:28px}@page{margin:1.5cm}}
+</style>
+</head>
+<body>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:24px;border-bottom:2px solid #0f1e35">
+    <div>
+      <div style="font-family:'DM Serif Display',serif;font-size:32px;color:#0f1e35;letter-spacing:-.5px;margin-bottom:4px">${c.name || 'Client'}</div>
+      <div style="font-size:13px;color:#6b7280">${entList}</div>
+      ${c.filing ? `<div style="font-size:12px;color:#9ca3af;margin-top:3px">${c.filing}${c.dob ? ` · DOB: ${c.dob}` : ''}</div>` : ''}
+    </div>
+    <div style="text-align:right">
+      <div style="font-family:'DM Serif Display',serif;font-size:26px;color:#0f1e35;letter-spacing:-.5px">Folio</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:4px">${firmName}</div>
+      <div style="font-size:11px;color:#c8a96e;font-weight:600;margin-top:3px">${today}</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
+    ${kpiCards}
+  </div>
+
+  ${savRows.length > 0 ? `
+  <div style="margin-bottom:28px">
+    <div style="font-size:10px;font-weight:700;color:#9ca3af;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Tax Savings by Strategy</div>
+    <table style="width:100%;border-collapse:collapse;border:1px solid #e4e1da;border-radius:10px;overflow:hidden">
+      <thead><tr style="background:#0f1e35">
+        <th style="padding:10px 14px;text-align:left;font-size:10.5px;color:rgba(200,169,110,.8);font-weight:600;letter-spacing:.04em">Strategy</th>
+        <th style="padding:10px 14px;text-align:right;font-size:10.5px;color:rgba(200,169,110,.8);font-weight:600;letter-spacing:.04em">Est. Savings</th>
+        <th style="padding:10px 14px;text-align:right;font-size:10.5px;color:rgba(200,169,110,.8);font-weight:600;letter-spacing:.04em">% of Total</th>
+      </tr></thead>
+      <tbody>
+        ${savRowsHtml}
+        <tr style="background:#f7f6f3">
+          <td style="padding:12px 14px;font-size:13px;font-weight:700;color:#0f1e35">Total estimated tax savings</td>
+          <td style="padding:12px 14px;text-align:right;font-family:'DM Serif Display',serif;font-size:18px;color:#0f1e35">${fmt(totalSavings)}</td>
+          <td style="padding:12px 14px;text-align:right;font-size:13px;color:#9ca3af">100%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  ` : ''}
+
+
+  <div style="margin-top:40px;padding-top:16px;border-top:1px solid #e4e1da;display:flex;justify-content:space-between;align-items:center">
+    <div style="font-size:11px;color:#9ca3af">Generated by Folio · ${today}</div>
+    <div style="font-size:11px;color:#c8a96e;font-weight:600;letter-spacing:.03em">CONFIDENTIAL — For client use only</div>
+  </div>
+
+  <script>window.onload=function(){window.print();}<\/script>
+</body>
+</html>`
+
+  const w = window.open('', '_blank')
+  if (w) { w.document.write(html); w.document.close() }
+}

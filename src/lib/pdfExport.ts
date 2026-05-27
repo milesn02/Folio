@@ -1,6 +1,6 @@
 import type { ClientData } from './types'
 import { calcSavings, calcSavingsRows } from './calculations'
-import { STRATEGY_LABELS, SKS } from './constants'
+import { SKS } from './constants'
 import { fmt } from './utils'
 
 export function exportClientSummary(c: ClientData, firmName: string) {

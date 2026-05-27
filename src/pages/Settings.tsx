@@ -146,28 +146,21 @@ export default function Settings() {
               <Button variant="primary" size="sm" onClick={saveFirm} disabled={saving} className="self-start">
                 {saving ? 'Saving…' : 'Save firm settings'}
               </Button>
-            </CardBody>
-          </Card>
-        )}
 
-        {/* Team */}
-        {user && (
-          <Card>
-            <CardHeader><CardTitle>Invite Team Member</CardTitle></CardHeader>
-            <CardBody className="flex flex-col gap-4">
-              <p className="text-[13px] text-text-lt">Generate a link and send it to a colleague. They click it, create an account, and they're in — no setup required.</p>
-              <div className="flex gap-2">
-                <Button variant="primary" size="sm" onClick={generateInvite} className="gap-1.5 shrink-0">
+              <div className="border-t border-border pt-4">
+                <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt mb-3">Invite Team Member</p>
+                <p className="text-[13px] text-text-lt mb-3">Generate a link and send it to a colleague. They click it, create an account, and they're in.</p>
+                <Button variant="default" size="sm" onClick={generateInvite} className="gap-1.5">
                   {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
                   {copied ? 'Copied!' : 'Generate invite link'}
                 </Button>
+                {inviteLink && (
+                  <div className="mt-3 bg-surface rounded-sm border border-border px-3 py-2 text-[11px] text-text-lt font-mono break-all select-text cursor-text">
+                    {inviteLink}
+                  </div>
+                )}
+                <p className="text-[11px] text-text-lt mt-2">Links expire after 7 days and can only be used once.</p>
               </div>
-              {inviteLink && (
-                <div className="bg-surface rounded-sm border border-border px-3 py-2 text-[11px] text-text-lt font-mono break-all select-text cursor-text">
-                  {inviteLink}
-                </div>
-              )}
-              <p className="text-[11px] text-text-lt">Links expire after 7 days and can only be used once.</p>
             </CardBody>
           </Card>
         )}

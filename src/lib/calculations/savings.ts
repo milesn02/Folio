@@ -36,15 +36,17 @@ export function autoSavingsAmount(k: string, c: ClientData): number | null {
   }
 
   if (k === 'ps') {
-    const psO = parseDollar(c.retByYear?.[CUR_YEAR]?.psO)
-    if (!psO || !rate) return null
-    return Math.round(psO * rate)
+    const ret = c.retByYear?.[CUR_YEAR]
+    const total = parseDollar(ret?.psO) + parseDollar(ret?.psS) + parseDollar(ret?.psE)
+    if (!total || !rate) return null
+    return Math.round(total * rate)
   }
 
   if (k === 'db') {
-    const dbO = parseDollar(c.retByYear?.[CUR_YEAR]?.dbO)
-    if (!dbO || !rate) return null
-    return Math.round(dbO * rate)
+    const ret = c.retByYear?.[CUR_YEAR]
+    const total = parseDollar(ret?.dbO) + parseDollar(ret?.dbS) + parseDollar(ret?.dbE)
+    if (!total || !rate) return null
+    return Math.round(total * rate)
   }
 
   if (k === 'disc') {

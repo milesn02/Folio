@@ -20,13 +20,6 @@ export function exportClientSummary(c: ClientData, firmName: string) {
     </tr>
   `).join('')
 
-  const stratHtml = activeStrats.map(k => `
-    <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f3f4f6">
-      <div style="width:7px;height:7px;border-radius:50%;background:#c8a96e;flex-shrink:0"></div>
-      <span style="font-size:13px;color:#374151">${STRATEGY_LABELS[k]}</span>
-      ${c.strat[k].d ? `<span style="margin-left:auto;font-size:11px;color:#9ca3af">${c.strat[k].d}</span>` : ''}
-    </div>
-  `).join('')
 
   const kpiCards = [
     ['Est. Tax Savings', totalSavings ? fmt(totalSavings) : '—'],

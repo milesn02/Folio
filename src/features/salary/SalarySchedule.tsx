@@ -204,9 +204,15 @@ export function SalarySchedule({ client: c, onChange }: Props) {
             </Field>
             <Field label="Federal withholding — annual">
               <DollarInput value={entry.fedWHPer} onChange={e => setEntry({ fedWHPer: e.target.value })} placeholder="0" />
+              {calc.fedWHTot > 0 && calc.gross > 0 && (
+                <p className="text-[11px] text-text-lt mt-1">{((calc.fedWHTot / calc.gross) * 100).toFixed(1)}% of gross</p>
+              )}
             </Field>
             <Field label={`State withholding — annual${stateRate != null ? ` (${stateRate}% est.)` : ''}`}>
               <DollarInput value={entry.stateWHPer} onChange={e => setEntry({ stateWHPer: e.target.value })} placeholder="0" />
+              {calc.stateWHTot > 0 && calc.gross > 0 && (
+                <p className="text-[11px] text-text-lt mt-1">{((calc.stateWHTot / calc.gross) * 100).toFixed(1)}% of gross</p>
+              )}
             </Field>
             {showCity ? (
               <Field label="NYC local withholding — annual (3.88% est.)">

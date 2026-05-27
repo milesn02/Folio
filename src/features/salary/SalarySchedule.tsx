@@ -102,7 +102,7 @@ function downloadSalarySummary(
 const EMPTY_ENTRY: SalaryScheduleEntry = {
   freq: 'Monthly', gross: '', fedWHPer: '', stateWHPer: '', localWHPer: '',
   deferral: '', deferralType: 'Traditional', catchup: false, catchupAlt: false,
-  state: 'CA', city: '',
+  state: 'CA', city: '', payrollProvider: '',
 }
 
 function getPersons(c: ClientData) {
@@ -120,6 +120,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
   const persons = getPersons(c)
   const [personId, setPersonId] = useState('__owner__')
   const [year, setYear] = useState(CUR_YEAR)
+  const [showPeriods, setShowPeriods] = useState(false)
 
   const activePerson = persons.find(p => p.id === personId) ? personId : '__owner__'
   const entry: SalaryScheduleEntry = c.salSched?.[activePerson]?.[year] ?? { ...EMPTY_ENTRY }
@@ -202,6 +203,9 @@ export function SalarySchedule({ client: c, onChange }: Props) {
               <select className={inputCls} value={entry.freq ?? 'Monthly'} onChange={e => setEntry({ freq: e.target.value })}>
                 {Object.keys(FREQ_PERIODS).map(f => <option key={f}>{f}</option>)}
               </select>
+            </Field>
+            <Field label="Payroll provider">
+              <input className={inputCls} value={entry.payrollProvider ?? ''} onChange={e => setEntry({ payrollProvider: e.target.value })} placeholder="e.g. Gusto, ADP, Paychex" />
             </Field>
             <Field label="Federal withholding — annual">
               <DollarInput value={entry.fedWHPer} onChange={e => setEntry({ fedWHPer: e.target.value })} placeholder="0" />
@@ -301,6 +305,60 @@ export function SalarySchedule({ client: c, onChange }: Props) {
           </table>
         </CardBody>
       </Card>
+
+      {/* Pay period breakdown — collapsible */}
+      {calc.gross > 0 && (
+        <Card>
+          <button
+            onClick={() => setShowPeriods(p => !p)}
+            className="w-full flex items-center justify-between px-5 py-4 text-left"
+          >
+            <span className="text-[13px] font-semibold text-text">
+              Pay Period Breakdown — {calc.periods} periods
+            </span>
+            <span className={cn('text-text-lt transition-transform duration-200', showPeriods && 'rotate-180')}>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 6l5 5 5-5"/></svg>
+            </span>
+          </button>
+          {showPeriods && (
+            <div className="overflow-x-auto border-t border-border">
+              <table className="w-full text-[12px]">
+                <thead>
+                  <tr className="bg-navy">
+                    <th className="text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Period</th>
+                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Gross</th>
+                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Fed WH</th>
+                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">SS</th>
+                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Medicare</th>
+                    {calc.stateWHTot > 0 && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">State WH</th>}
+                    {calc.sdiTax > 0 && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">SDI</th>}
+                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Net</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from({ length: calc.periods }, (_, i) => {
+                    const isSSOver = calc.ssStopMonth !== null && i >= calc.ssStopMonth
+                    const ssPer = isSSOver ? 0 : calc.ssTaxPer
+                    const netPer = calc.grossPer - calc.fedWHPer - ssPer - calc.medTaxPer - calc.stateWHPer - calc.sdiTaxPer - (calc.tradDeferPer || 0) - (calc.rothDeferPer || 0)
+                    return (
+                      <tr key={i} className={cn('border-t border-border', i % 2 === 0 ? 'bg-white' : 'bg-surface/50')}>
+                        <td className="px-3 py-2 font-medium text-text">{i + 1}</td>
+                        <td className="px-3 py-2 text-right font-serif text-navy">{fmt(calc.grossPer)}</td>
+                        <td className="px-3 py-2 text-right font-serif text-danger">({fmt(calc.fedWHPer)})</td>
+                        <td className="px-3 py-2 text-right font-serif text-danger">({fmt(ssPer)})</td>
+                        <td className="px-3 py-2 text-right font-serif text-danger">({fmt(calc.medTaxPer)})</td>
+                        {calc.stateWHTot > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(calc.stateWHPer)})</td>}
+                        {calc.sdiTax > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(calc.sdiTaxPer)})</td>}
+                        <td className="px-3 py-2 text-right font-serif font-semibold text-navy">{fmt(netPer)}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+      )}
     </div>
   )
 }

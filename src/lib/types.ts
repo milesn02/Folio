@@ -160,6 +160,7 @@ export interface SalaryScheduleEntry {
   catchupAlt: boolean
   state: string
   city: string
+  payrollProvider: string
 }
 
 // ── HSA ───────────────────────────────────────────────────────

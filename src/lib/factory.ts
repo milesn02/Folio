@@ -40,7 +40,7 @@ export function mkEntityPayData(): EntityPayData {
 export function mkRetYear(): RetirementYear {
   return {
     oSal: '', fWH: '', cWH: '', k401: '', k401t: 'Traditional',
-    psO: '', dbO: '', psE: '', dbE: '',
+    psO: '', dbO: '', psS: '', dbS: '', psE: '', dbE: '',
     pre: '', preD: '', ext: 'N', s26: '', k26: '', cu26: '',
   }
 }

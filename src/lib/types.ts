@@ -126,6 +126,8 @@ export interface RetirementYear {
   k401t: string
   psO: string
   dbO: string
+  psS: string
+  dbS: string
   psE: string
   dbE: string
   pre: string

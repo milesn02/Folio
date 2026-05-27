@@ -19,10 +19,12 @@ export function Retirement({ client: c, onChange }: Props) {
 
   const psO = parseDollar(rd.psO)
   const dbO = parseDollar(rd.dbO)
+  const psS = parseDollar(rd.psS)
+  const dbS = parseDollar(rd.dbS)
   const psE = parseDollar(rd.psE)
   const dbE = parseDollar(rd.dbE)
   const pre = parseDollar(rd.pre)
-  const totalRetirement = psO + dbO + psE + dbE
+  const totalRetirement = psO + dbO + psS + dbS + psE + dbE
   const remaining = Math.max(0, totalRetirement - pre)
 
   return (
@@ -38,6 +40,13 @@ export function Retirement({ client: c, onChange }: Props) {
             </Field>
             <Field label="Defined benefit — owner">
               <DollarInput value={rd.dbO} onChange={e => setField('dbO', e.target.value)} placeholder="0" />
+            </Field>
+            <div />
+            <Field label="Profit sharing — spouse">
+              <DollarInput value={rd.psS} onChange={e => setField('psS', e.target.value)} placeholder="0" />
+            </Field>
+            <Field label="Defined benefit — spouse">
+              <DollarInput value={rd.dbS} onChange={e => setField('dbS', e.target.value)} placeholder="0" />
             </Field>
             <div />
             <Field label="Profit sharing — employee">

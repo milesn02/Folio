@@ -1,4 +1,4 @@
-import { Search, SlidersHorizontal, ChevronDown, Plus, ChevronLeft, ChevronRight, Settings } from 'lucide-react'
+import { Search, SlidersHorizontal, ChevronDown, Plus, ChevronLeft, ChevronRight, Settings, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { Avatar } from '@/components/ui'
@@ -11,9 +11,10 @@ import { useUiStore } from '@/store/uiStore'
 
 interface SidebarProps {
   onNewClient: () => void
+  onDeleteClient: (key: string) => void
 }
 
-export function Sidebar({ onNewClient }: SidebarProps) {
+export function Sidebar({ onNewClient, onDeleteClient }: SidebarProps) {
   const { activeKey, searchQuery, advisorFilter, setActiveKey, setSearchQuery, setAdvisorFilter } =
     useClientStore()
   const filtered = useClientStore(selectFilteredClients)
@@ -95,29 +96,36 @@ export function Sidebar({ onNewClient }: SidebarProps) {
         {/* Client list */}
         <div className="flex-1 overflow-y-auto px-2 scrollbar-thin scrollbar-thumb-white/10">
           {filtered.map(c => (
-            <button
+            <div
               key={c.client_key}
-              onClick={() => setActiveKey(c.client_key)}
               className={cn(
-                'flex items-center gap-2.5 w-full px-3 py-2.5 rounded-lg mb-0.5 text-left',
+                'group flex items-center gap-2.5 w-full px-3 py-2.5 rounded-lg mb-0.5',
                 'border-l-[3px] transition-all duration-100',
                 activeKey === c.client_key
                   ? 'bg-accent/12 border-l-accent'
                   : 'border-l-transparent hover:bg-white/7',
               )}
             >
-              <Avatar name={c.data.name || '?'} size="sm" />
-              <div className="min-w-0">
-                <p className="text-[13px] font-semibold text-white truncate leading-tight">
-                  {c.data.name || 'New Client'}
-                </p>
-                {c.data.entities?.[0]?.name && (
-                  <p className="text-[11px] text-white/40 truncate leading-tight mt-0.5">
-                    {c.data.entities[0].name}
+              <button className="flex items-center gap-2.5 flex-1 min-w-0 text-left" onClick={() => setActiveKey(c.client_key)}>
+                <Avatar name={c.data.name || '?'} size="sm" />
+                <div className="min-w-0">
+                  <p className="text-[13px] font-semibold text-white truncate leading-tight">
+                    {c.data.name || 'New Client'}
                   </p>
-                )}
-              </div>
-            </button>
+                  {c.data.entities?.[0]?.name && (
+                    <p className="text-[11px] text-white/40 truncate leading-tight mt-0.5">
+                      {c.data.entities[0].name}
+                    </p>
+                  )}
+                </div>
+              </button>
+              <button
+                onClick={() => onDeleteClient(c.client_key)}
+                className="opacity-0 group-hover:opacity-100 p-1 rounded text-white/30 hover:text-danger hover:bg-white/10 transition-all flex-shrink-0"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
           ))}
         </div>
 

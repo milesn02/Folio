@@ -151,7 +151,7 @@ export default function Settings() {
         )}
 
         {/* Team */}
-        {firm && (profile?.role === 'owner' || profile?.role === 'admin') && (
+        {user && (
           <Card>
             <CardHeader><CardTitle>Invite Team Member</CardTitle></CardHeader>
             <CardBody className="flex flex-col gap-4">

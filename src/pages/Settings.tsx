@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeft, LogOut } from 'lucide-react'
+import { ArrowLeft, LogOut, Link2, Check } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 import { useUiStore } from '@/store/uiStore'
@@ -17,6 +17,23 @@ export default function Settings() {
   const [avatarColor, setAvatarColor] = useState(profile?.avatar_color ?? AVATAR_COLORS[0])
   const [firmName, setFirmName] = useState(firm?.name ?? '')
   const [saving, setSaving] = useState(false)
+  const [inviteLink, setInviteLink] = useState('')
+  const [copied, setCopied] = useState(false)
+
+  const generateInvite = useCallback(async () => {
+    if (!firm || !user) return
+    const { data, error } = await supabase
+      .from('invites')
+      .insert({ firm_id: firm.id, created_by: user.id })
+      .select('token')
+      .single()
+    if (error || !data) { showToast('Failed to generate invite', 'error'); return }
+    const link = `${window.location.origin}/invite/${data.token}`
+    setInviteLink(link)
+    await navigator.clipboard.writeText(link)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 3000)
+  }, [firm, user, showToast])
 
   if (loading) return null
   if (!user) return <Navigate to="/login" replace />
@@ -129,6 +146,28 @@ export default function Settings() {
               <Button variant="primary" size="sm" onClick={saveFirm} disabled={saving} className="self-start">
                 {saving ? 'Saving…' : 'Save firm settings'}
               </Button>
+            </CardBody>
+          </Card>
+        )}
+
+        {/* Team */}
+        {firm && (profile?.role === 'owner' || profile?.role === 'admin') && (
+          <Card>
+            <CardHeader><CardTitle>Invite Team Member</CardTitle></CardHeader>
+            <CardBody className="flex flex-col gap-4">
+              <p className="text-[13px] text-text-lt">Generate a link and send it to a colleague. They click it, create an account, and they're in — no setup required.</p>
+              <div className="flex gap-2">
+                <Button variant="primary" size="sm" onClick={generateInvite} className="gap-1.5 shrink-0">
+                  {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
+                  {copied ? 'Copied!' : 'Generate invite link'}
+                </Button>
+              </div>
+              {inviteLink && (
+                <div className="bg-surface rounded-sm border border-border px-3 py-2 text-[11px] text-text-lt font-mono break-all select-text cursor-text">
+                  {inviteLink}
+                </div>
+              )}
+              <p className="text-[11px] text-text-lt">Links expire after 7 days and can only be used once.</p>
             </CardBody>
           </Card>
         )}

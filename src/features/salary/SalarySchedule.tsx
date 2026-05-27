@@ -202,14 +202,14 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                 {Object.keys(FREQ_PERIODS).map(f => <option key={f}>{f}</option>)}
               </select>
             </Field>
-            <Field label="Federal withholding / period">
+            <Field label="Federal withholding — annual">
               <DollarInput value={entry.fedWHPer} onChange={e => setEntry({ fedWHPer: e.target.value })} placeholder="0" />
             </Field>
-            <Field label={`State withholding / period${stateRate != null ? ` (${stateRate}% est.)` : ''}`}>
+            <Field label={`State withholding — annual${stateRate != null ? ` (${stateRate}% est.)` : ''}`}>
               <DollarInput value={entry.stateWHPer} onChange={e => setEntry({ stateWHPer: e.target.value })} placeholder="0" />
             </Field>
             {showCity ? (
-              <Field label="NYC local withholding / period (3.88% est.)">
+              <Field label="NYC local withholding — annual (3.88% est.)">
                 <DollarInput value={entry.localWHPer} onChange={e => setEntry({ localWHPer: e.target.value })} placeholder="0" />
               </Field>
             ) : <div />}

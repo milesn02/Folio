@@ -18,19 +18,18 @@ export function calcSal(d: SalaryScheduleEntry, year: string): SalCalcResult {
   const rothDefer = isTrad ? 0 : deferral
 
   const fedTaxable = gross - tradDefer
-  const fedWHPer = parseDollar(d.fedWHPer)
-  const stateWHPer = parseDollar(d.stateWHPer)
-  const localWHPer = parseDollar(d.localWHPer)
+  const fedWHTot = parseDollar(d.fedWHPer)
+  const stateWHTot = parseDollar(d.stateWHPer)
+  const localWHTot = parseDollar(d.localWHPer)
+  const fedWHPer = fedWHTot / periods
+  const stateWHPer = stateWHTot / periods
+  const localWHPer = localWHTot / periods
 
   const ssWage = Math.min(gross, lim.ssWage)
   const ssTax = ssWage * 0.062
   const medTax = gross * 0.0145
   const addMed = Math.max(0, gross - 200000) * 0.009
   const ficaTot = ssTax + medTax + addMed
-
-  const fedWHTot = fedWHPer * periods
-  const stateWHTot = stateWHPer * periods
-  const localWHTot = localWHPer * periods
 
   const net = gross - tradDefer - rothDefer - fedWHTot - ficaTot - stateWHTot - localWHTot
   const ssStopMonth = gross > lim.ssWage ? Math.ceil((lim.ssWage / gross) * 12) : null

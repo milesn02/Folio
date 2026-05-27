@@ -208,7 +208,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                 <p className="text-[11px] text-text-lt mt-1">{((calc.fedWHTot / calc.gross) * 100).toFixed(1)}% of gross</p>
               )}
             </Field>
-            <Field label={`State withholding — annual${stateRate != null ? ` (${stateRate}% est.)` : ''}`}>
+            <Field label="State withholding — annual">
               <DollarInput value={entry.stateWHPer} onChange={e => setEntry({ stateWHPer: e.target.value })} placeholder="0" />
               {calc.stateWHTot > 0 && calc.gross > 0 && (
                 <p className="text-[11px] text-text-lt mt-1">{((calc.stateWHTot / calc.gross) * 100).toFixed(1)}% of gross</p>

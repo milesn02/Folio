@@ -31,7 +31,8 @@ export function calcSal(d: SalaryScheduleEntry, year: string): SalCalcResult {
   const addMed = Math.max(0, gross - 200000) * 0.009
   const ficaTot = ssTax + medTax + addMed
 
-  const net = gross - tradDefer - rothDefer - fedWHTot - ficaTot - stateWHTot - localWHTot
+  const sdiTax = (d.state ?? 'CA') === 'CA' ? Math.round(gross * lim.sdiRate) : 0
+  const net = gross - tradDefer - rothDefer - fedWHTot - ficaTot - stateWHTot - localWHTot - sdiTax
   const ssStopMonth = gross > lim.ssWage ? Math.ceil((lim.ssWage / gross) * 12) : null
 
   return {
@@ -55,6 +56,8 @@ export function calcSal(d: SalaryScheduleEntry, year: string): SalCalcResult {
     stateWHTot,
     localWHPer,
     localWHTot,
+    sdiTax,
+    sdiTaxPer: sdiTax / periods,
     net,
     netPer: net / periods,
     deferLim,

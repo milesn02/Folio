@@ -79,9 +79,10 @@ export const DISPLAY_YEARS: string[] = Array.from(
 export const CUR_YEAR = String(_thisYear)
 
 // ── Salary limits ─────────────────────────────────────────────
-export const SAL_LIMITS: Record<string, { deferral: number; catchup: number; catchupAlt: number; ssWage: number }> = {
-  '2025': { deferral: 23500, catchup: 7500, catchupAlt: 11250, ssWage: 176100 },
-  '2026': { deferral: 23500, catchup: 7500, catchupAlt: 11250, ssWage: 176100 },
+export const SAL_LIMITS: Record<string, { deferral: number; catchup: number; catchupAlt: number; ssWage: number; sdiRate: number }> = {
+  '2024': { deferral: 23000, catchup: 7500, catchupAlt: 7500,  ssWage: 168600, sdiRate: 0.011 },
+  '2025': { deferral: 23500, catchup: 7500, catchupAlt: 11250, ssWage: 176100, sdiRate: 0.012 },
+  '2026': { deferral: 23500, catchup: 7500, catchupAlt: 11250, ssWage: 176100, sdiRate: 0.012 },
 }
 
 export const FREQ_PERIODS: Record<string, number> = {

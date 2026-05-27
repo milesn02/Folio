@@ -152,6 +152,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
     [calc.gross > 200000 ? 'Medicare (1.45% + 0.9%)' : 'Medicare (1.45%)', -calc.medTaxPer, -calc.medTax, true],
     ...(calc.stateWHTot ? [['State income tax', -calc.stateWHPer, -calc.stateWHTot, true] as [string, number, number, boolean]] : []),
     ...(calc.localWHTot ? [['NYC local tax', -calc.localWHPer, -calc.localWHTot, true] as [string, number, number, boolean]] : []),
+    ...(calc.sdiTax ? [[`CA SDI (${(lim.sdiRate * 100).toFixed(1)}%)`, -calc.sdiTaxPer, -calc.sdiTax, true] as [string, number, number, boolean]] : []),
     ...(calc.rothDefer ? [['401(k) Roth (after-tax)', -calc.rothDeferPer, -calc.rothDefer, true] as [string, number, number, boolean]] : []),
   ]
 

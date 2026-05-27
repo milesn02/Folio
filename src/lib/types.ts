@@ -285,6 +285,8 @@ export interface SalCalcResult {
   stateWHTot: number
   localWHPer: number
   localWHTot: number
+  sdiTax: number
+  sdiTaxPer: number
   net: number
   netPer: number
   deferLim: number

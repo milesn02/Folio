@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import { Card, CardHeader, CardTitle, CardBody, SubTabs, Field, DollarInput } from '@/components/ui'
 import { inputCls } from '@/components/ui/Field'
 import { calcSal } from '@/lib/calculations'
-import { SAL_LIMITS, STATES, STATE_RATES, DISPLAY_YEARS, CUR_YEAR, FREQ_PERIODS } from '@/lib/constants'
+import { SAL_LIMITS, STATES, DISPLAY_YEARS, CUR_YEAR, FREQ_PERIODS } from '@/lib/constants'
 import { fmt, cn } from '@/lib/utils'
 import type { ClientData, SalaryScheduleEntry } from '@/lib/types'
 
@@ -134,7 +134,6 @@ export function SalarySchedule({ client: c, onChange }: Props) {
 
   const calc = useMemo(() => calcSal(entry, year), [entry, year])
   const lim = SAL_LIMITS[year] ?? SAL_LIMITS['2025']
-  const stateRate = STATE_RATES[entry.state ?? 'CA']
   const showCity = (entry.state ?? 'CA') === 'NY'
   const over = calc.deferRaw > calc.deferLim
 

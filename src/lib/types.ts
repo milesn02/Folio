@@ -33,10 +33,14 @@ export type StrategyKey =
   | 'taxAware'
   | 'moneyLink'
 
+export type StrategyStatus = 'considering' | 'committed' | 'implementing' | 'complete'
+
 export interface StrategyEntry {
   y: boolean   // active / yes
   n: boolean   // inactive / no
   d: string    // commitment date
+  status?: StrategyStatus
+  note?: string
 }
 
 export type StrategyMap = Record<StrategyKey, StrategyEntry>

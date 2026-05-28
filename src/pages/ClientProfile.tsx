@@ -2,6 +2,7 @@ import { useCallback, lazy, Suspense, useState, useEffect } from 'react'
 import { useClientStore, selectActiveClient } from '@/store/clientStore'
 import { useUiStore } from '@/store/uiStore'
 import { usePersist } from '@/hooks/useClients'
+import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 import { TopBar } from '@/components/layout/TopBar'
 import { Modal } from '@/components/ui/Modal'
@@ -25,6 +26,7 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
   const { activeTab, updateClientData } = useClientStore()
   const dbClient = useClientStore(selectActiveClient)
   const { showToast } = useUiStore()
+  const { firm } = useAuth()
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [deleteModal, setDeleteModal] = useState(false)
 
@@ -68,8 +70,8 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
 
   const handleDownloadSummary = useCallback(() => {
     if (!client) return
-    exportClientSummary(client, '')
-  }, [client])
+    exportClientSummary(client, firm?.name ?? '')
+  }, [client, firm?.name])
 
   if (!client || !dbClient) return null
 

@@ -4,9 +4,23 @@ import { StrategyPanel, hasPanel } from './StrategyPanel'
 import { inputCls } from '@/components/ui/Field'
 import { calcSavings, calcSavingsRows } from '@/lib/calculations'
 import { SKS, STRATEGY_LABELS, FILING_STATUSES, ETYPES, STATES, CUR_YEAR, SAVS_TO_SKS } from '@/lib/constants'
-import { fmt, ageInYear } from '@/lib/utils'
+import { fmt, ageInYear, cn } from '@/lib/utils'
 import { useFirmProfiles } from '@/hooks/useFirmProfiles'
-import type { ClientData, Entity, EntityType, StrategyKey } from '@/lib/types'
+import type { ClientData, Entity, EntityType, StrategyKey, StrategyStatus } from '@/lib/types'
+
+const STATUS_LABELS: Record<StrategyStatus, string> = {
+  considering:  'Considering',
+  committed:    'Committed',
+  implementing: 'Implementing',
+  complete:     'Complete ✓',
+}
+const STATUS_STYLES: Record<StrategyStatus, string> = {
+  considering:  'bg-surface text-text-lt border-border',
+  committed:    'bg-amber-50 text-amber-700 border-amber-200',
+  implementing: 'bg-blue-50 text-blue-700 border-blue-200',
+  complete:     'bg-green-50 text-green-700 border-green-200',
+}
+const STATUS_CYCLE: StrategyStatus[] = ['considering', 'committed', 'implementing', 'complete']
 
 const BLANK_ENTITY = (): Entity => ({
   name: '', type: 'S-Corporation', state: 'CA',
@@ -365,6 +379,20 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                   onClick={clickable ? () => setOpenPanel(k) : undefined}
                 >
                   <span className="flex-1 text-[13px] font-medium text-text">{STRATEGY_LABELS[k]}</span>
+                  <button
+                    onClick={e => {
+                      e.stopPropagation()
+                      const cur = c.strat[k]?.status ?? 'considering'
+                      const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur) + 1) % STATUS_CYCLE.length]
+                      onChange({ ...c, strat: { ...c.strat, [k]: { ...c.strat[k], status: next } } })
+                    }}
+                    className={cn(
+                      'text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-colors whitespace-nowrap flex-shrink-0',
+                      STATUS_STYLES[c.strat[k]?.status ?? 'considering'],
+                    )}
+                  >
+                    {STATUS_LABELS[c.strat[k]?.status ?? 'considering']}
+                  </button>
                   {clickable && (
                     <span className="text-[11px] text-text-lt opacity-0 group-hover:opacity-100 transition-opacity mr-1">Open →</span>
                   )}

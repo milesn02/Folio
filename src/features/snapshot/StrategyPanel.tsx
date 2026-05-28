@@ -1,6 +1,21 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { STRATEGY_LABELS } from '@/lib/constants'
-import type { ClientData, StrategyKey } from '@/lib/types'
+import { cn } from '@/lib/utils'
+import type { ClientData, StrategyKey, StrategyStatus } from '@/lib/types'
+
+const STATUS_LABELS: Record<StrategyStatus, string> = {
+  considering:  'Considering',
+  committed:    'Committed',
+  implementing: 'Implementing',
+  complete:     'Complete ✓',
+}
+const STATUS_STYLES: Record<StrategyStatus, string> = {
+  considering:  'bg-surface text-text-lt border-border',
+  committed:    'bg-amber-50 text-amber-700 border-amber-200',
+  implementing: 'bg-blue-50 text-blue-700 border-blue-200',
+  complete:     'bg-green-50 text-green-700 border-green-200',
+}
+const STATUS_CYCLE: StrategyStatus[] = ['considering', 'committed', 'implementing', 'complete']
 
 const AugustaRule   = lazy(() => import('@/features/augusta/AugustaRule').then(m => ({ default: m.AugustaRule })))
 const Payroll       = lazy(() => import('@/features/payroll/Payroll').then(m => ({ default: m.Payroll })))
@@ -68,9 +83,28 @@ export function StrategyPanel({ stratKey, client, onChange, onClose }: Props) {
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl flex flex-col max-h-[92vh] animate-fade-in">
         {/* Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-border flex-shrink-0">
-          <h2 className="font-serif text-[20px] text-navy tracking-tight">
-            {stratKey ? STRATEGY_LABELS[stratKey] : ''}
-          </h2>
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <h2 className="font-serif text-[20px] text-navy tracking-tight">
+              {stratKey ? STRATEGY_LABELS[stratKey] : ''}
+            </h2>
+            {stratKey && (
+              <select
+                value={draft.strat[stratKey]?.status ?? 'considering'}
+                onChange={e => {
+                  const status = e.target.value as StrategyStatus
+                  setDraft(d => ({ ...d, strat: { ...d.strat, [stratKey]: { ...d.strat[stratKey], status } } }))
+                }}
+                className={cn(
+                  'text-[11px] font-semibold border rounded-full px-2.5 py-1 cursor-pointer outline-none transition-colors',
+                  STATUS_STYLES[draft.strat[stratKey]?.status ?? 'considering'],
+                )}
+              >
+                {STATUS_CYCLE.map(s => (
+                  <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                ))}
+              </select>
+            )}
+          </div>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-full text-text-lt hover:bg-surface hover:text-text transition-colors text-[18px]"

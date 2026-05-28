@@ -62,7 +62,7 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
       <div
         className="relative overflow-hidden rounded-xl shadow-md px-8 pt-7 pb-6"
         style={{
-          background: 'linear-gradient(135deg, #081c0f 0%, #0a2513 55%, #0f3519 100%)',
+          background: 'linear-gradient(135deg, #1a3f28 0%, #204d31 55%, #265c3a 100%)',
         }}
       >
         {/* Subtle radial glow behind the name */}
@@ -457,7 +457,7 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
               )
             })}
             <div className="flex items-center px-5 py-4 rounded-b-xl"
-              style={{ background: 'linear-gradient(90deg, #081c0f 0%, #0a2513 100%)' }}>
+              style={{ background: 'linear-gradient(90deg, #1a3f28 0%, #204d31 100%)' }}>
               <span className="flex-1 text-xs font-bold uppercase tracking-[.07em] text-white/40">Total Est. Tax Savings</span>
               <span className="font-serif text-xl text-accent tracking-tight">{fmt(total)}</span>
             </div>

@@ -6,9 +6,9 @@ export default {
     extend: {
       colors: {
         navy: {
-          DEFAULT: '#081c0f',
-          md: '#0a2513',
-          lt: '#0f3519',
+          DEFAULT: '#1a3f28',
+          md: '#204d31',
+          lt: '#265c3a',
         },
         accent: {
           DEFAULT: '#c8a96e',

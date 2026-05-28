@@ -32,7 +32,7 @@ export function calcPeriods(d: SalaryScheduleEntry, year: string): PeriodCalc[] 
   const isTrad = d.deferralType !== 'Roth'
 
   let deferLim = lim.deferral
-  if ((d as { catchupAlt?: boolean }).catchupAlt) deferLim += lim.catchupAlt
+  if (d.catchupAlt) deferLim += lim.catchupAlt
   else if (d.catchup) deferLim += lim.catchup
 
   const deferRaw = parseDollar(d.deferral)
@@ -48,9 +48,9 @@ export function calcPeriods(d: SalaryScheduleEntry, year: string): PeriodCalc[] 
   const localWHPer = localWHTot / periods
 
   const result: PeriodCalc[] = []
-  let ytdGross = 0
 
   for (let i = 0; i < periods; i++) {
+    const ytdGross = grossPer * i  // multiply avoids float accumulation
     const ss = calcWageLimited(grossPer, ytdGross, ms.ficaRate, ms.ficaWageLimit)
     const medicare = calcMedicare(grossPer, ytdGross, ms.medicareRate, ms.medicareAdditionalRate, ms.medicareThreshold)
     const sdi = isCa ? calcWageLimited(grossPer, ytdGross, ms.sdiRate, ms.sdiWageLimit) : 0
@@ -69,8 +69,6 @@ export function calcPeriods(d: SalaryScheduleEntry, year: string): PeriodCalc[] 
       sdi: Math.round(sdi * 100) / 100,
       net: Math.round(net * 100) / 100,
     })
-
-    ytdGross += grossPer
   }
 
   return result
@@ -84,7 +82,7 @@ export function calcSal(d: SalaryScheduleEntry, year: string): SalCalcResult {
   const isTrad = d.deferralType !== 'Roth'
 
   let deferLim = lim.deferral
-  if ((d as { catchupAlt?: boolean }).catchupAlt) deferLim += lim.catchupAlt
+  if (d.catchupAlt) deferLim += lim.catchupAlt
   else if (d.catchup) deferLim += lim.catchup
 
   const deferRaw = parseDollar(d.deferral)
@@ -108,9 +106,9 @@ export function calcSal(d: SalaryScheduleEntry, year: string): SalCalcResult {
 
   const net = gross - tradDefer - rothDefer - fedWHTot - ficaTot - stateWHTot - localWHTot - sdiTax
 
-  // SS stop period (first period where ss = 0 after having been > 0)
-  const ssStopIdx = periodCalcs.findIndex((p, i) => i > 0 && p.ss === 0)
-  const ssStopMonth = ssStopIdx > 0 ? Math.ceil((ssStopIdx / periods) * 12) : null
+  // SS stop period: first period where ss drops to 0 after being > 0
+  const ssStopIdx = periodCalcs.findIndex((p, i) => i > 0 && p.ss === 0 && periodCalcs[i - 1].ss > 0)
+  const ssStopMonth = ssStopIdx !== -1 ? Math.ceil((ssStopIdx / periods) * 12) : null
 
   return {
     periods,

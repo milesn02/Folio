@@ -1,10 +1,10 @@
-import { SAVS, CUR_YEAR } from '../constants'
+import { SAVS, CUR_YEAR, ACTIVE_SETTINGS } from '../constants'
 import type { ClientData } from '../types'
 import { parseDollar } from '../utils'
 
 // Returns the auto-computed amount for a savings key based on data from other tabs.
 // Returns null if no auto value is available (meaning user must enter manually).
-export function autoSavingsAmount(k: string, c: ClientData): number | null {
+export function autoSavingsAmount(k: string, c: ClientData, year = CUR_YEAR): number | null {
   const fr = (parseFloat(c.fr) || 0) / 100
   const sr = (parseFloat(c.sr) || 0) / 100
   const rate = fr + sr
@@ -21,29 +21,35 @@ export function autoSavingsAmount(k: string, c: ClientData): number | null {
   }
 
   if (k === 'sOpt') {
-    const oSal = parseDollar(c.payrollByYear?.[CUR_YEAR]?.oSal)
+    const oSal = parseDollar(c.payrollByYear?.[year]?.oSal)
     const corpNet = parseDollar(c.corpNet)
     const corpAdj = parseDollar(c.corpAdj)
     if (!corpNet && !corpAdj) return null
     const distrib = Math.max(0, corpNet + corpAdj - oSal)
-    return distrib > 0 ? Math.round(distrib * 0.9235 * 0.153 * 0.5) : 0
+    if (distrib <= 0) return 0
+    // FICA avoided on distributions: SS (12.4% combined) up to wage base, Medicare (2.9%) always
+    const ms = ACTIVE_SETTINGS[year] ?? ACTIVE_SETTINGS['2026']
+    const ssRemaining = Math.max(0, ms.ficaWageLimit - oSal)
+    const ssSavings = Math.min(distrib, ssRemaining) * (ms.ficaRate * 2)
+    const medicareSavings = distrib * (ms.medicareRate * 2)
+    return Math.round(ssSavings + medicareSavings)
   }
 
   if (k === 'd401') {
-    const k401 = parseDollar(c.retByYear?.[CUR_YEAR]?.k401)
+    const k401 = parseDollar(c.retByYear?.[year]?.k401)
     if (!k401 || !rate) return null
     return Math.round(k401 * rate)
   }
 
   if (k === 'ps') {
-    const ret = c.retByYear?.[CUR_YEAR]
+    const ret = c.retByYear?.[year]
     const total = parseDollar(ret?.psO) + parseDollar(ret?.psS) + parseDollar(ret?.psE)
     if (!total || !rate) return null
     return Math.round(total * rate)
   }
 
   if (k === 'db') {
-    const ret = c.retByYear?.[CUR_YEAR]
+    const ret = c.retByYear?.[year]
     const total = parseDollar(ret?.dbO) + parseDollar(ret?.dbS) + parseDollar(ret?.dbE)
     if (!total || !rate) return null
     return Math.round(total * rate)
@@ -58,9 +64,9 @@ export function autoSavingsAmount(k: string, c: ClientData): number | null {
   return null
 }
 
-export function calcSavings(c: ClientData): number {
+export function calcSavings(c: ClientData, year = CUR_YEAR): number {
   return SAVS.reduce((tot, r) => {
-    const auto = autoSavingsAmount(r.k, c)
+    const auto = autoSavingsAmount(r.k, c, year)
     const amount = auto !== null ? auto : parseDollar(c.sav[r.k]?.a)
     return tot + amount
   }, 0)
@@ -74,9 +80,9 @@ export interface SavingsRow {
   totPct: number   // share of total
 }
 
-export function calcSavingsRows(c: ClientData): SavingsRow[] {
+export function calcSavingsRows(c: ClientData, year = CUR_YEAR): SavingsRow[] {
   const rows = SAVS.map(r => {
-    const auto = autoSavingsAmount(r.k, c)
+    const auto = autoSavingsAmount(r.k, c, year)
     const amount = auto !== null ? auto : parseDollar(c.sav[r.k]?.a)
     return { key: r.k, name: r.n, amount }
   }).filter(r => r.amount > 0).sort((a, b) => b.amount - a.amount)

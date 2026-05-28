@@ -49,7 +49,7 @@ export function Sidebar({ onNewClient, onDeleteClient }: SidebarProps) {
             <div className="w-1.5 h-1.5 rounded-full bg-accent mb-0.5 flex-shrink-0" />
           </div>
           <p className="text-[10px] text-white/35 uppercase tracking-[.08em] font-medium">
-            CPA CLIENT PORTAL
+            Tax Advisory Platform
           </p>
         </div>
 

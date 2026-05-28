@@ -5,6 +5,7 @@ import { inputCls } from '@/components/ui/Field'
 import { calcSavings, calcSavingsRows } from '@/lib/calculations'
 import { SKS, STRATEGY_LABELS, FILING_STATUSES, ETYPES, STATES, CUR_YEAR, SAVS_TO_SKS } from '@/lib/constants'
 import { fmt, ageInYear } from '@/lib/utils'
+import { useFirmProfiles } from '@/hooks/useFirmProfiles'
 import type { ClientData, Entity, EntityType, StrategyKey } from '@/lib/types'
 
 const BLANK_ENTITY = (): Entity => ({
@@ -21,6 +22,7 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
   const set = (updates: Partial<ClientData>) => onChange({ ...c, ...updates })
   const [entityModal, setEntityModal] = useState(false)
   const [draftEntity, setDraftEntity] = useState<Entity>(BLANK_ENTITY())
+  const profiles = useFirmProfiles()
 
   const tot = useMemo(() => calcSavings(c), [c])
   const stratCount = useMemo(() => SKS.filter(k => c.strat[k]?.y).length, [c])
@@ -140,20 +142,16 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
             </Field>
 
             <Field label="Advisor">
-              <input
-                className={inputCls}
-                value={c.adv}
-                onChange={e => set({ adv: e.target.value })}
-                placeholder="—"
-              />
+              <select className={inputCls} value={c.adv} onChange={e => set({ adv: e.target.value })}>
+                <option value="">—</option>
+                {profiles.map(p => <option key={p.id} value={p.display_name}>{p.display_name}</option>)}
+              </select>
             </Field>
             <Field label="Manager">
-              <input
-                className={inputCls}
-                value={c.mgr}
-                onChange={e => set({ mgr: e.target.value })}
-                placeholder="—"
-              />
+              <select className={inputCls} value={c.mgr} onChange={e => set({ mgr: e.target.value })}>
+                <option value="">—</option>
+                {profiles.map(p => <option key={p.id} value={p.display_name}>{p.display_name}</option>)}
+              </select>
             </Field>
           </div>
         </CardBody>

@@ -66,6 +66,7 @@ export function autoSavingsAmount(k: string, c: ClientData, year = CUR_YEAR): nu
 
 export function calcSavings(c: ClientData, year = CUR_YEAR): number {
   return SAVS.reduce((tot, r) => {
+    if (c.sav[r.k]?.n) return tot
     const auto = autoSavingsAmount(r.k, c, year)
     const amount = auto !== null ? auto : parseDollar(c.sav[r.k]?.a)
     return tot + amount
@@ -81,11 +82,13 @@ export interface SavingsRow {
 }
 
 export function calcSavingsRows(c: ClientData, year = CUR_YEAR): SavingsRow[] {
-  const rows = SAVS.map(r => {
-    const auto = autoSavingsAmount(r.k, c, year)
-    const amount = auto !== null ? auto : parseDollar(c.sav[r.k]?.a)
-    return { key: r.k, name: r.n, amount }
-  }).filter(r => r.amount > 0).sort((a, b) => b.amount - a.amount)
+  const rows = SAVS
+    .filter(r => !c.sav[r.k]?.n)
+    .map(r => {
+      const auto = autoSavingsAmount(r.k, c, year)
+      const amount = auto !== null ? auto : parseDollar(c.sav[r.k]?.a)
+      return { key: r.k, name: r.n, amount }
+    }).filter(r => r.amount > 0).sort((a, b) => b.amount - a.amount)
 
   const total = rows.reduce((s, r) => s + r.amount, 0)
   const maxAmt = rows[0]?.amount ?? 1

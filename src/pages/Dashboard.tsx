@@ -63,9 +63,13 @@ function EmptyState() {
   return (
     <div className="flex-1 flex items-center justify-center bg-surface">
       <div className="text-center">
-        <div className="text-6xl mb-5">📋</div>
-        <p className="text-[16px] font-semibold text-text mb-1.5">Select a client to view their profile</p>
-        <p className="text-[13px] text-text-lt">or create a new one to get started</p>
+        <div className="w-14 h-14 rounded-2xl bg-navy/6 flex items-center justify-center mx-auto mb-5">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-navy/40">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <p className="text-[15px] font-semibold text-text mb-1.5">No client selected</p>
+        <p className="text-[13px] text-text-lt">Select a client from the sidebar or add a new one</p>
       </div>
     </div>
   )

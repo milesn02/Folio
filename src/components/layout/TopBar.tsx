@@ -1,4 +1,5 @@
-import { FileDown, Trash2, Save, StickyNote } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { FileDown, StickyNote, MoreHorizontal, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui'
 import { TABS, TAB_LABELS, type TabId } from '@/lib/constants'
@@ -6,18 +7,43 @@ import { useClientStore, selectActiveClient } from '@/store/clientStore'
 import { useUiStore } from '@/store/uiStore'
 
 interface TopBarProps {
-  onSave: () => void
   onDelete: () => void
   onDownloadSummary: () => void
-  saving?: boolean
+  savedAt: Date | null
   clientName: string
 }
 
-export function TopBar({ onSave, onDelete, onDownloadSummary, saving, clientName }: TopBarProps) {
+function savedLabel(savedAt: Date | null): string {
+  if (!savedAt) return ''
+  const mins = Math.floor((Date.now() - savedAt.getTime()) / 60000)
+  if (mins < 1) return 'Saved just now'
+  if (mins < 60) return `Saved ${mins}m ago`
+  return `Saved ${Math.floor(mins / 60)}h ago`
+}
+
+export function TopBar({ onDelete, onDownloadSummary, savedAt, clientName }: TopBarProps) {
   const { activeTab, setActiveTab } = useClientStore()
   const { openNotes } = useUiStore()
   const activeClient = useClientStore(selectActiveClient)
   const strat = activeClient?.data?.strat
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [, forceUpdate] = useState(0)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Refresh the "X min ago" label every 30s
+  useEffect(() => {
+    const id = setInterval(() => forceUpdate(n => n + 1), 30000)
+    return () => clearInterval(id)
+  }, [])
+
+  // Close menu on outside click
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
   function isHidden(tab: string) {
     if (tab === 'augusta') return !strat?.augusta?.y
@@ -30,7 +56,12 @@ export function TopBar({ onSave, onDelete, onDownloadSummary, saving, clientName
     <div className="flex flex-col border-b border-border bg-white flex-shrink-0">
       {/* Action row */}
       <div className="flex items-center justify-between px-5 py-2.5 border-b border-border/60">
-        <h1 className="text-[15px] font-semibold text-text truncate">{clientName}</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-[15px] font-semibold text-text truncate">{clientName}</h1>
+          {savedAt && (
+            <span className="text-[11px] text-text-lt">{savedLabel(savedAt)}</span>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={openNotes} className="gap-1.5">
             <StickyNote className="w-3.5 h-3.5" />
@@ -40,14 +71,22 @@ export function TopBar({ onSave, onDelete, onDownloadSummary, saving, clientName
             <FileDown className="w-3.5 h-3.5" />
             Download Summary
           </Button>
-          <Button variant="destructive" size="sm" onClick={onDelete} className="gap-1.5">
-            <Trash2 className="w-3.5 h-3.5" />
-            Delete
-          </Button>
-          <Button variant="primary" size="sm" onClick={onSave} disabled={saving} className="gap-1.5">
-            <Save className="w-3.5 h-3.5" />
-            {saving ? 'Saving…' : 'Save'}
-          </Button>
+          <div className="relative" ref={menuRef}>
+            <Button variant="ghost" size="sm" onClick={() => setMenuOpen(o => !o)} className="px-2">
+              <MoreHorizontal className="w-4 h-4" />
+            </Button>
+            {menuOpen && (
+              <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-border rounded-lg shadow-lg z-20 py-1">
+                <button
+                  onClick={() => { setMenuOpen(false); onDelete() }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-danger hover:bg-red-50 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Delete client
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

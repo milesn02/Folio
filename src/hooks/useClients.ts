@@ -53,8 +53,10 @@ export function useClients(firmId: string | undefined) {
 }
 
 /** Returns a debounced persist function for a specific client */
-export function usePersist(clientKey: string, firmId: string | undefined) {
+export function usePersist(clientKey: string, firmId: string | undefined, onSaved?: () => void) {
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const onSavedRef = useRef(onSaved)
+  onSavedRef.current = onSaved
 
   const persist = useCallback((data: ClientData) => {
     clearTimeout(timerRef.current)
@@ -65,6 +67,7 @@ export function usePersist(clientKey: string, firmId: string | undefined) {
         .update({ data, updated_at: new Date().toISOString() })
         .eq('client_key', clientKey)
         .eq('firm_id', firmId)
+      onSavedRef.current?.()
     }, PERSIST_DELAY)
   }, [clientKey, firmId])
 

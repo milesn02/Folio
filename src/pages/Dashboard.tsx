@@ -18,13 +18,6 @@ export default function Dashboard() {
   if (loading) return null
   if (!user) return <Navigate to="/login" replace />
 
-  async function handleDeleteClient(key: string) {
-    if (!firm?.id) return
-    await supabase.from('clients').delete().eq('client_key', key).eq('firm_id', firm.id)
-    useClientStore.setState(s => ({ clients: s.clients.filter(c => c.client_key !== key) }))
-    if (useClientStore.getState().activeKey === key) setActiveKey(null)
-  }
-
   async function handleNewClient() {
     if (!firm?.id) return
     const key = 'CLIENT_' + Date.now()
@@ -44,7 +37,7 @@ export default function Dashboard() {
 
   return (
     <AppShell>
-      <Sidebar onNewClient={handleNewClient} onDeleteClient={handleDeleteClient} />
+      <Sidebar onNewClient={handleNewClient} />
       {activeKey ? (
         <ClientProfile firmId={firm?.id ?? ''} />
       ) : (

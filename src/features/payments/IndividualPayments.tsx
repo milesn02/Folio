@@ -10,6 +10,15 @@ interface Props { client: ClientData; onChange: (data: ClientData) => void }
 
 const NO_INCOME_TAX_STATES = new Set(['TX', 'FL', 'WA', 'NV', 'WY', 'SD', 'AK', 'TN', 'NH'])
 
+const STATE_PAY_URLS: Partial<Record<string, string>> = {
+  CA: 'https://www.ftb.ca.gov/pay/index.html',
+  NY: 'https://www.tax.ny.gov/pay/ind/pay_income_tax_online.htm',
+  OR: 'https://revenueonline.dor.oregon.gov',
+  AZ: 'https://www.aztaxes.gov',
+  CO: 'https://www.colorado.gov/revenue/payments',
+  IL: 'https://mytax.illinois.gov',
+}
+
 function getClientState(c: ClientData): string {
   return c.entities?.[0]?.state || 'CA'
 }
@@ -158,8 +167,22 @@ export function IndividualPayments({ client: c, onChange }: Props) {
               {quarters.map(q => (
                 <tr key={q.n} className="border-b border-border last:border-b-0">
                   <td className="px-4 py-2 font-medium text-text">
-                    {formatDate(q.date)} — Q{q.n}
-                    <DaysBadge date={q.date} />
+                    <div className="flex items-center gap-1 flex-wrap">
+                      {formatDate(q.date)} — Q{q.n}
+                      <DaysBadge date={q.date} />
+                    </div>
+                    <div className="flex gap-2.5 mt-1">
+                      <a href="https://directpay.irs.gov" target="_blank" rel="noopener noreferrer"
+                        className="text-[10px] font-medium text-accent hover:underline">
+                        IRS Direct Pay ↗
+                      </a>
+                      {!noStateTax && STATE_PAY_URLS[clientState] && (
+                        <a href={STATE_PAY_URLS[clientState]} target="_blank" rel="noopener noreferrer"
+                          className="text-[10px] font-medium text-accent hover:underline">
+                          {clientState} Pay ↗
+                        </a>
+                      )}
+                    </div>
                   </td>
                   <td className="px-3 py-2">
                     <DollarInput className="w-24" value={pd[q.fk] as string} onChange={e => setField(q.fk, e.target.value)} placeholder="0" />

@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardBody, Toggle, DollarInput } from '@/co
 
 import { SAVS } from '@/lib/constants'
 import { calcSavings, autoSavingsAmount } from '@/lib/calculations'
-import { fmt } from '@/lib/utils'
+import { fmt, cn } from '@/lib/utils'
 import type { ClientData } from '@/lib/types'
 
 interface TaxSavingsProps {
@@ -44,10 +44,15 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
           // Auto value always wins when available — no stale manual override
           const displayVal = autoVal !== null ? String(autoVal) : (entry?.a ?? '')
           const isAuto = autoVal !== null
+          const isInactive = entry?.n === true
           return (
             <div
               key={r.k}
-              className={`grid items-center px-5 py-3 ${i < SAVS.length - 1 ? 'border-b border-border' : ''}`}
+              className={cn(
+                'grid items-center px-5 py-3 transition-opacity',
+                i < SAVS.length - 1 && 'border-b border-border',
+                isInactive && 'opacity-40',
+              )}
               style={{ gridTemplateColumns: '1fr 140px 80px' }}
             >
               <div>
@@ -56,7 +61,7 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
               </div>
               <div className="flex flex-col items-end gap-0.5">
                 <DollarInput
-                  className="w-32 text-right font-mono"
+                  className={cn('w-32 text-right font-mono', isInactive && 'line-through decoration-text-lt')}
                   value={displayVal}
                   onChange={e => !isAuto && setAmount(r.k, e.target.value)}
                   readOnly={isAuto}

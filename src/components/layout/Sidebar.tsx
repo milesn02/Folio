@@ -1,4 +1,4 @@
-import { Search, SlidersHorizontal, ChevronDown, Plus, ChevronLeft, ChevronRight, Settings, Trash2 } from 'lucide-react'
+import { Search, SlidersHorizontal, ChevronDown, Plus, ChevronLeft, ChevronRight, Settings } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { Avatar } from '@/components/ui'
@@ -11,11 +11,10 @@ import { useUiStore } from '@/store/uiStore'
 
 interface SidebarProps {
   onNewClient: () => void
-  onDeleteClient: (key: string) => void
 }
 
-export function Sidebar({ onNewClient, onDeleteClient }: SidebarProps) {
-  const { activeKey, searchQuery, advisorFilter, setActiveKey, setSearchQuery, setAdvisorFilter } =
+export function Sidebar({ onNewClient }: SidebarProps) {
+  const { clients, activeKey, searchQuery, advisorFilter, setActiveKey, setSearchQuery, setAdvisorFilter } =
     useClientStore()
   const filtered = useClientStore(selectFilteredClients)
   const advisors = useClientStore(selectAdvisors)
@@ -89,9 +88,14 @@ export function Sidebar({ onNewClient, onDeleteClient }: SidebarProps) {
         )}
 
         {/* Clients header */}
-        <p className="px-4 pt-2 pb-1.5 text-[10px] font-semibold text-white/30 uppercase tracking-[.1em]">
-          Clients
-        </p>
+        <div className="px-4 pt-2 pb-1.5 flex items-center justify-between">
+          <p className="text-[10px] font-semibold text-white/30 uppercase tracking-[.1em]">Clients</p>
+          <p className="text-[10px] font-semibold text-white/25 tabular-nums">
+            {(searchQuery || advisorFilter) && filtered.length !== clients.length
+              ? `${filtered.length} of ${clients.length}`
+              : clients.length}
+          </p>
+        </div>
 
         {/* Client list */}
         <div className="flex-1 overflow-y-auto px-2 scrollbar-thin scrollbar-thumb-white/10">
@@ -118,12 +122,6 @@ export function Sidebar({ onNewClient, onDeleteClient }: SidebarProps) {
                     </p>
                   )}
                 </div>
-              </button>
-              <button
-                onClick={() => onDeleteClient(c.client_key)}
-                className="opacity-0 group-hover:opacity-100 p-1 rounded text-white/30 hover:text-danger hover:bg-white/10 transition-all flex-shrink-0"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
           ))}

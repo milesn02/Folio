@@ -15,14 +15,14 @@ export function mkPayData(): PayData {
     q3c: '', q3ca: false, q3cv: false,
     q4f: '', q4a: false, q4v: false,
     q4c: '', q4ca: false, q4cv: false,
-    q1f26: '', q1f26a: false, q1f26v: false, q1f26acct: '',
-    q2f26: '', q2f26a: false, q2f26v: false, q2f26acct: '',
-    q3f26: '', q3f26a: false, q3f26v: false, q3f26acct: '',
-    q4f26: '', q4f26a: false, q4f26v: false, q4f26acct: '',
-    q1c26: '', q1c26a: false, q1c26v: false, q1c26acct: '',
-    q2c26: '', q2c26a: false, q2c26v: false, q2c26acct: '',
-    q3c26: '', q3c26a: false, q3c26v: false, q3c26acct: '',
-    q4c26: '', q4c26a: false, q4c26v: false, q4c26acct: '',
+    q1f26: '', q1f26acct: '', q1f26s: 'unpaid',
+    q2f26: '', q2f26acct: '', q2f26s: 'unpaid',
+    q3f26: '', q3f26acct: '', q3f26s: 'unpaid',
+    q4f26: '', q4f26acct: '', q4f26s: 'unpaid',
+    q1c26: '', q1c26acct: '', q1c26s: 'unpaid',
+    q2c26: '', q2c26acct: '', q2c26s: 'unpaid',
+    q3c26: '', q3c26acct: '', q3c26s: 'unpaid',
+    q4c26: '', q4c26acct: '', q4c26s: 'unpaid',
   }
 }
 

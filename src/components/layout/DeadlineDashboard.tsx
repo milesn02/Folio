@@ -3,6 +3,14 @@ import { ChevronRight } from 'lucide-react'
 import { useClientStore, selectFilteredClients } from '@/store/clientStore'
 import { quarterDate, fmt, parseDollar } from '@/lib/utils'
 import type { DbClient } from '@/lib/supabase'
+import type { PayStatus } from '@/lib/types'
+
+function deriveStatus(s: PayStatus | undefined, a?: boolean, v?: boolean): PayStatus {
+  if (s !== undefined) return s
+  if (v) return 'paid'
+  if (a) return 'scheduled'
+  return 'unpaid'
+}
 
 interface DeadlineItem {
   clientKey: string
@@ -12,15 +20,15 @@ interface DeadlineItem {
   daysAway: number
   fedAmount: number
   stateAmount: number
-  fedVerified: boolean
-  stateVerified: boolean
+  fedStatus: PayStatus
+  stateStatus: PayStatus
 }
 
 const Q_KEYS = [
-  { n: 1 as const, fk: 'q1f26', vk: 'q1f26v', ck: 'q1c26', cvk: 'q1c26v' },
-  { n: 2 as const, fk: 'q2f26', vk: 'q2f26v', ck: 'q2c26', cvk: 'q2c26v' },
-  { n: 3 as const, fk: 'q3f26', vk: 'q3f26v', ck: 'q3c26', cvk: 'q3c26v' },
-  { n: 4 as const, fk: 'q4f26', vk: 'q4f26v', ck: 'q4c26', cvk: 'q4c26v' },
+  { n: 1 as const, fk: 'q1f26', fsk: 'q1f26s', fak: 'q1f26a', fvk: 'q1f26v', ck: 'q1c26', csk: 'q1c26s', cak: 'q1c26a', cvk: 'q1c26v' },
+  { n: 2 as const, fk: 'q2f26', fsk: 'q2f26s', fak: 'q2f26a', fvk: 'q2f26v', ck: 'q2c26', csk: 'q2c26s', cak: 'q2c26a', cvk: 'q2c26v' },
+  { n: 3 as const, fk: 'q3f26', fsk: 'q3f26s', fak: 'q3f26a', fvk: 'q3f26v', ck: 'q3c26', csk: 'q3c26s', cak: 'q3c26a', cvk: 'q3c26v' },
+  { n: 4 as const, fk: 'q4f26', fsk: 'q4f26s', fak: 'q4f26a', fvk: 'q4f26v', ck: 'q4c26', csk: 'q4c26s', cak: 'q4c26a', cvk: 'q4c26v' },
 ]
 
 function getItems(clients: DbClient[]): DeadlineItem[] {
@@ -39,6 +47,16 @@ function getItems(clients: DbClient[]): DeadlineItem[] {
       const fedAmount = parseDollar(pd[q.fk as keyof typeof pd] as string)
       const stateAmount = parseDollar(pd[q.ck as keyof typeof pd] as string)
       if (!fedAmount && !stateAmount) continue
+      const fedStatus = deriveStatus(
+        pd[q.fsk as keyof typeof pd] as PayStatus | undefined,
+        pd[q.fak as keyof typeof pd] as boolean | undefined,
+        pd[q.fvk as keyof typeof pd] as boolean | undefined,
+      )
+      const stateStatus = deriveStatus(
+        pd[q.csk as keyof typeof pd] as PayStatus | undefined,
+        pd[q.cak as keyof typeof pd] as boolean | undefined,
+        pd[q.cvk as keyof typeof pd] as boolean | undefined,
+      )
       results.push({
         clientKey: client.client_key,
         clientName: client.data.name || 'New Client',
@@ -47,8 +65,8 @@ function getItems(clients: DbClient[]): DeadlineItem[] {
         daysAway,
         fedAmount,
         stateAmount,
-        fedVerified: pd[q.vk as keyof typeof pd] as boolean,
-        stateVerified: pd[q.cvk as keyof typeof pd] as boolean,
+        fedStatus,
+        stateStatus,
       })
     }
   }
@@ -114,17 +132,17 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
                   <div className="flex items-center gap-5">
                     {item.fedAmount > 0 && (
                       <div className="text-right">
-                        <p className="text-[9px] font-bold uppercase tracking-[.05em] text-text-lt">Federal</p>
-                        <p className={`font-serif text-[14px] ${item.fedVerified ? 'text-success' : 'text-navy'}`}>
-                          {fmt(item.fedAmount)}{item.fedVerified ? ' ✓' : ''}
+                        <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">Federal</p>
+                        <p className={`font-serif text-[14px] ${item.fedStatus === 'paid' ? 'text-success' : 'text-navy'}`}>
+                          {fmt(item.fedAmount)}{item.fedStatus === 'paid' ? ' ✓' : ''}
                         </p>
                       </div>
                     )}
                     {item.stateAmount > 0 && (
                       <div className="text-right">
-                        <p className="text-[9px] font-bold uppercase tracking-[.05em] text-text-lt">State</p>
-                        <p className={`font-serif text-[14px] ${item.stateVerified ? 'text-success' : 'text-navy'}`}>
-                          {fmt(item.stateAmount)}{item.stateVerified ? ' ✓' : ''}
+                        <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">State</p>
+                        <p className={`font-serif text-[14px] ${item.stateStatus === 'paid' ? 'text-success' : 'text-navy'}`}>
+                          {fmt(item.stateAmount)}{item.stateStatus === 'paid' ? ' ✓' : ''}
                         </p>
                       </div>
                     )}

@@ -24,10 +24,11 @@ function getClientStatus(c: DbClient): ClientStatus {
   let hasUpcoming = false
   for (const q of [1, 2, 3, 4] as const) {
     const amtKey = `q${q}f26` as keyof typeof pay
-    const verKey = `q${q}f26v` as keyof typeof pay
+    const statusKey = `q${q}f26s` as keyof typeof pay
     const amt = parseDollar(pay[amtKey] as string)
     if (!amt) continue
-    if (pay[verKey]) continue // already verified
+    const status = (pay[statusKey] ?? 'unpaid') as string
+    if (status === 'paid') continue
     const due = quarterDate(year, q)
     const diff = (due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
     if (diff < 0) hasOverdue = true

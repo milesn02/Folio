@@ -76,6 +76,8 @@ export interface PayrollYear {
 }
 
 // ── Individual Payments ───────────────────────────────────────
+export type PayStatus = 'unpaid' | 'scheduled' | 'paid'
+
 export interface PayData {
   // Legacy ≤ 2025 format
   cFed: string; cCA: string
@@ -87,15 +89,24 @@ export interface PayData {
   q3c: string; q3ca: boolean; q3cv: boolean
   q4f: string; q4a: boolean; q4v: boolean
   q4c: string; q4ca: boolean; q4cv: boolean
-  // 2026+ format
-  q1f26: string; q1f26a: boolean; q1f26v: boolean; q1f26acct: string
-  q2f26: string; q2f26a: boolean; q2f26v: boolean; q2f26acct: string
-  q3f26: string; q3f26a: boolean; q3f26v: boolean; q3f26acct: string
-  q4f26: string; q4f26a: boolean; q4f26v: boolean; q4f26acct: string
-  q1c26: string; q1c26a: boolean; q1c26v: boolean; q1c26acct: string
-  q2c26: string; q2c26a: boolean; q2c26v: boolean; q2c26acct: string
-  q3c26: string; q3c26a: boolean; q3c26v: boolean; q3c26acct: string
-  q4c26: string; q4c26a: boolean; q4c26v: boolean; q4c26acct: string
+  // 2026+ format — amounts + account
+  q1f26: string; q1f26acct: string; q1f26s?: PayStatus
+  q2f26: string; q2f26acct: string; q2f26s?: PayStatus
+  q3f26: string; q3f26acct: string; q3f26s?: PayStatus
+  q4f26: string; q4f26acct: string; q4f26s?: PayStatus
+  q1c26: string; q1c26acct: string; q1c26s?: PayStatus
+  q2c26: string; q2c26acct: string; q2c26s?: PayStatus
+  q3c26: string; q3c26acct: string; q3c26s?: PayStatus
+  q4c26: string; q4c26acct: string; q4c26s?: PayStatus
+  // kept for DB backward-compat on old records
+  q1f26a?: boolean; q1f26v?: boolean
+  q2f26a?: boolean; q2f26v?: boolean
+  q3f26a?: boolean; q3f26v?: boolean
+  q4f26a?: boolean; q4f26v?: boolean
+  q1c26a?: boolean; q1c26v?: boolean
+  q2c26a?: boolean; q2c26v?: boolean
+  q3c26a?: boolean; q3c26v?: boolean
+  q4c26a?: boolean; q4c26v?: boolean
 }
 
 // ── Entity Payments ───────────────────────────────────────────

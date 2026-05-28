@@ -387,11 +387,11 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                 <div
                   key={k}
                   className={cn(
-                    'flex items-center gap-3 px-5 py-3 transition-all duration-150',
+                    'flex items-center gap-3 px-5 py-3 transition-all duration-150 border-l-[3px]',
                     i < active.length - 1 && 'border-b border-border',
                     clickable
-                      ? 'cursor-pointer group hover:bg-white hover:-translate-y-0.5 hover:shadow-md hover:rounded-lg hover:z-10 hover:relative'
-                      : 'hover:bg-surface/60',
+                      ? 'cursor-pointer group border-l-transparent hover:border-l-accent hover:bg-amber-50/60'
+                      : 'border-l-transparent',
                   )}
                   onClick={clickable ? () => setOpenPanel(k) : undefined}
                 >

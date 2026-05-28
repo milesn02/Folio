@@ -77,7 +77,6 @@ export function calcPeriods(d: SalaryScheduleEntry, year: string): PeriodCalc[] 
 }
 
 export function calcSal(d: SalaryScheduleEntry, year: string): SalCalcResult {
-  const ms = ACTIVE_SETTINGS[year] ?? ACTIVE_SETTINGS['2026']
   const lim = SAL_LIMITS[year] ?? SAL_LIMITS['2026']
   const periods = FREQ_PERIODS[d.freq] ?? 12
   const gross = parseDollar(d.gross)
@@ -126,16 +125,16 @@ export function calcSal(d: SalaryScheduleEntry, year: string): SalCalcResult {
     fedWHPer,
     fedWHTot,
     ssTax,
-    ssTaxPer: grossPer > 0 ? Math.round(grossPer * ms.ficaRate * 100) / 100 : 0,
+    ssTaxPer: Math.round((ssTax / periods) * 100) / 100,
     medTax,
-    medTaxPer: grossPer > 0 ? Math.round(grossPer * ms.medicareRate * 100) / 100 : 0,
+    medTaxPer: Math.round((medTax / periods) * 100) / 100,
     ficaTot,
     stateWHPer,
     stateWHTot,
     localWHPer,
     localWHTot,
     sdiTax,
-    sdiTaxPer: grossPer > 0 ? Math.round(grossPer * ms.sdiRate * 100) / 100 : 0,
+    sdiTaxPer: Math.round((sdiTax / periods) * 100) / 100,
     net,
     netPer: net / periods,
     deferLim,

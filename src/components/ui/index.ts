@@ -1,4 +1,5 @@
 export { Button, buttonVariants } from './Button'
+export { CommandPalette } from './CommandPalette'
 export { Card, CardHeader, CardTitle, CardBody } from './Card'
 export { Field, inputCls, DollarInput } from './Field'
 export { Badge } from './Badge'

@@ -81,6 +81,18 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
     exportEngagementReport(client, firm?.name ?? '')
   }, [client, firm?.name])
 
+  // Listen for command-palette download events
+  useEffect(() => {
+    const onSummary = () => handleDownloadSummary()
+    const onReport  = () => handleDownloadReport()
+    window.addEventListener('folio:download-summary', onSummary)
+    window.addEventListener('folio:download-report',  onReport)
+    return () => {
+      window.removeEventListener('folio:download-summary', onSummary)
+      window.removeEventListener('folio:download-report',  onReport)
+    }
+  }, [handleDownloadSummary, handleDownloadReport])
+
   if (!client || !dbClient) return null
 
   function renderTab() {

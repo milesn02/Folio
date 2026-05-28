@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useClients } from '@/hooks/useClients'
@@ -7,6 +7,7 @@ import { AppShell } from '@/components/layout/AppShell'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { NotesDrawer } from '@/components/layout/NotesDrawer'
 import { DeadlineDashboard } from '@/components/layout/DeadlineDashboard'
+import { CommandPalette } from '@/components/ui/CommandPalette'
 import ClientProfile from './ClientProfile'
 import { supabase } from '@/lib/supabase'
 import { mkClientData } from '@/lib/factory'
@@ -17,6 +18,7 @@ export default function Dashboard() {
   const advisors = useClientStore(selectAdvisors)
   useClients(firm?.id)
   const { activeKey } = useClientStore()
+  const [cmdOpen, setCmdOpen] = useState(false)
 
   // Auto-filter to the logged-in user if they appear as an advisor on any client
   useEffect(() => {
@@ -26,6 +28,27 @@ export default function Dashboard() {
       setAdvisorFilter(profile.display_name)
     }
   }, [profile?.display_name, advisors.length])
+
+  // Cmd+K / Ctrl+K opens command palette
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setCmdOpen(v => !v)
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [])
+
+  const handleDownloadSummary = useCallback(() => {
+    // ClientProfile handles this — emit a custom event it can catch
+    window.dispatchEvent(new CustomEvent('folio:download-summary'))
+  }, [])
+
+  const handleDownloadReport = useCallback(() => {
+    window.dispatchEvent(new CustomEvent('folio:download-report'))
+  }, [])
 
   if (loading) return null
   if (!user) return <Navigate to="/login" replace />
@@ -64,6 +87,13 @@ export default function Dashboard() {
         firmId={firm?.id ?? ''}
         user={user}
         displayName={profile?.display_name || user.email?.split('@')[0] || 'You'}
+      />
+      <CommandPalette
+        open={cmdOpen}
+        onClose={() => setCmdOpen(false)}
+        onNewClient={handleNewClient}
+        onDownloadSummary={handleDownloadSummary}
+        onDownloadReport={handleDownloadReport}
       />
     </AppShell>
   )

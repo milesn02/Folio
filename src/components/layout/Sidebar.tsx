@@ -1,7 +1,7 @@
 import { Search, SlidersHorizontal, ChevronDown, Plus, ChevronLeft, ChevronRight, Settings } from 'lucide-react'
 import { PortfolioSummary } from './PortfolioSummary'
 import { useNavigate } from 'react-router-dom'
-import { cn } from '@/lib/utils'
+import { cn, relativeTime, quarterDate } from '@/lib/utils'
 import { Avatar } from '@/components/ui'
 import {
   useClientStore,
@@ -9,6 +9,62 @@ import {
   selectAdvisors,
 } from '@/store/clientStore'
 import { useUiStore } from '@/store/uiStore'
+import type { DbClient } from '@/lib/supabase'
+import { CUR_YEAR } from '@/lib/constants'
+import { parseDollar } from '@/lib/utils'
+
+type ClientStatus = 'overdue' | 'upcoming' | 'ok' | 'none'
+
+function getClientStatus(c: DbClient): ClientStatus {
+  const year = parseInt(CUR_YEAR)
+  const pay = c.data.payByYear?.[CUR_YEAR]
+  if (!pay) return 'none'
+  const now = new Date()
+  let hasOverdue = false
+  let hasUpcoming = false
+  for (const q of [1, 2, 3, 4] as const) {
+    const amtKey = `q${q}f26` as keyof typeof pay
+    const verKey = `q${q}f26v` as keyof typeof pay
+    const amt = parseDollar(pay[amtKey] as string)
+    if (!amt) continue
+    if (pay[verKey]) continue // already verified
+    const due = quarterDate(year, q)
+    const diff = (due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+    if (diff < 0) hasOverdue = true
+    else if (diff <= 14) hasUpcoming = true
+  }
+  if (hasOverdue) return 'overdue'
+  if (hasUpcoming) return 'upcoming'
+  return 'ok'
+}
+
+function StatusDot({ status }: { status: ClientStatus }) {
+  if (status === 'none') return null
+  return (
+    <span className={cn(
+      'w-2 h-2 rounded-full flex-shrink-0',
+      status === 'overdue'  && 'bg-danger',
+      status === 'upcoming' && 'bg-amber-400',
+      status === 'ok'       && 'bg-success',
+    )} title={
+      status === 'overdue'  ? 'Payment overdue' :
+      status === 'upcoming' ? 'Payment due soon' : 'All payments on track'
+    } />
+  )
+}
+
+function HighlightText({ text, query }: { text: string; query: string }) {
+  if (!query.trim()) return <>{text}</>
+  const idx = text.toLowerCase().indexOf(query.toLowerCase())
+  if (idx === -1) return <>{text}</>
+  return (
+    <>
+      {text.slice(0, idx)}
+      <span className="font-bold text-white">{text.slice(idx, idx + query.length)}</span>
+      {text.slice(idx + query.length)}
+    </>
+  )
+}
 
 interface SidebarProps {
   onNewClient: () => void
@@ -48,7 +104,7 @@ export function Sidebar({ onNewClient }: SidebarProps) {
             <span className="font-serif text-2xl text-white tracking-tight">Folio</span>
             <div className="w-1.5 h-1.5 rounded-full bg-accent mb-0.5 flex-shrink-0" />
           </div>
-          <p className="text-[10px] text-white/35 uppercase tracking-[.08em] font-medium">
+          <p className="text-[11px] text-white/35 uppercase tracking-[.08em] font-medium">
             Tax Advisory Platform
           </p>
         </button>
@@ -61,11 +117,14 @@ export function Sidebar({ onNewClient }: SidebarProps) {
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Search clients..."
             className={cn(
-              'w-full pl-8 pr-3 py-2 rounded-lg text-[12.5px]',
+              'w-full pl-8 pr-14 py-2 rounded-lg text-[12.5px]',
               'bg-white border border-white/20 text-navy placeholder:text-text-lt',
               'outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-all',
             )}
           />
+          <kbd className="absolute right-7 top-1/2 -translate-y-1/2 text-[9px] font-mono text-text-lt bg-surface border border-border rounded px-1 pointer-events-none">
+            ⌘K
+          </kbd>
         </div>
 
         {/* Advisor filter */}
@@ -93,8 +152,8 @@ export function Sidebar({ onNewClient }: SidebarProps) {
 
         {/* Clients header */}
         <div className="px-4 pt-2 pb-1.5 flex items-center justify-between">
-          <p className="text-[10px] font-semibold text-white/30 uppercase tracking-[.1em]">Clients</p>
-          <p className="text-[10px] font-semibold text-white/25 tabular-nums">
+          <p className="text-[11px] font-semibold text-white/30 uppercase tracking-[.1em]">Clients</p>
+          <p className="text-[11px] font-semibold text-white/25 tabular-nums">
             {(searchQuery || advisorFilter) && filtered.length !== clients.length
               ? `${filtered.length} of ${clients.length}`
               : clients.length}
@@ -103,32 +162,41 @@ export function Sidebar({ onNewClient }: SidebarProps) {
 
         {/* Client list */}
         <div className="flex-1 overflow-y-auto px-2 scrollbar-thin scrollbar-thumb-white/10">
-          {filtered.map(c => (
-            <div
-              key={c.client_key}
-              className={cn(
-                'group flex items-center gap-2.5 w-full px-3 py-2.5 rounded-lg mb-0.5',
-                'border-l-[3px] transition-all duration-100',
-                activeKey === c.client_key
-                  ? 'bg-accent/12 border-l-accent'
-                  : 'border-l-transparent hover:bg-white/7',
-              )}
-            >
-              <button className="flex items-center gap-2.5 flex-1 min-w-0 text-left" onClick={() => setActiveKey(c.client_key)}>
-                <Avatar name={c.data.name || '?'} size="sm" />
-                <div className="min-w-0">
-                  <p className="text-[13px] font-semibold text-white truncate leading-tight">
-                    {c.data.name || 'New Client'}
-                  </p>
-                  {c.data.entities?.[0]?.name && (
+          {filtered.map(c => {
+            const status = getClientStatus(c)
+            const updatedAt = c.updated_at
+            return (
+              <div
+                key={c.client_key}
+                className={cn(
+                  'group flex items-center gap-2.5 w-full px-3 py-2.5 rounded-lg mb-0.5',
+                  'border-l-[3px] transition-all duration-100',
+                  activeKey === c.client_key
+                    ? 'bg-accent/12 border-l-accent'
+                    : 'border-l-transparent hover:bg-white/7',
+                )}
+              >
+                <button className="flex items-center gap-2.5 flex-1 min-w-0 text-left" onClick={() => setActiveKey(c.client_key)}>
+                  <Avatar name={c.data.name || '?'} size="sm" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-[13px] font-semibold text-white truncate leading-tight">
+                        <HighlightText text={c.data.name || 'New Client'} query={searchQuery} />
+                      </p>
+                      <StatusDot status={status} />
+                    </div>
                     <p className="text-[11px] text-white/40 truncate leading-tight mt-0.5">
-                      {c.data.entities[0].name}
+                      {c.data.entities?.[0]?.name
+                        ? <HighlightText text={c.data.entities[0].name} query={searchQuery} />
+                        : updatedAt
+                        ? <span className="text-white/25">Updated {relativeTime(updatedAt)}</span>
+                        : null}
                     </p>
-                  )}
-                </div>
-              </button>
-            </div>
-          ))}
+                  </div>
+                </button>
+              </div>
+            )
+          })}
         </div>
 
         {/* Bottom actions */}

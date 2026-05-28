@@ -72,7 +72,7 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
 
       {/* KPI row */}
       <div className="grid grid-cols-4 gap-2.5">
-        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} mono />
+        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} mono onClick={() => onChange({ ...c })} />
         <KpiCard
           label="Strategies Active"
           value={String(stratCount)}
@@ -413,7 +413,10 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                   {total > 0 && amount != null && amount > 0 && (
                     <>
                       <div className="w-24 h-1.5 rounded-full bg-border overflow-hidden">
-                        <div className="h-full rounded-full bg-accent" style={{ width: `${Math.round((amount / total) * 100)}%` }} />
+                        <div
+                          className="h-full rounded-full bg-accent transition-all duration-500"
+                          style={{ width: `${Math.round((amount / total) * 100)}%` }}
+                        />
                       </div>
                       <span className="text-[11px] font-semibold text-text-lt w-8 text-right">
                         {Math.round((amount / total) * 100)}%
@@ -456,17 +459,25 @@ function HeroTag({ children }: { children: React.ReactNode }) {
 }
 
 function KpiCard({
-  label, value, sub, mono, valueClass,
+  label, value, sub, mono, valueClass, onClick,
 }: {
-  label: string; value: string; sub?: string; mono?: boolean; valueClass?: string
+  label: string; value: string; sub?: string; mono?: boolean; valueClass?: string; onClick?: () => void
 }) {
+  const Tag = onClick ? 'button' : 'div'
   return (
-    <div className="bg-white border border-border rounded-[10px] shadow px-4 py-3.5 flex flex-col gap-1">
-      <span className="text-[10px] font-bold uppercase tracking-[.07em] text-text-lt">{label}</span>
+    <Tag
+      onClick={onClick}
+      className={cn(
+        'bg-white border border-border rounded-[10px] shadow px-4 py-3.5 flex flex-col gap-1 text-left',
+        'transition-all duration-150',
+        onClick && 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:translate-y-0',
+      )}
+    >
+      <span className="text-[11px] font-bold uppercase tracking-[.07em] text-text-lt">{label}</span>
       <span className={valueClass ?? (mono ? 'font-serif text-[22px] text-navy tracking-tight leading-tight' : 'font-serif text-[22px] text-navy tracking-tight leading-tight')}>
         {value}
       </span>
       {sub && <span className="text-[11px] text-text-lt mt-0.5">{sub}</span>}
-    </div>
+    </Tag>
   )
 }

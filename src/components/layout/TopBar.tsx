@@ -84,20 +84,20 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
               </span>
             </div>
           )}
-          <Button variant="ghost" size="sm" onClick={openNotes} className="gap-1.5">
+          <Button variant="ghost" size="sm" onClick={openNotes} className="gap-1.5" title="View client notes">
             <StickyNote className="w-3.5 h-3.5" />
             Notes
           </Button>
-          <Button variant="ghost" size="sm" onClick={onDownloadReport} className="gap-1.5">
+          <Button variant="ghost" size="sm" onClick={onDownloadReport} className="gap-1.5" title="Download annual engagement report PDF">
             <BookOpen className="w-3.5 h-3.5" />
             Report
           </Button>
-          <Button variant="ghost" size="sm" onClick={onDownloadSummary} className="gap-1.5">
+          <Button variant="ghost" size="sm" onClick={onDownloadSummary} className="gap-1.5" title="Download one-page client summary PDF">
             <FileDown className="w-3.5 h-3.5" />
             Summary
           </Button>
           <div className="relative" ref={menuRef}>
-            <Button variant="ghost" size="sm" onClick={() => setMenuOpen(o => !o)} className="px-2">
+            <Button variant="ghost" size="sm" onClick={() => setMenuOpen(o => !o)} className="px-2" title="More options">
               <MoreHorizontal className="w-4 h-4" />
             </Button>
             {menuOpen && (

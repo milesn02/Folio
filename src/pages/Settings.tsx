@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase'
 import { useUiStore } from '@/store/uiStore'
 import { Card, CardHeader, CardTitle, CardBody, Field, Button, Avatar } from '@/components/ui'
 import { inputCls } from '@/components/ui/Field'
-import { AVATAR_COLORS } from '@/lib/constants'
+import { AVATAR_COLORS, MASTER_SETTINGS, CUR_YEAR } from '@/lib/constants'
 
 export default function Settings() {
   const { user, profile, firm, loading } = useAuth()
@@ -164,6 +164,39 @@ export default function Settings() {
             </CardBody>
           </Card>
         )}
+
+        {/* Master Tax Settings — read-only */}
+        {(() => {
+          const ms = MASTER_SETTINGS[CUR_YEAR] ?? MASTER_SETTINGS['2026']
+          const rows: [string, string][] = [
+            ['401(k) deferral limit', `$${ms.deferral.toLocaleString()}`],
+            ['Catch-up age 50+', `$${ms.catchup50.toLocaleString()}`],
+            ['Catch-up age 60–63', `$${ms.catchup6063.toLocaleString()}`],
+            ['SS / FICA rate', `${(ms.ficaRate * 100).toFixed(1)}%`],
+            ['SS wage base', `$${ms.ficaWageLimit.toLocaleString()}`],
+            ['Medicare rate', `${(ms.medicareRate * 100).toFixed(2)}%`],
+            ['Medicare addl. rate (>$200k)', `${(ms.medicareAdditionalRate * 100).toFixed(1)}%`],
+            ['CA SDI rate', `${(ms.sdiRate * 100).toFixed(1)}%`],
+          ]
+          return (
+            <Card>
+              <CardHeader><CardTitle>Tax Constants — {CUR_YEAR}</CardTitle></CardHeader>
+              <CardBody className="p-0">
+                <table className="w-full text-[13px]">
+                  <tbody>
+                    {rows.map(([label, value], i) => (
+                      <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-surface/50'}>
+                        <td className="px-4 py-2.5 text-text-lt">{label}</td>
+                        <td className="px-4 py-2.5 text-right font-semibold text-navy font-serif">{value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="px-4 py-3 text-[11px] text-text-lt border-t border-border">These values are set by the system administrator and apply to all salary schedule calculations.</p>
+              </CardBody>
+            </Card>
+          )
+        })()}
 
         {/* Account */}
         <Card>

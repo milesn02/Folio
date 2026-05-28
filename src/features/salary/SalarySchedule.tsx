@@ -335,23 +335,18 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.from({ length: calc.periods }, (_, i) => {
-                    const isSSOver = calc.ssStopMonth !== null && i >= calc.ssStopMonth
-                    const ssPer = isSSOver ? 0 : calc.ssTaxPer
-                    const netPer = calc.grossPer - calc.fedWHPer - ssPer - calc.medTaxPer - calc.stateWHPer - calc.sdiTaxPer - (calc.tradDeferPer || 0) - (calc.rothDeferPer || 0)
-                    return (
-                      <tr key={i} className={cn('border-t border-border', i % 2 === 0 ? 'bg-white' : 'bg-surface/50')}>
-                        <td className="px-3 py-2 font-medium text-text">{i + 1}</td>
-                        <td className="px-3 py-2 text-right font-serif text-navy">{fmt(calc.grossPer)}</td>
-                        <td className="px-3 py-2 text-right font-serif text-danger">({fmt(calc.fedWHPer)})</td>
-                        <td className="px-3 py-2 text-right font-serif text-danger">({fmt(ssPer)})</td>
-                        <td className="px-3 py-2 text-right font-serif text-danger">({fmt(calc.medTaxPer)})</td>
-                        {calc.stateWHTot > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(calc.stateWHPer)})</td>}
-                        {calc.sdiTax > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(calc.sdiTaxPer)})</td>}
-                        <td className="px-3 py-2 text-right font-serif font-semibold text-navy">{fmt(netPer)}</td>
-                      </tr>
-                    )
-                  })}
+                  {calc.periodCalcs.map((p, i) => (
+                    <tr key={i} className={cn('border-t border-border', i % 2 === 0 ? 'bg-white' : 'bg-surface/50')}>
+                      <td className="px-3 py-2 font-medium text-text">{p.period}</td>
+                      <td className="px-3 py-2 text-right font-serif text-navy">{fmt(p.gross)}</td>
+                      <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.fedWH)})</td>
+                      <td className="px-3 py-2 text-right font-serif text-danger">{p.ss > 0 ? `(${fmt(p.ss)})` : '—'}</td>
+                      <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.medicare)})</td>
+                      {calc.stateWHTot > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.stateWH)})</td>}
+                      {calc.sdiTax > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.sdi)})</td>}
+                      <td className="px-3 py-2 text-right font-serif font-semibold text-navy">{fmt(p.net)}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

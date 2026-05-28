@@ -78,11 +78,57 @@ export const DISPLAY_YEARS: string[] = Array.from(
 
 export const CUR_YEAR = String(_thisYear)
 
-// ── Salary limits ─────────────────────────────────────────────
+// ── Master tax settings (per year — admin only, not user editable) ────
+export interface MasterSettings {
+  // 401k
+  deferral: number
+  catchup50: number
+  catchup6063: number
+  // FICA / Social Security
+  ficaRate: number
+  ficaWageLimit: number
+  // Medicare
+  medicareRate: number
+  medicareAdditionalRate: number
+  medicareThreshold: number
+  // CA SDI
+  sdiRate: number
+  sdiWageLimit: number
+}
+
+export const MASTER_SETTINGS: Record<string, MasterSettings> = {
+  '2023': {
+    deferral: 22500, catchup50: 7500, catchup6063: 7500,
+    ficaRate: 0.062, ficaWageLimit: 160200,
+    medicareRate: 0.0145, medicareAdditionalRate: 0.009, medicareThreshold: 200000,
+    sdiRate: 0.009, sdiWageLimit: 153164,
+  },
+  '2024': {
+    deferral: 23000, catchup50: 7500, catchup6063: 7500,
+    ficaRate: 0.062, ficaWageLimit: 168600,
+    medicareRate: 0.0145, medicareAdditionalRate: 0.009, medicareThreshold: 200000,
+    sdiRate: 0.011, sdiWageLimit: 9999999,
+  },
+  '2025': {
+    deferral: 23500, catchup50: 7500, catchup6063: 11250,
+    ficaRate: 0.062, ficaWageLimit: 176100,
+    medicareRate: 0.0145, medicareAdditionalRate: 0.009, medicareThreshold: 200000,
+    sdiRate: 0.012, sdiWageLimit: 9999999,
+  },
+  '2026': {
+    deferral: 23500, catchup50: 7500, catchup6063: 11250,
+    ficaRate: 0.062, ficaWageLimit: 184500,
+    medicareRate: 0.0145, medicareAdditionalRate: 0.009, medicareThreshold: 200000,
+    sdiRate: 0.013, sdiWageLimit: 9999999,
+  },
+}
+
+// Legacy alias kept for any remaining references
 export const SAL_LIMITS: Record<string, { deferral: number; catchup: number; catchupAlt: number; ssWage: number; sdiRate: number }> = {
-  '2024': { deferral: 23000, catchup: 7500, catchupAlt: 7500,  ssWage: 168600, sdiRate: 0.011 },
-  '2025': { deferral: 23500, catchup: 7500, catchupAlt: 11250, ssWage: 176100, sdiRate: 0.012 },
-  '2026': { deferral: 23500, catchup: 7500, catchupAlt: 11250, ssWage: 176100, sdiRate: 0.012 },
+  '2023': { deferral: 22500, catchup: 7500,  catchupAlt: 7500,  ssWage: 160200, sdiRate: 0.009 },
+  '2024': { deferral: 23000, catchup: 7500,  catchupAlt: 7500,  ssWage: 168600, sdiRate: 0.011 },
+  '2025': { deferral: 23500, catchup: 7500,  catchupAlt: 11250, ssWage: 176100, sdiRate: 0.012 },
+  '2026': { deferral: 23500, catchup: 7500,  catchupAlt: 11250, ssWage: 184500, sdiRate: 0.013 },
 }
 
 export const FREQ_PERIODS: Record<string, number> = {

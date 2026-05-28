@@ -264,6 +264,21 @@ export interface ActivityEntry {
   actor?: Pick<Profile, 'display_name' | 'avatar_color'>
 }
 
+// ── Per-period payroll calc ───────────────────────────────────
+export interface PeriodCalc {
+  period: number
+  gross: number
+  tradDefer: number
+  rothDefer: number
+  fedWH: number
+  ss: number
+  medicare: number
+  stateWH: number
+  localWH: number
+  sdi: number
+  net: number
+}
+
 // ── Salary calculation output ─────────────────────────────────
 export interface SalCalcResult {
   periods: number
@@ -294,4 +309,5 @@ export interface SalCalcResult {
   deferRaw: number
   overLimit: boolean
   ssStopMonth: number | null
+  periodCalcs: PeriodCalc[]
 }

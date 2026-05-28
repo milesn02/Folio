@@ -326,6 +326,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                   <tr className="bg-navy">
                     <th className="text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Period</th>
                     <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Gross</th>
+                    {(calc.tradDefer > 0 || calc.rothDefer > 0) && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">401(k)</th>}
                     <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Fed WH</th>
                     <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">SS</th>
                     <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Medicare</th>
@@ -339,6 +340,9 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                     <tr key={i} className={cn('border-t border-border', i % 2 === 0 ? 'bg-white' : 'bg-surface/50')}>
                       <td className="px-3 py-2 font-medium text-text">{p.period}</td>
                       <td className="px-3 py-2 text-right font-serif text-navy">{fmt(p.gross, 2)}</td>
+                      {(calc.tradDefer > 0 || calc.rothDefer > 0) && (
+                        <td className="px-3 py-2 text-right font-serif text-danger">({fmt((p.tradDefer + p.rothDefer), 2)})</td>
+                      )}
                       <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.fedWH, 2)})</td>
                       <td className="px-3 py-2 text-right font-serif text-danger">{p.ss > 0 ? `(${fmt(p.ss, 2)})` : '—'}</td>
                       <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.medicare, 2)})</td>

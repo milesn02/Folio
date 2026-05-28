@@ -35,6 +35,7 @@ export interface DbFirm {
   slug: string
   plan: string
   created_at: string
+  tax_settings?: Record<string, Record<string, number>>
 }
 
 export interface DbNote {

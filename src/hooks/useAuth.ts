@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import type { DbProfile, DbFirm } from '@/lib/supabase'
+import { setActiveTaxSettings } from '@/lib/constants'
 
 export interface AuthState {
   user: User | null
@@ -54,6 +55,8 @@ export function useAuth(): AuthState {
         .single()
       firm = data
     }
+
+    if (firm?.tax_settings) setActiveTaxSettings(firm.tax_settings)
 
     setState({
       user: session.user,

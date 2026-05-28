@@ -123,6 +123,17 @@ export const MASTER_SETTINGS: Record<string, MasterSettings> = {
   },
 }
 
+// Mutable active settings — overridden at runtime from firm.tax_settings
+export let ACTIVE_SETTINGS: Record<string, MasterSettings> = { ...MASTER_SETTINGS }
+
+export function setActiveTaxSettings(overrides: Record<string, Record<string, number>>) {
+  const merged: Record<string, MasterSettings> = { ...MASTER_SETTINGS }
+  for (const [year, vals] of Object.entries(overrides)) {
+    merged[year] = { ...(MASTER_SETTINGS[year] ?? MASTER_SETTINGS['2026']), ...vals } as MasterSettings
+  }
+  ACTIVE_SETTINGS = merged
+}
+
 // Legacy alias kept for any remaining references
 export const SAL_LIMITS: Record<string, { deferral: number; catchup: number; catchupAlt: number; ssWage: number; sdiRate: number }> = {
   '2023': { deferral: 22500, catchup: 7500,  catchupAlt: 7500,  ssWage: 160200, sdiRate: 0.009 },

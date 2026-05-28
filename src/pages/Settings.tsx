@@ -6,7 +6,9 @@ import { supabase } from '@/lib/supabase'
 import { useUiStore } from '@/store/uiStore'
 import { Card, CardHeader, CardTitle, CardBody, Field, Button, Avatar } from '@/components/ui'
 import { inputCls } from '@/components/ui/Field'
-import { AVATAR_COLORS, MASTER_SETTINGS, CUR_YEAR } from '@/lib/constants'
+import { AVATAR_COLORS, MASTER_SETTINGS, CUR_YEAR, DISPLAY_YEARS } from '@/lib/constants'
+import type { MasterSettings } from '@/lib/constants'
+import { setActiveTaxSettings } from '@/lib/constants'
 
 export default function Settings() {
   const { user, profile, firm, loading } = useAuth()
@@ -19,6 +21,43 @@ export default function Settings() {
   const [saving, setSaving] = useState(false)
   const [inviteLink, setInviteLink] = useState('')
   const [copied, setCopied] = useState(false)
+
+  const [taxYear, setTaxYear] = useState(CUR_YEAR)
+  const [taxEdits, setTaxEdits] = useState<Record<string, Record<string, string>>>({})
+  const [taxSaving, setTaxSaving] = useState(false)
+
+  function getTaxVal(key: keyof MasterSettings): string {
+    const override = taxEdits[taxYear]?.[key]
+    if (override !== undefined) return override
+    const stored = (firm?.tax_settings as Record<string, Record<string, number>> | undefined)?.[taxYear]?.[key as string]
+    if (stored !== undefined) return String(stored)
+    return String(MASTER_SETTINGS[taxYear]?.[key] ?? MASTER_SETTINGS['2026'][key])
+  }
+
+  function setTaxVal(key: keyof MasterSettings, val: string) {
+    setTaxEdits(prev => ({
+      ...prev,
+      [taxYear]: { ...(prev[taxYear] ?? {}), [key]: val },
+    }))
+  }
+
+  async function saveTaxSettings() {
+    if (!firm) return
+    setTaxSaving(true)
+    const existing = (firm.tax_settings ?? {}) as Record<string, Record<string, number>>
+    const yearEdits = taxEdits[taxYear] ?? {}
+    const merged: Record<string, number> = {
+      ...(existing[taxYear] ?? {}),
+      ...Object.fromEntries(Object.entries(yearEdits).map(([k, v]) => [k, parseFloat(v)])),
+    }
+    const updated = { ...existing, [taxYear]: merged }
+    const { error } = await supabase.from('firms').update({ tax_settings: updated }).eq('id', firm.id)
+    setTaxSaving(false)
+    if (error) { showToast('Failed to save tax settings', 'error'); return }
+    setActiveTaxSettings(updated)
+    setTaxEdits(prev => ({ ...prev, [taxYear]: {} }))
+    showToast('Tax settings saved')
+  }
 
   const generateInvite = useCallback(async () => {
     if (!firm || !user) return
@@ -165,38 +204,56 @@ export default function Settings() {
           </Card>
         )}
 
-        {/* Master Tax Settings — read-only */}
-        {(() => {
-          const ms = MASTER_SETTINGS[CUR_YEAR] ?? MASTER_SETTINGS['2026']
-          const rows: [string, string][] = [
-            ['401(k) deferral limit', `$${ms.deferral.toLocaleString()}`],
-            ['Catch-up age 50+', `$${ms.catchup50.toLocaleString()}`],
-            ['Catch-up age 60–63', `$${ms.catchup6063.toLocaleString()}`],
-            ['SS / FICA rate', `${(ms.ficaRate * 100).toFixed(1)}%`],
-            ['SS wage base', `$${ms.ficaWageLimit.toLocaleString()}`],
-            ['Medicare rate', `${(ms.medicareRate * 100).toFixed(2)}%`],
-            ['Medicare addl. rate (>$200k)', `${(ms.medicareAdditionalRate * 100).toFixed(1)}%`],
-            ['CA SDI rate', `${(ms.sdiRate * 100).toFixed(1)}%`],
-          ]
-          return (
-            <Card>
-              <CardHeader><CardTitle>Tax Constants — {CUR_YEAR}</CardTitle></CardHeader>
-              <CardBody className="p-0">
-                <table className="w-full text-[13px]">
-                  <tbody>
-                    {rows.map(([label, value], i) => (
-                      <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-surface/50'}>
-                        <td className="px-4 py-2.5 text-text-lt">{label}</td>
-                        <td className="px-4 py-2.5 text-right font-semibold text-navy font-serif">{value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <p className="px-4 py-3 text-[11px] text-text-lt border-t border-border">These values are set by the system administrator and apply to all salary schedule calculations.</p>
-              </CardBody>
-            </Card>
-          )
-        })()}
+        {/* Tax Constants */}
+        {firm && (profile?.role === 'owner' || profile?.role === 'admin') && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between w-full">
+                <CardTitle>Tax Constants</CardTitle>
+                <div className="flex gap-1">
+                  {DISPLAY_YEARS.map(y => (
+                    <button key={y} onClick={() => setTaxYear(y)}
+                      className={`px-2.5 py-1 rounded text-[11px] font-semibold border transition-colors ${taxYear === y ? 'bg-navy text-white border-navy' : 'bg-white text-text-lt border-border hover:border-navy/30'}`}>
+                      {y}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </CardHeader>
+            <CardBody className="flex flex-col gap-0 p-0">
+              {([
+                ['deferral',               '401(k) deferral limit',          'dollar'],
+                ['catchup50',              'Catch-up age 50+',                'dollar'],
+                ['catchup6063',            'Catch-up age 60–63',              'dollar'],
+                ['ficaRate',               'SS / FICA rate',                  'rate'],
+                ['ficaWageLimit',          'SS wage base',                    'dollar'],
+                ['medicareRate',           'Medicare rate',                   'rate'],
+                ['medicareAdditionalRate', 'Medicare addl. rate (>$200k)',    'rate'],
+                ['medicareThreshold',      'Medicare addl. threshold',        'dollar'],
+                ['sdiRate',                'CA SDI rate',                     'rate'],
+              ] as [keyof MasterSettings, string, 'dollar' | 'rate'][]).map(([key, label, kind], i) => (
+                <div key={key} className={`flex items-center gap-4 px-4 py-2.5 ${i % 2 === 0 ? 'bg-white' : 'bg-surface/50'}`}>
+                  <span className="text-[13px] text-text-lt flex-1">{label}</span>
+                  <div className="flex items-center gap-1.5">
+                    {kind === 'dollar' && <span className="text-[12px] text-text-lt">$</span>}
+                    <input
+                      className="w-24 text-right border border-border rounded px-2 py-1 text-[13px] font-semibold text-navy focus:outline-none focus:ring-1 focus:ring-navy/30"
+                      value={getTaxVal(key)}
+                      onChange={e => setTaxVal(key, e.target.value)}
+                    />
+                    {kind === 'rate' && <span className="text-[12px] text-text-lt">× 1  (e.g. 0.062)</span>}
+                  </div>
+                </div>
+              ))}
+              <div className="px-4 py-3 border-t border-border flex items-center justify-between gap-3">
+                <p className="text-[11px] text-text-lt">Changes apply to all salary schedule calculations for this firm.</p>
+                <Button variant="primary" size="sm" onClick={saveTaxSettings} disabled={taxSaving}>
+                  {taxSaving ? 'Saving…' : 'Save'}
+                </Button>
+              </div>
+            </CardBody>
+          </Card>
+        )}
 
         {/* Account */}
         <Card>

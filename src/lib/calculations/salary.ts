@@ -1,4 +1,4 @@
-import { MASTER_SETTINGS, SAL_LIMITS, FREQ_PERIODS } from '../constants'
+import { ACTIVE_SETTINGS, SAL_LIMITS, FREQ_PERIODS } from '../constants'
 import type { SalaryScheduleEntry, SalCalcResult, PeriodCalc } from '../types'
 import { parseDollar } from '../utils'
 
@@ -23,7 +23,7 @@ function calcMedicare(grossPer: number, ytdPrev: number, baseRate: number, addlR
 }
 
 export function calcPeriods(d: SalaryScheduleEntry, year: string): PeriodCalc[] {
-  const ms = MASTER_SETTINGS[year] ?? MASTER_SETTINGS['2026']
+  const ms = ACTIVE_SETTINGS[year] ?? ACTIVE_SETTINGS['2026']
   const lim = SAL_LIMITS[year] ?? SAL_LIMITS['2026']
   const periods = FREQ_PERIODS[d.freq] ?? 12
   const gross = parseDollar(d.gross)
@@ -77,7 +77,7 @@ export function calcPeriods(d: SalaryScheduleEntry, year: string): PeriodCalc[] 
 }
 
 export function calcSal(d: SalaryScheduleEntry, year: string): SalCalcResult {
-  const ms = MASTER_SETTINGS[year] ?? MASTER_SETTINGS['2026']
+  const ms = ACTIVE_SETTINGS[year] ?? ACTIVE_SETTINGS['2026']
   const lim = SAL_LIMITS[year] ?? SAL_LIMITS['2026']
   const periods = FREQ_PERIODS[d.freq] ?? 12
   const gross = parseDollar(d.gross)

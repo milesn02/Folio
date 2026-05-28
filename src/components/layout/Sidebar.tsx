@@ -42,7 +42,7 @@ export function Sidebar({ onNewClient }: SidebarProps) {
       {/* Body — hidden when collapsed */}
       <div className={cn('flex flex-col flex-1 overflow-hidden transition-opacity duration-150', sidebarCollapsed && 'opacity-0 pointer-events-none')}>
         {/* Logo */}
-        <div className="px-4 pb-4">
+        <button className="px-4 pb-4 text-left hover:opacity-80 transition-opacity" onClick={() => setActiveKey(null)}>
           <div className="flex items-baseline gap-1.5 mb-3">
             <span className="font-serif text-2xl text-white tracking-tight">Folio</span>
             <div className="w-1.5 h-1.5 rounded-full bg-accent mb-0.5 flex-shrink-0" />
@@ -50,7 +50,7 @@ export function Sidebar({ onNewClient }: SidebarProps) {
           <p className="text-[10px] text-white/35 uppercase tracking-[.08em] font-medium">
             Tax Advisory Platform
           </p>
-        </div>
+        </button>
 
         {/* Search */}
         <div className="px-4 mb-2.5 relative">

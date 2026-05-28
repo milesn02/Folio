@@ -3,12 +3,14 @@ import { useClientStore, selectActiveClient } from '@/store/clientStore'
 import { useUiStore } from '@/store/uiStore'
 import { usePersist } from '@/hooks/useClients'
 import { useAuth } from '@/hooks/useAuth'
+import { usePresence } from '@/hooks/usePresence'
 import { supabase } from '@/lib/supabase'
 import { TopBar } from '@/components/layout/TopBar'
 import { Modal } from '@/components/ui/Modal'
 import { Snapshot } from '@/features/snapshot/Snapshot'
 import { TaxSavings } from '@/features/savings/TaxSavings'
 import { exportClientSummary } from '@/lib/pdfExport'
+import { exportEngagementReport } from '@/lib/engagementReport'
 import type { ClientData } from '@/lib/types'
 
 const SalarySchedule     = lazy(() => import('@/features/salary/SalarySchedule').then(m => ({ default: m.SalarySchedule })))
@@ -26,7 +28,8 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
   const { activeTab, updateClientData } = useClientStore()
   const dbClient = useClientStore(selectActiveClient)
   const { showToast } = useUiStore()
-  const { firm } = useAuth()
+  const { firm, user, profile } = useAuth()
+  const presence = usePresence(dbClient?.client_key ?? null, user?.id ?? null, profile?.display_name ?? null)
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [deleteModal, setDeleteModal] = useState(false)
 
@@ -73,6 +76,11 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
     exportClientSummary(client, firm?.name ?? '')
   }, [client, firm?.name])
 
+  const handleDownloadReport = useCallback(() => {
+    if (!client) return
+    exportEngagementReport(client, firm?.name ?? '')
+  }, [client, firm?.name])
+
   if (!client || !dbClient) return null
 
   function renderTab() {
@@ -100,6 +108,8 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
         savedAt={savedAt}
         onDelete={() => setDeleteModal(true)}
         onDownloadSummary={handleDownloadSummary}
+        onDownloadReport={handleDownloadReport}
+        presence={presence}
       />
       <div className="flex-1 overflow-y-auto px-[22px] py-[18px]">
         <Suspense fallback={<TabSkeleton />}>

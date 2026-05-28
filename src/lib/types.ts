@@ -52,6 +52,8 @@ export interface SavingsEntry {
   a: string    // amount
   y: boolean
   n: boolean
+  actual?: string      // S5: actual amount realized
+  actualDate?: string  // S5: date confirmed
 }
 
 export type SavingsMap = Record<SavingsKey, SavingsEntry>

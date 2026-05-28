@@ -1,6 +1,8 @@
 import { useMemo, useState, useRef, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardBody, Field, Modal } from '@/components/ui'
 import { StrategyPanel, hasPanel } from './StrategyPanel'
+import { TaxProjectionCard } from './TaxProjectionCard'
+import { GapAnalysis } from './GapAnalysis'
 import { inputCls } from '@/components/ui/Field'
 import { calcSavings, calcSavingsRows } from '@/lib/calculations'
 import { SKS, STRATEGY_LABELS, FILING_STATUSES, ETYPES, STATES, CUR_YEAR, SAVS_TO_SKS } from '@/lib/constants'
@@ -84,6 +86,15 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
           valueClass="font-sans font-semibold text-[17px] tracking-tight"
         />
       </div>
+
+      {/* Tax projection */}
+      <TaxProjectionCard client={c} />
+
+      {/* Gap analysis */}
+      <GapAnalysis
+        client={c}
+        onActivate={k => onChange({ ...c, strat: { ...c.strat, [k]: { ...c.strat[k], y: true, n: false } } })}
+      />
 
       {/* Strategies */}
       <StrategiesCard client={c} onChange={onChange} />

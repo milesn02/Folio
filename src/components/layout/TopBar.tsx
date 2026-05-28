@@ -1,16 +1,19 @@
 import { useState, useRef, useEffect } from 'react'
-import { FileDown, StickyNote, MoreHorizontal, Trash2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { FileDown, StickyNote, MoreHorizontal, Trash2, BookOpen } from 'lucide-react'
+import { cn, initials } from '@/lib/utils'
 import { Button } from '@/components/ui'
 import { TABS, TAB_LABELS, type TabId } from '@/lib/constants'
 import { useClientStore, selectActiveClient } from '@/store/clientStore'
 import { useUiStore } from '@/store/uiStore'
+import type { PresenceUser } from '@/hooks/usePresence'
 
 interface TopBarProps {
   onDelete: () => void
   onDownloadSummary: () => void
+  onDownloadReport: () => void
   savedAt: Date | null
   clientName: string
+  presence?: PresenceUser[]
 }
 
 function savedLabel(savedAt: Date | null): string {
@@ -21,7 +24,7 @@ function savedLabel(savedAt: Date | null): string {
   return `Saved ${Math.floor(mins / 60)}h ago`
 }
 
-export function TopBar({ onDelete, onDownloadSummary, savedAt, clientName }: TopBarProps) {
+export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt, clientName, presence = [] }: TopBarProps) {
   const { activeTab, setActiveTab } = useClientStore()
   const { openNotes } = useUiStore()
   const activeClient = useClientStore(selectActiveClient)
@@ -63,13 +66,35 @@ export function TopBar({ onDelete, onDownloadSummary, savedAt, clientName }: Top
           )}
         </div>
         <div className="flex items-center gap-2">
+          {/* Presence avatars */}
+          {presence.length > 0 && (
+            <div className="flex items-center gap-1 mr-1">
+              {presence.map(u => (
+                <div
+                  key={u.userId}
+                  title={`${u.displayName} is viewing`}
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white"
+                  style={{ backgroundColor: u.color }}
+                >
+                  {initials(u.displayName)}
+                </div>
+              ))}
+              <span className="text-[11px] text-text-lt ml-0.5">
+                {presence.length === 1 ? `${presence[0].displayName} is here` : `${presence.length} others here`}
+              </span>
+            </div>
+          )}
           <Button variant="ghost" size="sm" onClick={openNotes} className="gap-1.5">
             <StickyNote className="w-3.5 h-3.5" />
             Notes
           </Button>
+          <Button variant="ghost" size="sm" onClick={onDownloadReport} className="gap-1.5">
+            <BookOpen className="w-3.5 h-3.5" />
+            Report
+          </Button>
           <Button variant="ghost" size="sm" onClick={onDownloadSummary} className="gap-1.5">
             <FileDown className="w-3.5 h-3.5" />
-            Download Summary
+            Summary
           </Button>
           <div className="relative" ref={menuRef}>
             <Button variant="ghost" size="sm" onClick={() => setMenuOpen(o => !o)} className="px-2">

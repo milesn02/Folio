@@ -72,7 +72,7 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
 
       {/* KPI row */}
       <div className="grid grid-cols-4 gap-2.5">
-        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} mono onClick={() => onChange({ ...c })} />
+        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} mono />
         <KpiCard
           label="Strategies Active"
           value={String(stratCount)}
@@ -386,7 +386,13 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
               return (
                 <div
                   key={k}
-                  className={`flex items-center gap-3 px-5 py-3 ${i < active.length - 1 ? 'border-b border-border' : ''} ${clickable ? 'cursor-pointer hover:bg-surface transition-colors group' : ''}`}
+                  className={cn(
+                    'flex items-center gap-3 px-5 py-3 transition-all duration-150',
+                    i < active.length - 1 && 'border-b border-border',
+                    clickable
+                      ? 'cursor-pointer hover:bg-surface hover:shadow-[inset_3px_0_0_0_theme(colors.accent)] group'
+                      : 'hover:bg-surface/60',
+                  )}
                   onClick={clickable ? () => setOpenPanel(k) : undefined}
                 >
                   <span className="flex-1 text-[13px] font-medium text-text">{STRATEGY_LABELS[k]}</span>
@@ -459,25 +465,18 @@ function HeroTag({ children }: { children: React.ReactNode }) {
 }
 
 function KpiCard({
-  label, value, sub, mono, valueClass, onClick,
+  label, value, sub, mono, valueClass,
 }: {
-  label: string; value: string; sub?: string; mono?: boolean; valueClass?: string; onClick?: () => void
+  label: string; value: string; sub?: string; mono?: boolean; valueClass?: string
 }) {
-  const Tag = onClick ? 'button' : 'div'
   return (
-    <Tag
-      onClick={onClick}
-      className={cn(
-        'bg-white border border-border rounded-[10px] shadow px-4 py-3.5 flex flex-col gap-1 text-left',
-        'transition-all duration-150',
-        onClick && 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:translate-y-0',
-      )}
-    >
+    <div className="bg-white border border-border rounded-[10px] shadow px-4 py-3.5 flex flex-col gap-1">
+
       <span className="text-[11px] font-bold uppercase tracking-[.07em] text-text-lt">{label}</span>
       <span className={valueClass ?? (mono ? 'font-serif text-[22px] text-navy tracking-tight leading-tight' : 'font-serif text-[22px] text-navy tracking-tight leading-tight')}>
         {value}
       </span>
       {sub && <span className="text-[11px] text-text-lt mt-0.5">{sub}</span>}
-    </Tag>
+    </div>
   )
 }

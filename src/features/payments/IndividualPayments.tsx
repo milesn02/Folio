@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardBody, SubTabs, DollarInput } from '@/components/ui'
 import { inputCls } from '@/components/ui/Field'
 import { DISPLAY_YEARS, CUR_YEAR } from '@/lib/constants'
-import { cn } from '@/lib/utils'
+import { cn, quarterDate, formatDate } from '@/lib/utils'
 import { mkPayData } from '@/lib/factory'
 import type { ClientData, PayData } from '@/lib/types'
 
@@ -23,24 +23,6 @@ function getClientState(c: ClientData): string {
   return c.entities?.[0]?.state || 'CA'
 }
 
-// Compute quarterly due date, adjusting for weekends
-function quarterDate(year: number, q: 1 | 2 | 3 | 4): Date {
-  const base: Record<number, Date> = {
-    1: new Date(year, 3, 15),      // Apr 15
-    2: new Date(year, 5, 15),      // Jun 15
-    3: new Date(year, 8, 15),      // Sep 15
-    4: new Date(year + 1, 0, 15),  // Jan 15 next year
-  }
-  const d = new Date(base[q])
-  const dow = d.getDay()
-  if (dow === 6) d.setDate(d.getDate() + 2)  // Sat → Mon
-  if (dow === 0) d.setDate(d.getDate() + 1)  // Sun → Mon
-  return d
-}
-
-function formatDate(d: Date): string {
-  return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`
-}
 
 function DaysBadge({ date }: { date: Date }) {
   const today = new Date(); today.setHours(0, 0, 0, 0)

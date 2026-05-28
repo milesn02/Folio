@@ -41,6 +41,26 @@ export function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
+/** Compute quarterly estimated tax due date, adjusting for weekends */
+export function quarterDate(year: number, q: 1 | 2 | 3 | 4): Date {
+  const base: Record<number, Date> = {
+    1: new Date(year, 3, 15),
+    2: new Date(year, 5, 15),
+    3: new Date(year, 8, 15),
+    4: new Date(year + 1, 0, 15),
+  }
+  const d = new Date(base[q])
+  const dow = d.getDay()
+  if (dow === 6) d.setDate(d.getDate() + 2)
+  if (dow === 0) d.setDate(d.getDate() + 1)
+  return d
+}
+
+/** Format a Date as MM/DD */
+export function formatDate(d: Date): string {
+  return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`
+}
+
 /** Relative time string ("2 hours ago") */
 export function relativeTime(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime()

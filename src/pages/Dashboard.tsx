@@ -1,19 +1,31 @@
+import { useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useClients } from '@/hooks/useClients'
-import { useClientStore } from '@/store/clientStore'
+import { useClientStore, selectAdvisors } from '@/store/clientStore'
 import { AppShell } from '@/components/layout/AppShell'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { NotesDrawer } from '@/components/layout/NotesDrawer'
+import { DeadlineDashboard } from '@/components/layout/DeadlineDashboard'
 import ClientProfile from './ClientProfile'
 import { supabase } from '@/lib/supabase'
 import { mkClientData } from '@/lib/factory'
 
 export default function Dashboard() {
   const { user, firm, profile, loading } = useAuth()
-  const { setActiveKey } = useClientStore()
+  const { setActiveKey, setAdvisorFilter } = useClientStore()
+  const advisors = useClientStore(selectAdvisors)
   useClients(firm?.id)
   const { activeKey } = useClientStore()
+
+  // Auto-filter to the logged-in user if they appear as an advisor on any client
+  useEffect(() => {
+    if (!profile?.display_name) return
+    if (useClientStore.getState().advisorFilter !== '') return
+    if (advisors.includes(profile.display_name)) {
+      setAdvisorFilter(profile.display_name)
+    }
+  }, [profile?.display_name, advisors.length])
 
   if (loading) return null
   if (!user) return <Navigate to="/login" replace />
@@ -41,7 +53,12 @@ export default function Dashboard() {
       {activeKey ? (
         <ClientProfile firmId={firm?.id ?? ''} />
       ) : (
-        <EmptyState />
+        <DeadlineDashboard
+          onSelectClient={key => {
+            setActiveKey(key)
+            useClientStore.getState().setActiveTab('payments')
+          }}
+        />
       )}
       <NotesDrawer
         firmId={firm?.id ?? ''}
@@ -52,18 +69,3 @@ export default function Dashboard() {
   )
 }
 
-function EmptyState() {
-  return (
-    <div className="flex-1 flex items-center justify-center bg-surface">
-      <div className="text-center">
-        <div className="w-14 h-14 rounded-2xl bg-navy/6 flex items-center justify-center mx-auto mb-5">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-navy/40">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-        </div>
-        <p className="text-[15px] font-semibold text-text mb-1.5">No client selected</p>
-        <p className="text-[13px] text-text-lt">Select a client from the sidebar or add a new one</p>
-      </div>
-    </div>
-  )
-}

@@ -6,11 +6,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-/** Format a number as $1,234 */
-export function fmt(v: number | string | undefined | null): string {
+/** Format a number as $1,234 or $1,234.56 with optional decimal places */
+export function fmt(v: number | string | undefined | null, decimals = 0): string {
   const n = parseFloat(String(v ?? '').replace(/[$,]/g, ''))
   if (isNaN(n)) return String(v ?? '')
-  return '$' + Math.round(n).toLocaleString()
+  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: decimals, maximumFractionDigits: decimals })
 }
 
 /** Parse a dollar string to a float */

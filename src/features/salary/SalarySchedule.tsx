@@ -288,17 +288,17 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                 <tr key={i} className="border-t border-border">
                   <td className={cn('px-4 py-2', sub ? 'pl-8 text-text-lt' : 'font-medium text-text')}>{label}</td>
                   <td className={cn('px-4 py-2 text-right font-serif', sub ? 'text-danger' : 'text-navy')}>
-                    {per !== 0 ? (per < 0 ? `(${fmt(-per)})` : fmt(per)) : '—'}
+                    {per !== 0 ? (per < 0 ? `(${fmt(-per, 2)})` : fmt(per, 2)) : '—'}
                   </td>
                   <td className={cn('px-4 py-2 text-right font-serif', sub ? 'text-danger' : 'text-navy')}>
-                    {ann !== 0 ? (ann < 0 ? `(${fmt(-ann)})` : fmt(ann)) : '—'}
+                    {ann !== 0 ? (ann < 0 ? `(${fmt(-ann, 2)})` : fmt(ann, 2)) : '—'}
                   </td>
                 </tr>
               ))}
               <tr className="border-t-2 border-border bg-surface">
                 <td className="px-4 py-3 font-bold text-[14px] text-navy">Net take-home pay</td>
-                <td className="px-4 py-3 text-right font-serif text-[16px] text-navy">{fmt(calc.netPer)}</td>
-                <td className="px-4 py-3 text-right font-serif text-[16px] text-navy">{fmt(calc.net)}</td>
+                <td className="px-4 py-3 text-right font-serif text-[16px] text-navy">{fmt(calc.netPer, 2)}</td>
+                <td className="px-4 py-3 text-right font-serif text-[16px] text-navy">{fmt(calc.net, 2)}</td>
               </tr>
             </tbody>
           </table>
@@ -338,13 +338,13 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                   {calc.periodCalcs.map((p, i) => (
                     <tr key={i} className={cn('border-t border-border', i % 2 === 0 ? 'bg-white' : 'bg-surface/50')}>
                       <td className="px-3 py-2 font-medium text-text">{p.period}</td>
-                      <td className="px-3 py-2 text-right font-serif text-navy">{fmt(p.gross)}</td>
-                      <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.fedWH)})</td>
-                      <td className="px-3 py-2 text-right font-serif text-danger">{p.ss > 0 ? `(${fmt(p.ss)})` : '—'}</td>
-                      <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.medicare)})</td>
-                      {calc.stateWHTot > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.stateWH)})</td>}
-                      {calc.sdiTax > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.sdi)})</td>}
-                      <td className="px-3 py-2 text-right font-serif font-semibold text-navy">{fmt(p.net)}</td>
+                      <td className="px-3 py-2 text-right font-serif text-navy">{fmt(p.gross, 2)}</td>
+                      <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.fedWH, 2)})</td>
+                      <td className="px-3 py-2 text-right font-serif text-danger">{p.ss > 0 ? `(${fmt(p.ss, 2)})` : '—'}</td>
+                      <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.medicare, 2)})</td>
+                      {calc.stateWHTot > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.stateWH, 2)})</td>}
+                      {calc.sdiTax > 0 && <td className="px-3 py-2 text-right font-serif text-danger">({fmt(p.sdi, 2)})</td>}
+                      <td className="px-3 py-2 text-right font-serif font-semibold text-navy">{fmt(p.net, 2)}</td>
                     </tr>
                   ))}
                 </tbody>

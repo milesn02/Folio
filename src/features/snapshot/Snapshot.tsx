@@ -390,7 +390,7 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                     'flex items-center gap-3 px-5 py-3 transition-all duration-150',
                     i < active.length - 1 && 'border-b border-border',
                     clickable
-                      ? 'cursor-pointer hover:bg-surface hover:shadow-[inset_3px_0_0_0_theme(colors.accent)] group'
+                      ? 'cursor-pointer group hover:bg-white hover:-translate-y-0.5 hover:shadow-md hover:rounded-lg hover:z-10 hover:relative'
                       : 'hover:bg-surface/60',
                   )}
                   onClick={clickable ? () => setOpenPanel(k) : undefined}

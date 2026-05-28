@@ -57,22 +57,41 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
     .filter(Boolean).join(' · ')
 
   return (
-    <div className="flex flex-col gap-3.5">
-      {/* Hero */}
-      <div className="bg-navy rounded-[10px] shadow-md px-7 pt-6 pb-5">
-        <h2 className="font-serif text-[26px] text-white tracking-tight leading-tight mb-2.5">
-          {c.name || 'New Client'}
-        </h2>
-        <div className="flex flex-wrap gap-1.5">
-          {entNames.map(n => <HeroTag key={n}>{n}</HeroTag>)}
-          {c.filing && <HeroTag>{c.filing}</HeroTag>}
-          {age !== null && <HeroTag>Age {age}</HeroTag>}
+    <div className="flex flex-col gap-4 animate-enter">
+      {/* Hero — cinematic header */}
+      <div
+        className="relative overflow-hidden rounded-xl shadow-md px-8 pt-7 pb-6"
+        style={{
+          background: 'linear-gradient(135deg, #081c0f 0%, #0a2513 55%, #0f3519 100%)',
+        }}
+      >
+        {/* Subtle radial glow behind the name */}
+        <div
+          className="absolute top-0 right-0 w-80 h-80 opacity-[0.07] pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at top right, #c8a96e, transparent 70%)',
+          }}
+        />
+        {/* Thin accent line at top */}
+        <div className="absolute top-0 left-0 right-0 h-[2px]"
+          style={{ background: 'linear-gradient(90deg, transparent, #c8a96e 40%, transparent)' }}
+        />
+
+        <div className="relative">
+          <h2 className="font-serif text-[28px] text-white tracking-tight leading-tight mb-3">
+            {c.name || 'New Client'}
+          </h2>
+          <div className="flex flex-wrap gap-1.5">
+            {entNames.map(n => <HeroTag key={n}>{n}</HeroTag>)}
+            {c.filing && <HeroTag>{c.filing}</HeroTag>}
+            {age !== null && <HeroTag>Age {age}</HeroTag>}
+          </div>
         </div>
       </div>
 
       {/* KPI row */}
-      <div className="grid grid-cols-4 gap-2.5">
-        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} mono />
+      <div className="grid grid-cols-4 gap-3">
+        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} accent />
         <KpiCard
           label="Strategies Active"
           value={String(stratCount)}
@@ -83,7 +102,7 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
           label="Advisor"
           value={c.adv || '—'}
           sub={c.mgr ? `Mgr: ${c.mgr}` : undefined}
-          valueClass="font-sans font-semibold text-[17px] tracking-tight"
+          valueClass="font-sans font-semibold text-lg tracking-tight"
         />
       </div>
 
@@ -437,9 +456,10 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                 </div>
               )
             })}
-            <div className="flex items-center px-5 py-3 bg-navy rounded-b-[10px]">
-              <span className="flex-1 text-[11px] font-bold uppercase tracking-[.05em] text-white/50">Total Est. Tax Savings</span>
-              <span className="font-serif text-[18px] text-accent tracking-tight">{fmt(total)}</span>
+            <div className="flex items-center px-5 py-4 rounded-b-xl"
+              style={{ background: 'linear-gradient(90deg, #081c0f 0%, #0a2513 100%)' }}>
+              <span className="flex-1 text-xs font-bold uppercase tracking-[.07em] text-white/40">Total Est. Tax Savings</span>
+              <span className="font-serif text-xl text-accent tracking-tight">{fmt(total)}</span>
             </div>
           </>
         )}
@@ -458,25 +478,29 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
 
 function HeroTag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[11px] font-medium text-white/50 bg-white/8 px-2.5 py-1 rounded-full">
+    <span className="text-xs font-medium text-white/55 bg-white/[0.08] border border-white/[0.08] px-2.5 py-[5px] rounded-full tracking-wide">
       {children}
     </span>
   )
 }
 
 function KpiCard({
-  label, value, sub, mono, valueClass,
+  label, value, sub, valueClass, accent,
 }: {
-  label: string; value: string; sub?: string; mono?: boolean; valueClass?: string
+  label: string; value: string; sub?: string; valueClass?: string; accent?: boolean
 }) {
   return (
-    <div className="bg-white border border-border rounded-[10px] shadow px-4 py-3.5 flex flex-col gap-1">
-
-      <span className="text-[11px] font-bold uppercase tracking-[.07em] text-text-lt">{label}</span>
-      <span className={valueClass ?? (mono ? 'font-serif text-[22px] text-navy tracking-tight leading-tight' : 'font-serif text-[22px] text-navy tracking-tight leading-tight')}>
+    <div className={cn(
+      'rounded-xl border px-4 py-4 flex flex-col gap-1 shadow-sm',
+      accent ? 'bg-navy border-navy shadow-md' : 'bg-white border-border/70',
+    )}>
+      <span className={cn('text-xs font-bold uppercase tracking-[.07em]', accent ? 'text-accent/70' : 'text-text-lt')}>
+        {label}
+      </span>
+      <span className={valueClass ?? cn('font-serif text-2xl tracking-tight leading-tight', accent ? 'text-accent' : 'text-navy')}>
         {value}
       </span>
-      {sub && <span className="text-[11px] text-text-lt mt-0.5">{sub}</span>}
+      {sub && <span className={cn('text-xs mt-0.5', accent ? 'text-white/40' : 'text-text-lt')}>{sub}</span>}
     </div>
   )
 }

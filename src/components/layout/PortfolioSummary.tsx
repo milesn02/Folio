@@ -37,11 +37,14 @@ export function PortfolioSummary() {
 
   return (
     <div className="px-3 pb-3">
-      <div className="rounded-[9px] bg-white/5 border border-white/8 px-3 py-2.5">
-        <p className="text-[9px] font-bold uppercase tracking-[.08em] text-white/30 mb-0.5">Firm savings delivered</p>
-        <p className="font-serif text-[17px] text-accent tracking-tight">{fmt(totalSavings)}</p>
+      <div
+        className="rounded-xl px-4 py-3 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, rgba(200,169,110,0.12) 0%, rgba(200,169,110,0.06) 100%)', border: '1px solid rgba(200,169,110,0.18)' }}
+      >
+        <p className="text-[10px] font-bold uppercase tracking-[.1em] text-accent/50 mb-1">Firm savings delivered</p>
+        <p className="font-serif text-[19px] text-accent tracking-tight leading-none">{fmt(totalSavings)}</p>
         {accuracyPct !== null && totalActual > 0 && (
-          <p className="text-[9px] text-white/25 mt-0.5">{accuracyPct}% accuracy · {fmt(totalActual)} actual</p>
+          <p className="text-[10px] text-white/25 mt-1">{accuracyPct}% accuracy · {fmt(totalActual)} confirmed</p>
         )}
       </div>
     </div>

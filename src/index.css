@@ -1,6 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* v2 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,31 +14,98 @@
   }
 
   body {
-    @apply font-sans text-[13px] bg-surface text-text;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    background: #f2f3ef;
+    color: #0e1a11;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     user-select: none;
     cursor: default;
   }
 
-  /* Re-enable selection and text cursor where needed */
   input, textarea, [contenteditable] {
     user-select: text;
     cursor: text;
+    font-size: 14px;
   }
 
-  /* Thin scrollbars globally */
+  /* Premium thin scrollbars */
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,.12) transparent;
+    scrollbar-color: rgba(8,28,15,.12) transparent;
   }
   *::-webkit-scrollbar { width: 4px; height: 4px; }
-  *::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 4px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: rgba(8,28,15,.12);
+    border-radius: 4px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(8,28,15,.2);
+  }
+
+  /* Selection color */
+  ::selection {
+    background: rgba(200,169,110,.22);
+    color: #081c0f;
+  }
 }
 
 @layer utilities {
   .scrollbar-none { scrollbar-width: none; }
   .scrollbar-none::-webkit-scrollbar { display: none; }
 
-  /* JetBrains Mono for numbers */
   .font-num { font-family: 'JetBrains Mono', monospace; }
+
+  /* Staggered entrance animation helpers */
+  .stagger-1 { animation-delay: 40ms; }
+  .stagger-2 { animation-delay: 80ms; }
+  .stagger-3 { animation-delay: 120ms; }
+  .stagger-4 { animation-delay: 160ms; }
+  .stagger-5 { animation-delay: 200ms; }
+  .stagger-6 { animation-delay: 240ms; }
+
+  /* Both opacity and transform need to be hidden before animation */
+  [class*="animate-enter"] {
+    animation-fill-mode: both;
+  }
+
+  /* Premium focus ring */
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-1;
+  }
+
+  /* Text balance for headings */
+  .text-balance { text-wrap: balance; }
+
+  /* Tabular numbers */
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Gradient text */
+  .text-gradient {
+    background: linear-gradient(135deg, #c8a96e 0%, #e8d5a8 50%, #c8a96e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Frosted glass card */
+  .glass {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Noise texture overlay for premium surfaces */
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    border-radius: inherit;
+    pointer-events: none;
+  }
 }

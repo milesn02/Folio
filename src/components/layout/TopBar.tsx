@@ -56,13 +56,13 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
   }
 
   return (
-    <div className="flex flex-col border-b border-border bg-white flex-shrink-0">
+    <div className="flex flex-col border-b border-border/60 bg-white flex-shrink-0">
       {/* Action row */}
-      <div className="flex items-center justify-between px-5 py-2.5 border-b border-border/60">
+      <div className="flex items-center justify-between px-6 py-3 border-b border-border/40">
         <div className="flex items-center gap-3">
-          <h1 className="text-[15px] font-semibold text-text truncate">{clientName}</h1>
+          <h1 className="text-base font-semibold text-text tracking-tight truncate">{clientName}</h1>
           {savedAt && (
-            <span className="text-[11px] text-text-lt">{savedLabel(savedAt)}</span>
+            <span className="text-xs text-text-xs">{savedLabel(savedAt)}</span>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -116,9 +116,10 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
       </div>
 
       {/* Tab bar */}
-      <div className="flex overflow-x-auto scrollbar-none px-[22px] bg-surface border-b border-border gap-0.5">
+      <div className="flex overflow-x-auto scrollbar-none px-5 bg-white gap-0">
         {TABS.map(tab => {
           const hidden = isHidden(tab)
+          const active = activeTab === tab
           return (
             <button
               key={tab}
@@ -130,18 +131,22 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
                 opacity: hidden ? 0 : 1,
                 overflow: 'hidden',
                 pointerEvents: hidden ? 'none' : 'auto',
-                border: hidden ? 'none' : undefined,
-                transition: 'max-width 0.2s ease, opacity 0.15s ease, padding 0.2s ease',
+                transition: 'max-width 0.2s cubic-bezier(0.16,1,0.3,1), opacity 0.15s ease, padding 0.2s ease',
               }}
               className={cn(
-                'flex-shrink-0 px-4 py-[10px] text-[12.5px] font-medium whitespace-nowrap rounded-t-md',
-                'border-b-[2.5px] -mb-px',
-                activeTab === tab
-                  ? 'border-b-accent text-navy bg-white font-semibold'
-                  : 'border-b-transparent text-text-lt hover:text-text-md hover:bg-black/4',
+                'relative flex-shrink-0 px-3.5 py-3 text-sm whitespace-nowrap',
+                'transition-colors duration-150',
+                active
+                  ? 'font-semibold text-navy'
+                  : 'font-medium text-text-lt hover:text-text',
               )}
             >
               {TAB_LABELS[tab as TabId]}
+              {/* Sliding active underline */}
+              <span className={cn(
+                'absolute bottom-0 left-0 right-0 h-[2px] rounded-t-full transition-all duration-200',
+                active ? 'bg-accent opacity-100' : 'opacity-0',
+              )} />
             </button>
           )
         })}

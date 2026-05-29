@@ -75,11 +75,11 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Editorial statement */}
-        <div className="relative" style={{ animation: 'enter 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s both' }}>
+        {/* Editorial statement — centered in the remaining space */}
+        <div className="relative flex-1 flex items-center" style={{ animation: 'enter 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s both' }}>
           <p
-            className="font-serif leading-[1.15]"
-            style={{ fontSize: '32px', color: 'rgba(255,255,255,0.18)', letterSpacing: '-0.5px' }}
+            className="font-serif leading-[1.12]"
+            style={{ fontSize: '38px', color: 'rgba(255,255,255,0.42)', letterSpacing: '-0.75px' }}
           >
             Know every<br />
             number.<br />
@@ -89,7 +89,7 @@ export default function Login() {
         </div>
 
         {/* Footer */}
-        <p className="relative text-[10px] uppercase tracking-[0.1em]" style={{ color: 'rgba(255,255,255,0.18)', animation: 'enter 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both' }}>
+        <p className="relative text-[10px] uppercase tracking-[0.1em]" style={{ color: 'rgba(255,255,255,0.2)', animation: 'enter 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both' }}>
           Secure · Encrypted · Advisor access only
         </p>
       </div>

@@ -1,5 +1,5 @@
 import { useCallback, lazy, Suspense, useState, useEffect } from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
+import { SnapshotSkeleton, SalarySkeleton, PaymentsSkeleton, CardSkeleton } from '@/components/ui/tab-skeletons'
 import { useClientStore, selectActiveClient } from '@/store/clientStore'
 import { useUiStore } from '@/store/uiStore'
 import { usePersist } from '@/hooks/useClients'
@@ -34,7 +34,12 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [deleteModal, setDeleteModal] = useState(false)
 
-  const persist = usePersist(dbClient?.client_key ?? '', firmId, () => setSavedAt(new Date()))
+  const persist = usePersist(
+    dbClient?.client_key ?? '',
+    firmId,
+    () => setSavedAt(new Date()),
+    (msg) => showToast(`Sync failed — ${msg}. Changes are saved locally.`),
+  )
   const client = dbClient?.data ?? null
 
   const handleChange = useCallback((data: ClientData) => {
@@ -146,14 +151,9 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
 }
 
 function TabSkeleton() {
-  return (
-    <div className="flex flex-col gap-4">
-      <Skeleton className="h-[140px] w-full" />
-      <div className="grid grid-cols-4 gap-3">
-        {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-20" />)}
-      </div>
-      <Skeleton className="h-48 w-full" />
-      <Skeleton className="h-64 w-full" />
-    </div>
-  )
+  const { activeTab } = useClientStore()
+  if (activeTab === 'snapshot' || activeTab === 'retirement' || activeTab === 'payroll' || activeTab === 'roth' || activeTab === 'hsa' || activeTab === 'augusta') return <SnapshotSkeleton />
+  if (activeTab === 'salary') return <SalarySkeleton />
+  if (activeTab === 'payments') return <PaymentsSkeleton />
+  return <CardSkeleton />
 }

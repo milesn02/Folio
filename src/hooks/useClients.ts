@@ -2,8 +2,28 @@ import { useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useClientStore } from '@/store/clientStore'
 import type { ClientData } from '@/lib/types'
+import type { DbClient } from '@/lib/supabase'
 
 const PERSIST_DELAY = 500
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
+function cacheKey(firmId: string) { return `folio:clients:${firmId}` }
+
+function readCache(firmId: string): DbClient[] | null {
+  try {
+    const raw = localStorage.getItem(cacheKey(firmId))
+    if (!raw) return null
+    const { data, ts } = JSON.parse(raw) as { data: DbClient[]; ts: number }
+    if (Date.now() - ts > CACHE_TTL) return null
+    return data
+  } catch { return null }
+}
+
+function writeCache(firmId: string, clients: DbClient[]) {
+  try {
+    localStorage.setItem(cacheKey(firmId), JSON.stringify({ data: clients, ts: Date.now() }))
+  } catch { /* ignore quota errors */ }
+}
 
 export function useClients(firmId: string | undefined) {
   const { setClients } = useClientStore()
@@ -11,13 +31,21 @@ export function useClients(firmId: string | undefined) {
   useEffect(() => {
     if (!firmId) return
 
+    // Stale-while-revalidate: hydrate from cache immediately so the UI
+    // renders on the first paint, then replace with fresh Supabase data.
+    const cached = readCache(firmId)
+    if (cached) setClients(cached)
+
     supabase
       .from('clients')
       .select('*')
       .eq('firm_id', firmId)
       .order('created_at', { ascending: true })
       .then(({ data }) => {
-        if (data) setClients(data)
+        if (data) {
+          setClients(data)
+          writeCache(firmId, data)
+        }
       })
 
     // Realtime subscription
@@ -32,18 +60,19 @@ export function useClients(firmId: string | undefined) {
         if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
           useClientStore.setState(state => {
             const exists = state.clients.findIndex(c => c.id === (payload.new as { id: string }).id)
-            if (exists >= 0) {
-              const clients = [...state.clients]
-              clients[exists] = payload.new as typeof clients[0]
-              return { clients }
-            }
-            return { clients: [...state.clients, payload.new as typeof state.clients[0]] }
+            const clients = exists >= 0
+              ? state.clients.map((c, i) => i === exists ? payload.new as typeof c : c)
+              : [...state.clients, payload.new as typeof state.clients[0]]
+            writeCache(firmId, clients)
+            return { clients }
           })
         }
         if (payload.eventType === 'DELETE') {
-          useClientStore.setState(state => ({
-            clients: state.clients.filter(c => c.id !== (payload.old as { id: string }).id),
-          }))
+          useClientStore.setState(state => {
+            const clients = state.clients.filter(c => c.id !== (payload.old as { id: string }).id)
+            writeCache(firmId, clients)
+            return { clients }
+          })
         }
       })
       .subscribe()
@@ -52,22 +81,34 @@ export function useClients(firmId: string | undefined) {
   }, [firmId, setClients])
 }
 
-/** Returns a debounced persist function for a specific client */
-export function usePersist(clientKey: string, firmId: string | undefined, onSaved?: () => void) {
+/** Debounced persist with optimistic rollback on network failure */
+export function usePersist(
+  clientKey: string,
+  firmId: string | undefined,
+  onSaved?: () => void,
+  onError?: (msg: string) => void,
+) {
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
   const onSavedRef = useRef(onSaved)
+  const onErrorRef = useRef(onError)
   onSavedRef.current = onSaved
+  onErrorRef.current = onError
 
   const persist = useCallback((data: ClientData) => {
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout(async () => {
       if (!firmId) return
-      await supabase
+      const { error } = await supabase
         .from('clients')
         .update({ data, updated_at: new Date().toISOString() })
         .eq('client_key', clientKey)
         .eq('firm_id', firmId)
-      onSavedRef.current?.()
+
+      if (error) {
+        onErrorRef.current?.(error.message ?? 'Sync failed')
+      } else {
+        onSavedRef.current?.()
+      }
     }, PERSIST_DELAY)
   }, [clientKey, firmId])
 

@@ -73,7 +73,7 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
 
         {/* Table header */}
         <div
-          className="grid px-5 py-2 bg-surface border-b border-border text-[10.5px] font-semibold uppercase tracking-[.05em] text-text-lt"
+          className="grid px-5 py-2 bg-surface border-b border-border text-xs font-semibold uppercase tracking-[.05em] text-text-lt"
           style={{ gridTemplateColumns: gridCols }}
         >
           <span>Strategy</span>

@@ -123,7 +123,7 @@ export function Sidebar({ onNewClient }: SidebarProps) {
               'outline-none focus:bg-white/[0.10] focus:border-white/20 transition-all duration-150',
             )}
           />
-          <kbd className="absolute right-6 top-1/2 -translate-y-1/2 text-[9px] font-mono text-white/20 border border-white/10 rounded px-1 py-px pointer-events-none">
+          <kbd className="absolute right-6 top-1/2 -translate-y-1/2 text-2xs font-mono text-white/20 border border-white/10 rounded px-1 py-px pointer-events-none">
             ⌘K
           </kbd>
         </div>

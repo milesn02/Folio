@@ -3,20 +3,6 @@ import { Navigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 
-const FEATURES = [
-  {
-    label: 'Client Snapshot',
-    desc: 'Every number, strategy, and deadline in one view.',
-  },
-  {
-    label: 'Salary Schedules',
-    desc: 'Model S-Corp compensation in seconds.',
-  },
-  {
-    label: 'Client Deliverables',
-    desc: 'PDFs that show exactly what you saved them.',
-  },
-]
 
 export default function Login() {
   const { user, loading } = useAuth()
@@ -68,21 +54,17 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Feature callouts */}
-        <div className="relative flex flex-col gap-7">
-          {FEATURES.map(({ label, desc }) => (
-            <div key={label} className="flex gap-4 items-stretch">
-              <div className="w-[3px] flex-shrink-0 rounded-full bg-accent/50" />
-              <div>
-                <p className="text-[14px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.82)' }}>
-                  {label}
-                </p>
-                <p className="text-[12px] mt-0.5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.32)' }}>
-                  {desc}
-                </p>
-              </div>
-            </div>
-          ))}
+        {/* Editorial statement */}
+        <div className="relative">
+          <p
+            className="font-serif leading-[1.15]"
+            style={{ fontSize: '32px', color: 'rgba(255,255,255,0.18)', letterSpacing: '-0.5px' }}
+          >
+            Know every<br />
+            number.<br />
+            Show every<br />
+            result.
+          </p>
         </div>
 
         {/* Footer */}

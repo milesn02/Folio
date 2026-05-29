@@ -9,8 +9,16 @@ React + TypeScript + Vite + Tailwind + Supabase tax advisory platform.
 - Fonts: DM Serif Display, DM Sans, JetBrains Mono
 
 ## Design System
-See `design-system/MASTER.md` for the full reference — colors, typography, cards, status indicators, anti-patterns.
-Always follow it. Never use raw Tailwind colors or pixel font sizes.
+See `design-system/folio/MASTER.md` for the full reference — colors, typography, cards, status indicators,
+financial data conventions, tax software UX patterns, and anti-patterns.
+**Always read it before touching any UI.** Never use raw Tailwind colors or pixel font sizes.
+It contains expert tax-software design knowledge (30-year practitioner level) including:
+- Financial number conventions (right-align, font-num, parentheses for negatives)
+- Status badge vocabulary (Overdue/Scheduled/Filed/Paid/Void — exact colors and labels)
+- The two-zone model (working zone vs. presentation zone)
+- Trust signals for CPA-facing software
+- Snapshot tab sacred rules
+- PDF/export quality standards
 
 ## gstack
 Available skills: /office-hours, /plan-ceo-review, /plan-eng-review, /plan-design-review,

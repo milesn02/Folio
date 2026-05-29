@@ -265,7 +265,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
       <Card>
         <CardHeader><CardTitle>401(k) Deferral</CardTitle></CardHeader>
         <CardBody>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-4 items-end">
+          <div className="grid grid-cols-4 gap-x-4 gap-y-4 items-start">
             <Field label="Annual deferral">
               <DollarInput value={entry.deferral} onChange={e => setEntry({ deferral: e.target.value })} placeholder="0" />
             </Field>

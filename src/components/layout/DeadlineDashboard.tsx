@@ -123,7 +123,7 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
         <div className="w-px h-8 bg-border" />
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt mb-0.5">Savings Delivered</p>
-          <p className="font-serif text-[26px] text-accent tracking-tight leading-none">
+          <p className="font-serif text-[26px] text-accent-dk tracking-tight leading-none">
             {totalSavings > 0 ? fmt(totalSavings) : '—'}
           </p>
         </div>

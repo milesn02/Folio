@@ -83,10 +83,11 @@ export function EntityPayments({ client: c, onChange }: Props) {
                   <td className="px-3 py-2 text-text-lt">{row.type}</td>
                   <td className="px-3 py-2">
                     <DollarInput
-                      className="w-28"
+                      ghost
+                      className="w-28 font-mono text-right"
                       value={pd[row.fk] as string}
                       onChange={e => setField(row.fk, e.target.value)}
-                      placeholder="0"
+                      placeholder="—"
                     />
                   </td>
                   <td className="px-2 py-2">

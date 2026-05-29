@@ -32,7 +32,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    user-select: none;
     cursor: default;
   }
 

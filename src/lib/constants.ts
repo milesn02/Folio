@@ -192,7 +192,7 @@ export const FILING_STATUSES = [
 
 // ── Avatar colors (assigned deterministically by initials) ────
 export const AVATAR_COLORS = [
-  '#4f46e5', '#7c3aed', '#db2777', '#dc2626',
-  '#d97706', '#059669', '#0891b2', '#0284c7',
-  '#2563eb', '#16a34a',
+  '#1a3f28', '#2d6e42', '#5c4033', '#7d6b4f',
+  '#4a5568', '#16735c', '#8b6355', '#2c5f6e',
+  '#4a7c59', '#6b5040',
 ]

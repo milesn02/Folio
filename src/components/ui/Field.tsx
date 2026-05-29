@@ -27,7 +27,7 @@ export const inputCls = [
   'w-full rounded-md border border-border bg-surface px-3 py-[7px] text-sm text-text',
   'placeholder:text-text-xs outline-none shadow-xs',
   'hover:border-border-dk',
-  'focus:border-accent/70 focus:ring-2 focus:ring-accent/15 focus:shadow-glow-accent',
+  'focus:border-accent/70 focus:ring-2 focus:ring-accent/40',
   'transition-all duration-150',
   'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface',
 ].join(' ')
@@ -37,7 +37,7 @@ export const ghostInputCls = [
   'w-full rounded-md border border-transparent bg-transparent px-3 py-[7px] text-sm text-text',
   'placeholder:text-text-xs outline-none',
   'hover:bg-surface hover:border-border',
-  'focus:bg-surface focus:border-accent/70 focus:ring-2 focus:ring-accent/15 focus:shadow-glow-accent',
+  'focus:bg-surface focus:border-accent/70 focus:ring-2 focus:ring-accent/40',
   'transition-all duration-150',
 ].join(' ')
 

@@ -65,52 +65,51 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
 
   return (
     <div className="flex flex-col gap-4 animate-enter">
-      {/* Hero — cinematic header */}
-      <div
-        className="relative overflow-hidden rounded-xl shadow-md px-8 pt-7 pb-6"
-        style={{
-          background: 'linear-gradient(135deg, #1a3f28 0%, #204d31 55%, #265c3a 100%)',
-        }}
-      >
-        {/* Subtle radial glow behind the name */}
+      {/* Hero + KPI — unified dark section */}
+      <div className="rounded-xl overflow-hidden shadow-md">
+        {/* Hero band */}
         <div
-          className="absolute top-0 right-0 w-80 h-80 opacity-[0.07] pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at top right, #c8a96e, transparent 70%)',
-          }}
-        />
-        {/* Thin accent line at top */}
-        <div className="absolute top-0 left-0 right-0 h-[2px]"
-          style={{ background: 'linear-gradient(90deg, transparent, #c8a96e 40%, transparent)' }}
-        />
-
-        <div className="relative">
-          <h2 className="font-serif text-[28px] text-white tracking-tight leading-tight mb-3">
-            {c.name || 'New Client'}
-          </h2>
-          <div className="flex flex-wrap gap-1.5">
-            {entNames.map(n => <HeroTag key={n}>{n}</HeroTag>)}
-            {c.filing && <HeroTag>{c.filing}</HeroTag>}
-            {age !== null && <HeroTag>Age {age}</HeroTag>}
+          className="relative px-8 pt-7 pb-5"
+          style={{ background: 'linear-gradient(135deg, #1a3f28 0%, #204d31 55%, #265c3a 100%)' }}
+        >
+          <div
+            className="absolute top-0 right-0 w-80 h-80 opacity-[0.07] pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at top right, #c8a96e, transparent 70%)' }}
+          />
+          <div className="absolute top-0 left-0 right-0 h-[2px]"
+            style={{ background: 'linear-gradient(90deg, transparent, #c8a96e 40%, transparent)' }}
+          />
+          <div className="relative">
+            <h2 className="font-serif text-[28px] text-white tracking-tight leading-tight mb-3">
+              {c.name || 'New Client'}
+            </h2>
+            <div className="flex flex-wrap gap-1.5">
+              {entNames.map(n => <HeroTag key={n}>{n}</HeroTag>)}
+              {c.filing && <HeroTag>{c.filing}</HeroTag>}
+              {age !== null && <HeroTag>Age {age}</HeroTag>}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* KPI row */}
-      <div className="grid gap-3" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr' }}>
-        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} accent large />
-        <KpiCard
-          label="Strategies Active"
-          value={String(stratCount)}
-          sub={`/ ${SKS.length} total`}
-        />
-        <KpiCard label="Combined Rate" value={combinedRate} sub={rateDetail} />
-        <KpiCard
-          label="Advisor"
-          value={c.adv || '—'}
-          sub={c.mgr ? `Mgr: ${c.mgr}` : undefined}
-          valueClass="font-sans font-semibold text-lg tracking-tight"
-        />
+        {/* KPI tray — attached below hero */}
+        <div
+          className="grid gap-2 px-3 pb-3 pt-2"
+          style={{
+            gridTemplateColumns: '2fr 1fr 1fr 1fr',
+            background: 'linear-gradient(180deg, #1e4830 0%, #142c1d 100%)',
+          }}
+        >
+          <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} accent large />
+          <KpiCard label="Strategies Active" value={String(stratCount)} sub={`/ ${SKS.length} total`} dark />
+          <KpiCard label="Combined Rate" value={combinedRate} sub={rateDetail} dark />
+          <KpiCard
+            label="Advisor"
+            value={c.adv || '—'}
+            sub={c.mgr ? `Mgr: ${c.mgr}` : undefined}
+            valueClass="font-sans font-semibold text-lg tracking-tight text-white"
+            dark
+          />
+        </div>
       </div>
 
       {/* Tax projection */}
@@ -399,7 +398,7 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                     i < active.length - 1 && 'border-b border-border',
                     clickable
                       ? 'cursor-pointer group hover:-translate-y-0.5 hover:shadow-md hover:z-10 hover:bg-white select-none'
-                      : 'cursor-default',
+                      : 'cursor-default hover:bg-surface/60',
                   )}
                   onClick={clickable ? () => setOpenPanel(k) : undefined}
                 >
@@ -474,27 +473,30 @@ function HeroTag({ children }: { children: React.ReactNode }) {
 }
 
 function KpiCard({
-  label, value, sub, valueClass, accent, large,
+  label, value, sub, valueClass, accent, large, dark,
 }: {
-  label: string; value: string; sub?: string; valueClass?: string; accent?: boolean; large?: boolean
+  label: string; value: string; sub?: string; valueClass?: string; accent?: boolean; large?: boolean; dark?: boolean
 }) {
   return (
     <div className={cn(
-      'rounded-xl border flex flex-col justify-center shadow-sm',
-      large ? 'px-5 py-5 gap-1.5' : 'px-4 py-4 gap-1',
-      accent ? 'bg-navy border-navy shadow-md' : 'bg-white border-border',
+      'rounded-lg flex flex-col justify-center',
+      large ? 'px-5 py-4 gap-1.5' : 'px-4 py-3 gap-1',
+      accent ? 'bg-navy border border-navy/60 shadow-sm' : dark ? 'bg-white/[0.07]' : 'bg-white border border-border shadow-sm',
     )}>
-      <span className={cn('text-xs font-bold uppercase tracking-[.07em]', accent ? 'text-accent/70' : 'text-text-lt')}>
+      <span className={cn(
+        'text-[10px] font-bold uppercase tracking-[.07em]',
+        accent ? 'text-accent/70' : dark ? 'text-white/40' : 'text-text-lt',
+      )}>
         {label}
       </span>
       <span className={valueClass ?? cn(
         'font-serif tracking-tight leading-none',
-        large ? 'text-[38px]' : 'text-2xl',
-        accent ? 'text-accent' : 'text-navy',
+        large ? 'text-[38px]' : 'text-[22px]',
+        accent ? 'text-accent' : dark ? 'text-white' : 'text-navy',
       )}>
         {value}
       </span>
-      {sub && <span className={cn('text-xs', accent ? 'text-white/40' : 'text-text-lt')}>{sub}</span>}
+      {sub && <span className={cn('text-[11px]', accent ? 'text-white/40' : dark ? 'text-white/35' : 'text-text-lt')}>{sub}</span>}
     </div>
   )
 }

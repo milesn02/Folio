@@ -255,10 +255,10 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                         </div>
                         <div className="flex gap-2.5 mt-1">
                           <a href="https://directpay.irs.gov" target="_blank" rel="noopener noreferrer"
-                            className="text-[11px] font-medium text-accent hover:underline">IRS Direct Pay ↗</a>
+                            className="text-[11px] font-medium text-accent-dk hover:underline">IRS Direct Pay ↗</a>
                           {!noStateTax && STATE_PAY_URLS[clientState] && (
                             <a href={STATE_PAY_URLS[clientState]} target="_blank" rel="noopener noreferrer"
-                              className="text-[11px] font-medium text-accent hover:underline">{clientState} Pay ↗</a>
+                              className="text-[11px] font-medium text-accent-dk hover:underline">{clientState} Pay ↗</a>
                           )}
                         </div>
                       </td>

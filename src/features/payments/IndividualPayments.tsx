@@ -89,8 +89,8 @@ function DaysBadge({ date }: { date: Date }) {
 function AVBtn({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
   return (
     <button onClick={onClick}
-      className={cn('w-7 h-7 rounded text-[11px] font-bold border transition-colors',
-        active ? 'bg-navy text-white border-navy' : 'bg-white text-text-lt border-border hover:border-navy/30')}>
+      className={cn('h-7 px-2.5 rounded text-[11px] font-semibold border transition-colors',
+        active ? 'bg-navy text-white border-navy' : 'bg-surface text-text-lt border-border hover:border-navy/30')}>
       {label}
     </button>
   )
@@ -148,7 +148,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                 <tr className="bg-surface border-b border-border">
                   <th className="text-left px-4 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[28%]">Due date</th>
                   <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt">Federal</th>
-                  <th className="text-center px-2 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[8%]">A / V</th>
+                  <th className="text-center px-2 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[14%]">Auth / Void</th>
                   {noStateTax ? (
                     <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt/40" colSpan={2}>
                       No state income tax ({clientState})
@@ -156,7 +156,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                   ) : (
                     <>
                       <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt">{clientState}</th>
-                      <th className="text-center px-2 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[8%]">A / V</th>
+                      <th className="text-center px-2 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[14%]">Auth / Void</th>
                     </>
                   )}
                 </tr>
@@ -186,8 +186,8 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                     </td>
                     <td className="px-2 py-2">
                       <div className="flex gap-1 justify-center">
-                        <AVBtn active={pd[q.ak] as boolean} label="A" onClick={() => setField(q.ak, !pd[q.ak])} />
-                        <AVBtn active={pd[q.vk] as boolean} label="V" onClick={() => setField(q.vk, !pd[q.vk])} />
+                        <AVBtn active={pd[q.ak] as boolean} label="Auth" onClick={() => setField(q.ak, !pd[q.ak])} />
+                        <AVBtn active={pd[q.vk] as boolean} label="Void" onClick={() => setField(q.vk, !pd[q.vk])} />
                       </div>
                     </td>
                     {!noStateTax && (
@@ -197,8 +197,8 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                         </td>
                         <td className="px-2 py-2">
                           <div className="flex gap-1 justify-center">
-                            <AVBtn active={pd[q.cak] as boolean} label="A" onClick={() => setField(q.cak, !pd[q.cak])} />
-                            <AVBtn active={pd[q.cvk] as boolean} label="V" onClick={() => setField(q.cvk, !pd[q.cvk])} />
+                            <AVBtn active={pd[q.cak] as boolean} label="Auth" onClick={() => setField(q.cak, !pd[q.cak])} />
+                            <AVBtn active={pd[q.cvk] as boolean} label="Void" onClick={() => setField(q.cvk, !pd[q.cvk])} />
                           </div>
                         </td>
                       </>

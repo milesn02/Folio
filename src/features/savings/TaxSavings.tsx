@@ -48,16 +48,23 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
       <CardHeader>
         <CardTitle>Tax Savings Summary</CardTitle>
         <div className="flex items-center gap-3">
-          <select
-            className="text-[12px] border border-border rounded-md px-2 py-1 text-text bg-white"
-            value={year}
-            onChange={e => setYear(e.target.value)}
-          >
-            {Array.from({ length: 6 }, (_, i) => String(thisYear - i)).map(y => (
-              <option key={y} value={y}>{y}</option>
+          <div className="flex gap-1">
+            {Array.from({ length: 5 }, (_, i) => String(thisYear - i)).map(y => (
+              <button
+                key={y}
+                onClick={() => setYear(y)}
+                className={cn(
+                  'px-2.5 py-1 rounded-md text-[12px] font-semibold border transition-colors',
+                  year === y
+                    ? 'bg-navy text-white border-navy'
+                    : 'bg-white text-text-lt border-border hover:border-navy/30',
+                )}
+              >
+                {y}
+              </button>
             ))}
-          </select>
-          <div className="font-serif text-[20px] text-navy tracking-tight">
+          </div>
+          <div className="font-serif text-[20px] text-navy tracking-tight pl-1 border-l border-border">
             {fmt(total)}
           </div>
         </div>

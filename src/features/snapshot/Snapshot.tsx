@@ -95,18 +95,18 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
         <div
           className="grid gap-2 px-3 pb-3 pt-2"
           style={{
-            gridTemplateColumns: '2fr 1fr 1fr 1fr',
+            gridTemplateColumns: '5fr 2fr 2fr 2fr',
             background: 'linear-gradient(180deg, #1e4830 0%, #142c1d 100%)',
           }}
         >
-          <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} accent large />
+          <KpiCard label={`Est. Tax Savings — ${CUR_YEAR}`} value={tot ? fmt(tot) : '—'} accent large />
           <KpiCard label="Strategies Active" value={String(stratCount)} sub={`/ ${SKS.length} total`} dark />
           <KpiCard label="Combined Rate" value={combinedRate} sub={rateDetail} dark />
           <KpiCard
             label="Advisor"
             value={c.adv || '—'}
             sub={c.mgr ? `Mgr: ${c.mgr}` : undefined}
-            valueClass="font-sans font-semibold text-lg tracking-tight text-white"
+            valueClass="font-sans font-semibold text-[18px] tracking-tight text-white"
             dark
           />
         </div>
@@ -480,23 +480,27 @@ function KpiCard({
   return (
     <div className={cn(
       'rounded-lg flex flex-col justify-center',
-      large ? 'px-5 py-4 gap-1.5' : 'px-4 py-3 gap-1',
-      accent ? 'bg-navy border border-navy/60 shadow-sm' : dark ? 'bg-white/[0.07]' : 'bg-white border border-border shadow-sm',
+      large ? 'px-6 py-5 gap-2' : 'px-4 py-3 gap-1',
+      accent
+        ? 'bg-white/[0.10] border border-accent/35 shadow-[0_0_24px_rgba(200,169,110,0.12)]'
+        : dark
+        ? 'bg-white/[0.06]'
+        : 'bg-white border border-border shadow-sm',
     )}>
       <span className={cn(
         'text-[10px] font-bold uppercase tracking-[.07em]',
-        accent ? 'text-accent/70' : dark ? 'text-white/40' : 'text-text-lt',
+        accent ? 'text-accent/75' : dark ? 'text-white/40' : 'text-text-lt',
       )}>
         {label}
       </span>
       <span className={valueClass ?? cn(
         'font-serif tracking-tight leading-none',
-        large ? 'text-[38px]' : 'text-[22px]',
+        large ? 'text-[46px]' : 'text-[22px]',
         accent ? 'text-accent' : dark ? 'text-white' : 'text-navy',
       )}>
         {value}
       </span>
-      {sub && <span className={cn('text-[11px]', accent ? 'text-white/40' : dark ? 'text-white/35' : 'text-text-lt')}>{sub}</span>}
+      {sub && <span className={cn('text-[11px]', accent ? 'text-accent/45' : dark ? 'text-white/35' : 'text-text-lt')}>{sub}</span>}
     </div>
   )
 }

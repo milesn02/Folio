@@ -54,15 +54,15 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
   }
 
   return (
-    <div className="flex items-stretch h-12 border-b border-border/60 bg-white flex-shrink-0 overflow-hidden">
+    <div className="flex items-stretch h-[52px] border-b border-border/60 bg-white flex-shrink-0 overflow-hidden">
 
       {/* Client name + saved */}
-      <div className="flex items-center gap-2.5 px-5 flex-shrink-0 border-r border-border/40 min-w-0 max-w-[260px]">
-        <h1 className="text-[13px] font-semibold text-text tracking-tight truncate leading-none">
+      <div className="flex items-center gap-3 px-5 flex-shrink-0 border-r border-border/40 min-w-0 max-w-[280px]">
+        <h1 className="text-[15px] font-semibold text-text tracking-tight truncate leading-none">
           {clientName}
         </h1>
         {savedAt && (
-          <span className="text-[11px] text-text-xs whitespace-nowrap flex-shrink-0">
+          <span className="text-[10px] font-medium text-text-xs whitespace-nowrap flex-shrink-0 bg-surface px-1.5 py-0.5 rounded">
             {savedLabel(savedAt)}
           </span>
         )}
@@ -87,16 +87,16 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
                 transition: 'max-width 0.2s cubic-bezier(0.16,1,0.3,1), opacity 0.15s ease, padding 0.2s ease',
               }}
               className={cn(
-                'relative flex-shrink-0 px-3.5 h-full flex items-center text-[13px] whitespace-nowrap cursor-pointer',
+                'relative flex-shrink-0 px-4 h-full flex items-center text-[13px] whitespace-nowrap cursor-pointer',
                 'transition-colors duration-150',
                 active
                   ? 'font-semibold text-navy'
-                  : 'font-medium text-text-lt hover:text-text',
+                  : 'font-medium text-text-lt hover:text-text-md',
               )}
             >
               {TAB_LABELS[tab as TabId]}
               <span className={cn(
-                'absolute bottom-0 left-0 right-0 h-[2px] rounded-t-full transition-all duration-200',
+                'absolute bottom-0 left-0 right-0 h-[2.5px] rounded-t-full transition-all duration-200',
                 active ? 'bg-accent opacity-100' : 'opacity-0',
               )} />
             </button>

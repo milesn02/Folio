@@ -67,7 +67,7 @@ export function GapAnalysis({ client: c, onActivate }: Props) {
             </div>
             <button
               onClick={() => onActivate(g.key)}
-              className="flex-shrink-0 text-[11px] font-semibold text-accent hover:text-accent/80 border border-accent/30 hover:border-accent/60 px-2.5 py-1 rounded-md transition-colors whitespace-nowrap"
+              className="flex-shrink-0 text-[11px] font-semibold text-accent bg-accent/[0.07] hover:bg-accent/[0.13] border border-accent/30 hover:border-accent/50 px-3 py-1.5 rounded-md transition-all whitespace-nowrap"
             >
               Activate
             </button>

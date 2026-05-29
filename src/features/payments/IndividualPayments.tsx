@@ -162,7 +162,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-border bg-surface/50">
+                <tr className="border-b border-border bg-surface/40">
                   <td className="px-4 py-2 text-[12px] text-text-lt italic">Prior year credit</td>
                   <td className="px-3 py-2"><DollarInput ghost className="w-24 font-mono text-right" value={pd.cFed} onChange={e => setField('cFed', e.target.value)} placeholder="—" /></td>
                   <td className="px-2 py-2 text-center text-text-lt/40 text-lg">—</td>
@@ -174,7 +174,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                   )}
                 </tr>
                 {legacyQuarters.map(q => (
-                  <tr key={q.n} className="border-b border-border last:border-b-0">
+                  <tr key={q.n} className="border-b border-border last:border-b-0 hover:bg-surface/50 transition-colors">
                     <td className="px-4 py-2 font-medium text-text">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {formatDate(q.date)} — Q{q.n}
@@ -230,7 +230,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-border bg-surface/50">
+                <tr className="border-b border-border bg-surface/40">
                   <td className="px-4 py-2 text-[12px] text-text-lt italic">Prior year credit</td>
                   <td className="px-3 py-2"><DollarInput ghost className="w-24 font-mono text-right" value={pd.cFed} onChange={e => setField('cFed', e.target.value)} placeholder="—" /></td>
                   <td className="px-3 py-2 text-text-lt/40">—</td>
@@ -247,7 +247,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                   const fShowAcct = fStatus === 'scheduled' || fStatus === 'paid'
                   const cShowAcct = cStatus === 'scheduled' || cStatus === 'paid'
                   return (
-                    <tr key={q.n} className="border-b border-border last:border-b-0">
+                    <tr key={q.n} className="border-b border-border last:border-b-0 hover:bg-surface/50 transition-colors">
                       <td className="px-4 py-2 font-medium text-text">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           {formatDate(q.date)} — Q{q.n}

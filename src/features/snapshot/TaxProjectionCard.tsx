@@ -75,9 +75,9 @@ export function TaxProjectionCard({ client: c }: Props) {
               )}
             </div>
           </div>
-          <div className="h-2 rounded-full bg-border overflow-hidden">
+          <div className="h-1.5 rounded-full bg-border overflow-hidden">
             <div
-              className="h-full rounded-full bg-accent transition-all"
+              className="h-full rounded-full bg-accent transition-all duration-700"
               style={{ width: `${Math.min(reduction, 100)}%` }}
             />
           </div>
@@ -95,8 +95,10 @@ function ProjectionSide({
   const effectiveRate = income > 0 ? ((tax / income) * 100).toFixed(1) : '0.0'
   return (
     <div className="px-5 py-4 flex flex-col gap-1">
-      <span className="text-[10px] font-bold uppercase tracking-[.06em] text-text-lt mb-1">{label}</span>
-      <span className={`font-serif text-[22px] tracking-tight leading-tight ${accent ? 'text-accent' : 'text-navy'}`}>
+      <span className={`text-[10px] font-bold uppercase tracking-[.06em] mb-1 ${accent ? 'text-success' : 'text-text-lt'}`}>
+        {label}
+      </span>
+      <span className={`font-serif text-[22px] tracking-tight leading-tight ${accent ? 'text-success' : 'text-navy'}`}>
         {fmt(tax)}
       </span>
       <span className="text-[11px] text-text-lt">

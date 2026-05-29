@@ -78,7 +78,7 @@ export function EntityPayments({ client: c, onChange }: Props) {
             </thead>
             <tbody>
               {CORP_ROWS.map((row, i) => (
-                <tr key={i} className="border-b border-border last:border-b-0">
+                <tr key={i} className="border-b border-border last:border-b-0 hover:bg-surface/50 transition-colors">
                   <td className="px-4 py-2 font-medium text-text">{row.date}</td>
                   <td className="px-3 py-2 text-text-lt">{row.type}</td>
                   <td className="px-3 py-2">

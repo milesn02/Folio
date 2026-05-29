@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useCountUp } from '@/hooks/useCountUp'
 import { Card, CardHeader, CardTitle, CardBody, Field, Modal } from '@/components/ui'
 import { StrategyPanel, hasPanel } from './StrategyPanel'
 import { TaxProjectionCard } from './TaxProjectionCard'
@@ -69,18 +70,27 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
       <div className="rounded-xl overflow-hidden shadow-md">
         {/* Hero band */}
         <div
-          className="relative px-8 pt-7 pb-5"
+          className="relative px-8 pt-8 pb-6"
           style={{ background: 'linear-gradient(135deg, #1a3f28 0%, #204d31 55%, #265c3a 100%)' }}
         >
-          <div
-            className="absolute top-0 right-0 w-80 h-80 opacity-[0.07] pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at top right, #c8a96e, transparent 70%)' }}
+          {/* Noise texture */}
+          <div className="absolute inset-0 pointer-events-none rounded-t-xl overflow-hidden"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+              backgroundSize: '180px 180px',
+              opacity: 0.035,
+            }}
           />
-          <div className="absolute top-0 left-0 right-0 h-[2px]"
-            style={{ background: 'linear-gradient(90deg, transparent, #c8a96e 40%, transparent)' }}
+          {/* Gold ambient glow — top right */}
+          <div className="absolute top-0 right-0 w-96 h-64 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at top right, rgba(200,169,110,0.10), transparent 68%)' }}
+          />
+          {/* Decorative gold line at top */}
+          <div className="absolute top-0 left-0 right-0 h-[1.5px]"
+            style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(200,169,110,0.55) 35%, rgba(200,169,110,0.55) 65%, transparent 100%)' }}
           />
           <div className="relative">
-            <h2 className="font-serif text-[28px] text-white tracking-tight leading-tight mb-3">
+            <h2 className="font-serif text-[32px] text-white tracking-tight leading-tight mb-3.5">
               {c.name || 'New Client'}
             </h2>
             <div className="flex flex-wrap gap-1.5">
@@ -99,7 +109,7 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
             background: 'linear-gradient(180deg, #1e4830 0%, #142c1d 100%)',
           }}
         >
-          <KpiCard label={`Est. Tax Savings — ${CUR_YEAR}`} value={tot ? fmt(tot) : '—'} accent large />
+          <KpiCard label={`Est. Tax Savings — ${CUR_YEAR}`} value={tot ? fmt(tot) : '—'} rawValue={tot || 0} accent large />
           <KpiCard label="Strategies Active" value={String(stratCount)} sub={`/ ${SKS.length} total`} dark />
           <KpiCard label="Combined Rate" value={combinedRate} sub={rateDetail} dark />
           <KpiCard
@@ -426,7 +436,7 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                   </span>
                   {total > 0 && amount != null && amount > 0 && (
                     <>
-                      <div className="w-24 h-1.5 rounded-full bg-border overflow-hidden">
+                      <div className="w-24 h-1 rounded-full bg-border overflow-hidden">
                         <div
                           className="h-full rounded-full bg-accent transition-all duration-500"
                           style={{ width: `${Math.round((amount / total) * 100)}%` }}
@@ -473,10 +483,13 @@ function HeroTag({ children }: { children: React.ReactNode }) {
 }
 
 function KpiCard({
-  label, value, sub, valueClass, accent, large, dark,
+  label, value, rawValue, sub, valueClass, accent, large, dark,
 }: {
-  label: string; value: string; sub?: string; valueClass?: string; accent?: boolean; large?: boolean; dark?: boolean
+  label: string; value: string; rawValue?: number; sub?: string; valueClass?: string; accent?: boolean; large?: boolean; dark?: boolean
 }) {
+  const counted = useCountUp(rawValue ?? 0)
+  const displayValue = rawValue != null ? fmt(counted) : value
+
   return (
     <div className={cn(
       'rounded-lg flex flex-col justify-center',
@@ -484,12 +497,12 @@ function KpiCard({
       accent
         ? 'bg-white/[0.10] border border-accent/35 shadow-[0_0_24px_rgba(200,169,110,0.12)]'
         : dark
-        ? 'bg-white/[0.06]'
+        ? 'bg-white/[0.10]'
         : 'bg-white border border-border shadow-sm',
     )}>
       <span className={cn(
         'text-[10px] font-bold uppercase tracking-[.07em]',
-        accent ? 'text-accent/75' : dark ? 'text-white/40' : 'text-text-lt',
+        accent ? 'text-accent/75' : dark ? 'text-white/45' : 'text-text-lt',
       )}>
         {label}
       </span>
@@ -498,9 +511,9 @@ function KpiCard({
         large ? 'text-[46px]' : 'text-[22px]',
         accent ? 'text-accent' : dark ? 'text-white' : 'text-navy',
       )}>
-        {value}
+        {displayValue}
       </span>
-      {sub && <span className={cn('text-[11px]', accent ? 'text-accent/45' : dark ? 'text-white/35' : 'text-text-lt')}>{sub}</span>}
+      {sub && <span className={cn('text-[11px]', accent ? 'text-accent/45' : dark ? 'text-white/40' : 'text-text-lt')}>{sub}</span>}
     </div>
   )
 }

@@ -320,7 +320,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
             </thead>
             <tbody>
               {tableRows.map(([label, per, ann, sub], i) => (
-                <tr key={i} className="border-t border-border">
+                <tr key={i} className="border-t border-border hover:bg-surface/50 transition-colors">
                   <td className={cn('px-4 py-2', sub ? 'pl-8 text-text-lt' : 'font-medium text-text')}>{label}</td>
                   <td className={cn('px-4 py-2 text-right font-serif', sub ? 'text-danger' : 'text-navy')}>
                     {per !== 0 ? (per < 0 ? `(${fmt(-per, 2)})` : fmt(per, 2)) : '—'}
@@ -330,10 +330,10 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                   </td>
                 </tr>
               ))}
-              <tr className="border-t-2 border-border bg-surface">
-                <td className="px-4 py-3 font-bold text-[14px] text-navy">Net take-home pay</td>
-                <td className="px-4 py-3 text-right font-serif text-[16px] text-navy">{fmt(calc.netPer, 2)}</td>
-                <td className="px-4 py-3 text-right font-serif text-[16px] text-navy">{fmt(calc.net, 2)}</td>
+              <tr style={{ background: 'linear-gradient(90deg, #1a3f28 0%, #204d31 100%)' }}>
+                <td className="px-4 py-3.5 font-bold text-[13px] uppercase tracking-[.05em] text-white/60">Net take-home pay</td>
+                <td className="px-4 py-3.5 text-right font-serif text-[18px] text-accent tracking-tight">{fmt(calc.netPer, 2)}</td>
+                <td className="px-4 py-3.5 text-right font-serif text-[18px] text-accent tracking-tight">{fmt(calc.net, 2)}</td>
               </tr>
             </tbody>
           </table>

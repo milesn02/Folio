@@ -100,8 +100,8 @@ export default {
           to:   { opacity: '1', transform: 'translateY(0)' },
         },
         'enter': {
-          from: { opacity: '0', transform: 'translateY(10px) scale(0.99)' },
-          to:   { opacity: '1', transform: 'translateY(0)    scale(1)' },
+          from: { opacity: '0', transform: 'translateY(5px) scale(0.995)' },
+          to:   { opacity: '1', transform: 'translateY(0)   scale(1)' },
         },
         'enter-fast': {
           from: { opacity: '0', transform: 'translateY(5px)' },

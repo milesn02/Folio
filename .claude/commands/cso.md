@@ -1,0 +1,1 @@
+﻿Run a security audit using OWASP Top 10. Check for injection vulnerabilities, broken auth, sensitive data exposure, security misconfiguration, vulnerable dependencies, and missing authorization checks. For each finding: severity, file path, description, fix.

@@ -1,0 +1,1 @@
+﻿Act as a staff engineer reviewing this code. Check for bugs, security issues, TypeScript errors, performance problems, and inconsistent patterns. For each issue: severity, file path, problem description, and fix. Auto-fix obvious issues.

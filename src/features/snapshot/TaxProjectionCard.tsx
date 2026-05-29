@@ -61,7 +61,7 @@ export function TaxProjectionCard({ client: c }: Props) {
         </div>
 
         {/* Savings bar */}
-        <div className="px-5 py-4 border-t border-border bg-surface/40 rounded-b-[10px]">
+        <div className="px-5 py-4 border-t border-border bg-surface/40 rounded-b-xl">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-semibold text-text-lt uppercase tracking-[.05em]">
               Est. savings from strategies

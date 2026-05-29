@@ -63,6 +63,14 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
         </div>
       </CardHeader>
       <CardBody className="p-0">
+        {/* Empty state */}
+        {SAVS.every(r => c.sav[r.k]?.n) && (
+          <div className="px-5 py-10 text-center">
+            <p className="text-sm text-text-lt">All strategies are marked inactive.</p>
+            <p className="text-xs text-text-xs mt-1">Toggle strategies on in the Snapshot tab to calculate savings.</p>
+          </div>
+        )}
+
         {/* Table header */}
         <div
           className="grid px-5 py-2 bg-surface border-b border-border text-[10.5px] font-semibold uppercase tracking-[.05em] text-text-lt"
@@ -139,7 +147,7 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
 
         {/* Total row */}
         <div
-          className="grid items-center px-5 py-4 bg-navy rounded-b-[10px]"
+          className="grid items-center px-5 py-4 bg-navy rounded-b-xl"
           style={{ gridTemplateColumns: gridCols }}
         >
           <span className="text-[12px] font-bold uppercase tracking-[.05em] text-white/60">

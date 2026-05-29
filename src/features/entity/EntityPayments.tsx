@@ -33,8 +33,9 @@ export function EntityPayments({ client: c, onChange }: Props) {
 
   if (!entities.length) {
     return (
-      <div className="bg-white border border-border rounded-[10px] p-6 text-[13px] text-text-lt">
-        No entities added. Go to Snapshot to add entities.
+      <div className="bg-white border border-border/70 rounded-xl shadow-sm px-5 py-10 text-center">
+        <p className="text-sm text-text-lt">No entities added yet.</p>
+        <p className="text-xs text-text-xs mt-1">Add an entity on the Snapshot tab to track entity payments here.</p>
       </div>
     )
   }

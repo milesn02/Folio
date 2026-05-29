@@ -1,0 +1,1 @@
+﻿Review the UI/UX design of this project. Score each dimension 1-10: visual hierarchy, typography, color palette, spacing rhythm, component consistency, interaction design, empty states, accessibility. For each: specific issues with file paths and exact fixes. End with the top 5 highest-impact changes to make first.

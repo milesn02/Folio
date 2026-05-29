@@ -1,0 +1,1 @@
+﻿Act as a senior designer auditing this codebase. Find everything that looks unpolished, inconsistent, or amateurish. For each issue: which file, what the problem is, and the exact code fix. Apply the fixes.

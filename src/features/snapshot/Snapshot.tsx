@@ -392,7 +392,7 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                     'flex items-center gap-3 px-5 py-3 transition-all duration-150 relative',
                     i < active.length - 1 && 'border-b border-border',
                     clickable
-                      ? 'cursor-pointer group hover:-translate-y-0.5 hover:shadow-md hover:z-10 hover:bg-white hover:rounded-lg select-none'
+                      ? 'cursor-pointer group hover:-translate-y-0.5 hover:shadow-md hover:z-10 hover:bg-white select-none'
                       : 'cursor-default',
                   )}
                   onClick={clickable ? () => setOpenPanel(k) : undefined}
@@ -439,8 +439,7 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                 </div>
               )
             })}
-            <div className="flex items-center px-5 py-4 rounded-b-xl"
-              style={{ background: 'linear-gradient(90deg, #1a3f28 0%, #204d31 100%)' }}>
+            <div className="flex items-center px-5 py-4 rounded-b-xl" style={{ background: 'linear-gradient(90deg, #1a3f28 0%, #204d31 100%)' }}>
               <span className="flex-1 text-xs font-bold uppercase tracking-[.07em] text-white/40">Total Est. Tax Savings</span>
               <span className="font-serif text-xl text-accent tracking-tight">{fmt(total)}</span>
             </div>

@@ -27,8 +27,8 @@ const STATUS_CYCLE: PayStatus[] = ['unpaid', 'scheduled', 'paid']
 
 const STATUS_STYLES: Record<PayStatus, string> = {
   unpaid:    'bg-surface text-text-lt border-border',
-  scheduled: 'bg-amber-50 text-amber-700 border-amber-200',
-  paid:      'bg-green-50 text-green-700 border-green-200',
+  scheduled: 'bg-accent/10 text-accent-dk border-accent/30',
+  paid:      'bg-success-bg text-success border-success-border',
 }
 const STATUS_DOTS: Record<PayStatus, string> = {
   unpaid:    'bg-text-lt/40',

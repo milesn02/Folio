@@ -24,7 +24,7 @@ export function Field({ label, htmlFor, required, className, children, ...props 
 
 // Shared input class
 export const inputCls = [
-  'w-full rounded-md border border-border/80 bg-white px-3 py-[7px] text-sm text-text',
+  'w-full rounded-md border border-border bg-surface px-3 py-[7px] text-sm text-text',
   'placeholder:text-text-xs outline-none shadow-xs',
   'hover:border-border-dk',
   'focus:border-accent/70 focus:ring-2 focus:ring-accent/15 focus:shadow-glow-accent',

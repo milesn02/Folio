@@ -10,8 +10,8 @@ export function Card({ className, accent, elevated, flush, ...props }: CardProps
   return (
     <div
       className={cn(
-        'rounded-xl bg-white border border-border/70',
-        elevated ? 'shadow-md' : 'shadow-sm',
+        'rounded-xl bg-white border border-border',
+        elevated ? 'shadow-md' : 'shadow',
         accent && 'border-l-[3px] border-l-accent',
         flush && 'overflow-hidden',
         className,
@@ -37,7 +37,7 @@ export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHead
   return (
     <h3
       className={cn(
-        'text-xs font-bold uppercase tracking-[.07em] text-text-lt',
+        'text-[13px] font-semibold text-text-md',
         className,
       )}
       {...props}

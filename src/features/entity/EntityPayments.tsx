@@ -10,8 +10,8 @@ interface Props { client: ClientData; onChange: (data: ClientData) => void }
 function AVBtn({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
   return (
     <button onClick={onClick}
-      className={cn('w-7 h-7 rounded text-[11px] font-bold border transition-colors',
-        active ? 'bg-navy text-white border-navy' : 'bg-white text-text-lt border-border hover:border-navy/30')}>
+      className={cn('h-7 px-2.5 rounded text-[11px] font-semibold border transition-colors',
+        active ? 'bg-navy text-white border-navy' : 'bg-surface text-text-lt border-border hover:border-navy/30')}>
       {label}
     </button>
   )
@@ -73,7 +73,7 @@ export function EntityPayments({ client: c, onChange }: Props) {
                 <th className="text-left px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[12%]">Date</th>
                 <th className="text-left px-3 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[28%]">Type</th>
                 <th className="text-left px-3 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[24%]">Amount</th>
-                <th className="text-center px-2 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[20%]">A / V</th>
+                <th className="text-center px-2 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[20%]">Auth / Void</th>
               </tr>
             </thead>
             <tbody>
@@ -91,8 +91,8 @@ export function EntityPayments({ client: c, onChange }: Props) {
                   </td>
                   <td className="px-2 py-2">
                     <div className="flex gap-1 justify-center">
-                      <AVBtn active={pd[row.ak] as boolean} label="A" onClick={() => setField(row.ak, !pd[row.ak])} />
-                      <AVBtn active={pd[row.vk] as boolean} label="V" onClick={() => setField(row.vk, !pd[row.vk])} />
+                      <AVBtn active={pd[row.ak] as boolean} label="Auth" onClick={() => setField(row.ak, !pd[row.ak])} />
+                      <AVBtn active={pd[row.vk] as boolean} label="Void" onClick={() => setField(row.vk, !pd[row.vk])} />
                     </div>
                   </td>
                 </tr>

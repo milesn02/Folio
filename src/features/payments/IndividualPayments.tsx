@@ -25,15 +25,15 @@ function getClientState(c: ClientData): string {
 
 const STATUS_CYCLE: PayStatus[] = ['unpaid', 'scheduled', 'paid']
 
-const STATUS_STYLES: Record<PayStatus, string> = {
-  unpaid:    'bg-surface text-text-lt border-border',
-  scheduled: 'bg-accent/10 text-accent-dk border-accent/30',
-  paid:      'bg-success-bg text-success border-success-border',
+const STATUS_TEXT: Record<PayStatus, string> = {
+  unpaid:    'text-text-xs',
+  scheduled: 'text-accent-dk',
+  paid:      'text-success',
 }
 const STATUS_DOTS: Record<PayStatus, string> = {
-  unpaid:    'bg-text-lt/40',
-  scheduled: 'bg-amber-400',
-  paid:      'bg-green-500',
+  unpaid:    'bg-border-dk',
+  scheduled: 'bg-accent',
+  paid:      'bg-success',
 }
 const STATUS_LABELS: Record<PayStatus, string> = {
   unpaid:    'Unpaid',
@@ -54,11 +54,11 @@ function StatusPill({ status, onClick }: { status: PayStatus; onClick: () => voi
     <button
       onClick={onClick}
       className={cn(
-        'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-semibold transition-colors whitespace-nowrap',
-        STATUS_STYLES[status],
+        'inline-flex items-center gap-1.5 text-xs font-medium transition-colors whitespace-nowrap',
+        STATUS_TEXT[status],
       )}
     >
-      <span className={cn('w-1.5 h-1.5 rounded-full', STATUS_DOTS[status])} />
+      <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', STATUS_DOTS[status])} />
       {STATUS_LABELS[status]}
     </button>
   )

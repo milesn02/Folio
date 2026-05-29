@@ -15,6 +15,7 @@ const STATUS_STYLES: Record<StrategyStatus, string> = {
   implementing: 'bg-navy/[0.07] text-navy border-navy/20',
   complete:     'bg-success-bg text-success border-success-border',
 }
+// Panel header still uses pill style for legibility inside the modal
 const STATUS_CYCLE: StrategyStatus[] = ['considering', 'committed', 'implementing', 'complete']
 
 const AugustaRule   = lazy(() => import('@/features/augusta/AugustaRule').then(m => ({ default: m.AugustaRule })))

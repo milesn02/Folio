@@ -18,10 +18,16 @@ const STATUS_LABELS: Record<StrategyStatus, string> = {
   complete:     'Complete ✓',
 }
 const STATUS_STYLES: Record<StrategyStatus, string> = {
-  considering:  'bg-surface text-text-lt border-border',
-  committed:    'bg-accent/10 text-accent-dk border-accent/30',
-  implementing: 'bg-navy/[0.07] text-navy border-navy/20',
-  complete:     'bg-success-bg text-success border-success-border',
+  considering:  'text-text-xs',
+  committed:    'text-accent-dk',
+  implementing: 'text-navy',
+  complete:     'text-success',
+}
+const STATUS_DOTS: Record<StrategyStatus, string> = {
+  considering:  'bg-border-dk',
+  committed:    'bg-accent',
+  implementing: 'bg-navy',
+  complete:     'bg-success',
 }
 const STATUS_CYCLE: StrategyStatus[] = ['considering', 'committed', 'implementing', 'complete']
 
@@ -406,10 +412,11 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                       onChange({ ...c, strat: { ...c.strat, [k]: { ...c.strat[k], status: next } } })
                     }}
                     className={cn(
-                      'text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-colors whitespace-nowrap flex-shrink-0',
+                      'inline-flex items-center gap-1.5 text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0',
                       STATUS_STYLES[c.strat[k]?.status ?? 'considering'],
                     )}
                   >
+                    <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', STATUS_DOTS[c.strat[k]?.status ?? 'considering'])} />
                     {STATUS_LABELS[c.strat[k]?.status ?? 'considering']}
                   </button>
                   {clickable && (

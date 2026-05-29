@@ -56,13 +56,6 @@ export function StrategyPanel({ stratKey, client, onChange, onClose }: Props) {
     return () => window.removeEventListener('keydown', handler)
   }, [open, onClose])
 
-  // Lock the client tab scroll container while panel is open
-  useEffect(() => {
-    if (!open) return
-    const el = document.getElementById('client-scroll')
-    if (el) el.style.overflow = 'hidden'
-    return () => { if (el) el.style.overflow = '' }
-  }, [open])
 
   if (!open) return null
 
@@ -86,10 +79,10 @@ export function StrategyPanel({ stratKey, client, onChange, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6 overflow-y-auto"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl flex flex-col max-h-[90vh] min-h-[60vh] animate-fade-in">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl flex flex-col animate-fade-in">
         {/* Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-border flex-shrink-0">
           <div className="flex items-center gap-3 flex-1 min-w-0">

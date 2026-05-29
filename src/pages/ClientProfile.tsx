@@ -123,9 +123,11 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
         onDownloadReport={handleDownloadReport}
         presence={presence}
       />
-      <div className="flex-1 overflow-y-auto px-[22px] py-[18px]">
+      <div className="flex-1 overflow-y-auto px-6 py-5">
         <Suspense fallback={<TabSkeleton />}>
-          {renderTab()}
+          <div key={activeTab} className="animate-enter">
+            {renderTab()}
+          </div>
         </Suspense>
       </div>
 

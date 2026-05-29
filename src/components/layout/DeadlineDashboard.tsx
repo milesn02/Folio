@@ -105,48 +105,48 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-surface px-8 py-6">
-      <h2 className="font-serif text-[22px] text-navy tracking-tight mb-5">Upcoming Deadlines</h2>
+    <div className="flex-1 overflow-y-auto bg-surface px-8 py-7">
+      <h2 className="font-serif text-3xl text-navy tracking-tight mb-6">Upcoming Deadlines</h2>
       {Array.from(groups.entries()).map(([dateKey, groupItems]) => {
         const { daysAway, dueDate, quarter } = groupItems[0]
         const label = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
         return (
-          <div key={dateKey} className="mb-6">
-            <div className="flex items-center gap-2.5 mb-2.5">
-              <h3 className="text-[13px] font-semibold text-text">Q{quarter} — {label}</h3>
+          <div key={dateKey} className="mb-7 animate-enter">
+            <div className="flex items-center gap-2.5 mb-3">
+              <h3 className="text-sm font-semibold text-text-md">Q{quarter} — {label}</h3>
               {daysAway < 0
-                ? <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-red-50 text-danger border border-red-200">{Math.abs(daysAway)}d overdue</span>
+                ? <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-danger-bg text-danger border border-danger-border">{Math.abs(daysAway)}d overdue</span>
                 : daysAway === 0
-                ? <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">Due today</span>
-                : <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">{daysAway}d away</span>
+                ? <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Due today</span>
+                : <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">{daysAway}d away</span>
               }
             </div>
-            <div className="bg-white rounded-[10px] border border-border overflow-hidden">
+            <div className="bg-white rounded-xl border border-border/60 shadow-sm overflow-hidden">
               {groupItems.map((item, i) => (
                 <button
                   key={item.clientKey}
                   onClick={() => onSelectClient(item.clientKey)}
-                  className={`w-full flex items-center gap-4 px-5 py-3 text-left hover:bg-surface transition-colors ${i > 0 ? 'border-t border-border' : ''}`}
+                  className={`w-full flex items-center gap-4 px-5 py-3.5 text-left hover:bg-surface/60 transition-colors duration-150 ${i > 0 ? 'border-t border-border/50' : ''}`}
                 >
-                  <span className="flex-1 text-[13px] font-semibold text-text">{item.clientName}</span>
-                  <div className="flex items-center gap-5">
+                  <span className="flex-1 text-sm font-semibold text-text">{item.clientName}</span>
+                  <div className="flex items-center gap-6">
                     {item.fedAmount > 0 && (
                       <div className="text-right">
-                        <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">Federal</p>
-                        <p className={`font-serif text-[14px] ${item.fedStatus === 'paid' ? 'text-success' : 'text-navy'}`}>
+                        <p className="text-xs font-bold uppercase tracking-[.06em] text-text-xs mb-0.5">Federal</p>
+                        <p className={`font-serif text-base font-medium ${item.fedStatus === 'paid' ? 'text-success' : 'text-navy'}`}>
                           {fmt(item.fedAmount)}{item.fedStatus === 'paid' ? ' ✓' : ''}
                         </p>
                       </div>
                     )}
                     {item.stateAmount > 0 && (
                       <div className="text-right">
-                        <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">State</p>
-                        <p className={`font-serif text-[14px] ${item.stateStatus === 'paid' ? 'text-success' : 'text-navy'}`}>
+                        <p className="text-xs font-bold uppercase tracking-[.06em] text-text-xs mb-0.5">State</p>
+                        <p className={`font-serif text-base font-medium ${item.stateStatus === 'paid' ? 'text-success' : 'text-navy'}`}>
                           {fmt(item.stateAmount)}{item.stateStatus === 'paid' ? ' ✓' : ''}
                         </p>
                       </div>
                     )}
-                    <ChevronRight className="w-4 h-4 text-text-lt" />
+                    <ChevronRight className="w-4 h-4 text-text-xs" />
                   </div>
                 </button>
               ))}

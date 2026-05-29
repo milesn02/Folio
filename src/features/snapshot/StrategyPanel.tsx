@@ -11,9 +11,9 @@ const STATUS_LABELS: Record<StrategyStatus, string> = {
 }
 const STATUS_STYLES: Record<StrategyStatus, string> = {
   considering:  'bg-surface text-text-lt border-border',
-  committed:    'bg-amber-50 text-amber-700 border-amber-200',
-  implementing: 'bg-blue-50 text-blue-700 border-blue-200',
-  complete:     'bg-green-50 text-green-700 border-green-200',
+  committed:    'bg-accent/10 text-accent-dk border-accent/30',
+  implementing: 'bg-navy/[0.07] text-navy border-navy/20',
+  complete:     'bg-success-bg text-success border-success-border',
 }
 const STATUS_CYCLE: StrategyStatus[] = ['considering', 'committed', 'implementing', 'complete']
 

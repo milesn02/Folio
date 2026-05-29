@@ -56,6 +56,13 @@ export function StrategyPanel({ stratKey, client, onChange, onClose }: Props) {
     return () => window.removeEventListener('keydown', handler)
   }, [open, onClose])
 
+  // Lock background scroll while panel is open
+  useEffect(() => {
+    if (!open) return
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [open])
+
   if (!open) return null
 
   const props = { client: draft, onChange: setDraft }

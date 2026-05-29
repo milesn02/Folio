@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
-import { Button } from '@/components/ui'
 
 export default function Login() {
   const { user, loading } = useAuth()
@@ -24,57 +23,117 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-navy flex items-center justify-center p-4">
-      <div className="w-full max-w-sm bg-white rounded-lg shadow-lg p-8">
-        {/* Logo */}
-        <div className="flex items-baseline gap-1.5 mb-1">
-          <span className="font-serif text-[28px] text-navy tracking-tight">Folio</span>
-          <div className="w-1.5 h-1.5 rounded-full bg-accent mb-1 flex-shrink-0" />
+    <div
+      className="min-h-screen flex"
+      style={{ background: 'linear-gradient(135deg, #1a3f28 0%, #204d31 55%, #265c3a 100%)' }}
+    >
+      {/* Subtle radial glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse at 70% 30%, rgba(200,169,110,0.08), transparent 60%)' }}
+      />
+
+      {/* Left — branding */}
+      <div className="hidden lg:flex flex-col justify-between w-[420px] flex-shrink-0 p-12 relative">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="font-serif text-[32px] text-white tracking-tight leading-none">Folio</span>
+            <div className="w-[6px] h-[6px] rounded-full bg-accent flex-shrink-0 mb-1" />
+          </div>
+          <p className="text-[11px] text-white/30 uppercase tracking-[.12em] font-semibold">
+            Tax Advisory Platform
+          </p>
         </div>
-        <p className="text-[11px] text-text-lt uppercase tracking-[.08em] font-medium mb-7">
-          CPA Client Portal
+
+        <div className="space-y-6">
+          {[
+            { label: 'Client Snapshot', desc: 'Every number, strategy, and deadline in one view.' },
+            { label: 'Salary Schedules', desc: 'Model optimal S-Corp compensation in seconds.' },
+            { label: 'Client-Ready PDFs', desc: 'Send polished summaries that show your value.' },
+          ].map(({ label, desc }) => (
+            <div key={label} className="flex gap-3">
+              <div className="w-[3px] rounded-full bg-accent/50 flex-shrink-0 mt-1" />
+              <div>
+                <p className="text-sm font-semibold text-white/80">{label}</p>
+                <p className="text-xs text-white/35 mt-0.5 leading-relaxed">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-[10px] text-white/20 uppercase tracking-[.08em]">
+          Secure · Encrypted · Advisor-only access
         </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              required
-              className="w-full rounded-sm border border-border px-3 py-2 text-[13px] text-text outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/20 transition-colors"
-            />
+      {/* Right — form */}
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-[380px]">
+          {/* Mobile logo */}
+          <div className="lg:hidden mb-8 text-center">
+            <div className="inline-flex items-center gap-2">
+              <span className="font-serif text-[28px] text-white tracking-tight">Folio</span>
+              <div className="w-[5px] h-[5px] rounded-full bg-accent flex-shrink-0" />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              onKeyDown={e => { if (e.key === 'Enter') handleSubmit(e) }}
-              className="w-full rounded-sm border border-border px-3 py-2 text-[13px] text-text outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/20 transition-colors"
-            />
+          <div
+            className="rounded-xl p-8 shadow-xl"
+            style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)' }}
+          >
+            <h1 className="font-serif text-[22px] text-navy tracking-tight mb-1">Sign in</h1>
+            <p className="text-xs text-text-lt mb-7">Access your firm's advisory workspace.</p>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="your@firm.com"
+                  required
+                  autoFocus
+                  className="w-full rounded-md border border-border px-3 py-2.5 text-[13px] text-text outline-none focus:border-accent/60 focus:ring-2 focus:ring-accent/15 transition-all"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="w-full rounded-md border border-border px-3 py-2.5 text-[13px] text-text outline-none focus:border-accent/60 focus:ring-2 focus:ring-accent/15 transition-all"
+                />
+              </div>
+
+              {error && (
+                <p className="text-[12px] text-danger bg-danger-bg border border-danger-border rounded-md px-3 py-2">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full mt-1 h-10 rounded-md bg-navy text-white text-[13px] font-semibold hover:bg-navy/85 disabled:opacity-60 transition-colors cursor-pointer"
+              >
+                {submitting ? 'Signing in…' : 'Sign in →'}
+              </button>
+            </form>
           </div>
 
-          {error && (
-            <p className="text-[12px] text-danger bg-danger-bg border border-danger-border rounded px-3 py-2">
-              {error}
-            </p>
-          )}
-
-          <Button type="submit" variant="default" disabled={submitting} className="w-full mt-1 h-10">
-            {submitting ? 'Signing in…' : 'Sign in →'}
-          </Button>
-        </form>
+          <p className="text-center text-[11px] text-white/25 mt-5">
+            Contact your firm administrator for access.
+          </p>
+        </div>
       </div>
     </div>
   )

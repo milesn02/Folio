@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardBody, SubTabs, DollarInput } from '@/c
 
 import { cn } from '@/lib/utils'
 import { mkEntityPayData } from '@/lib/factory'
+import { CUR_YEAR } from '@/lib/constants'
 import type { ClientData, EntityPayData } from '@/lib/types'
 
 interface Props { client: ClientData; onChange: (data: ClientData) => void }
@@ -61,7 +62,7 @@ export function EntityPayments({ client: c, onChange }: Props) {
       />
       <Card>
         <CardHeader>
-          <CardTitle>{ent.name || 'Entity'} — 2025 Tax Payments</CardTitle>
+          <CardTitle>{ent.name || 'Entity'} — {CUR_YEAR} Tax Payments</CardTitle>
         </CardHeader>
         <CardBody className="p-0">
           <p className="px-5 py-2.5 border-b border-border text-[12px] text-text-lt font-medium">

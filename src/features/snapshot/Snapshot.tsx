@@ -97,8 +97,8 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
       </div>
 
       {/* KPI row */}
-      <div className="grid grid-cols-4 gap-3">
-        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} accent />
+      <div className="grid gap-3" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr' }}>
+        <KpiCard label="Est. Tax Savings" value={tot ? fmt(tot) : '—'} accent large />
         <KpiCard
           label="Strategies Active"
           value={String(stratCount)}
@@ -474,22 +474,27 @@ function HeroTag({ children }: { children: React.ReactNode }) {
 }
 
 function KpiCard({
-  label, value, sub, valueClass, accent,
+  label, value, sub, valueClass, accent, large,
 }: {
-  label: string; value: string; sub?: string; valueClass?: string; accent?: boolean
+  label: string; value: string; sub?: string; valueClass?: string; accent?: boolean; large?: boolean
 }) {
   return (
     <div className={cn(
-      'rounded-xl border px-4 py-4 flex flex-col gap-1 shadow-sm',
-      accent ? 'bg-navy border-navy shadow-md' : 'bg-white border-border/70',
+      'rounded-xl border flex flex-col justify-center shadow-sm',
+      large ? 'px-5 py-5 gap-1.5' : 'px-4 py-4 gap-1',
+      accent ? 'bg-navy border-navy shadow-md' : 'bg-white border-border',
     )}>
       <span className={cn('text-xs font-bold uppercase tracking-[.07em]', accent ? 'text-accent/70' : 'text-text-lt')}>
         {label}
       </span>
-      <span className={valueClass ?? cn('font-serif text-2xl tracking-tight leading-tight', accent ? 'text-accent' : 'text-navy')}>
+      <span className={valueClass ?? cn(
+        'font-serif tracking-tight leading-none',
+        large ? 'text-[38px]' : 'text-2xl',
+        accent ? 'text-accent' : 'text-navy',
+      )}>
         {value}
       </span>
-      {sub && <span className={cn('text-xs mt-0.5', accent ? 'text-white/40' : 'text-text-lt')}>{sub}</span>}
+      {sub && <span className={cn('text-xs', accent ? 'text-white/40' : 'text-text-lt')}>{sub}</span>}
     </div>
   )
 }

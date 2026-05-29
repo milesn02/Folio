@@ -32,6 +32,15 @@ export const inputCls = [
   'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface',
 ].join(' ')
 
+// Ghost input — looks like plain text, reveals borders on hover/focus (for table cells)
+export const ghostInputCls = [
+  'w-full rounded-md border border-transparent bg-transparent px-3 py-[7px] text-sm text-text',
+  'placeholder:text-text-xs outline-none',
+  'hover:bg-surface hover:border-border',
+  'focus:bg-surface focus:border-accent/70 focus:ring-2 focus:ring-accent/15 focus:shadow-glow-accent',
+  'transition-all duration-150',
+].join(' ')
+
 function formatCommas(v: unknown): string {
   const raw = String(v ?? '').replace(/[$,]/g, '').trim()
   if (raw === '') return ''
@@ -42,8 +51,8 @@ function formatCommas(v: unknown): string {
 
 // Dollar-prefixed input — shows commas when blurred, raw digits while typing
 export function DollarInput({
-  className, value, onChange, onBlur, onFocus, ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+  className, value, onChange, onBlur, onFocus, ghost, ...props
+}: React.InputHTMLAttributes<HTMLInputElement> & { ghost?: boolean }) {
   const focused = useRef(false)
   const [display, setDisplay] = useState(() => formatCommas(value))
 
@@ -76,7 +85,7 @@ export function DollarInput({
     <div className="relative">
       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-text-lt pointer-events-none select-none">$</span>
       <input
-        className={cn(inputCls, 'pl-6', className)}
+        className={cn(ghost ? ghostInputCls : inputCls, 'pl-6', className)}
         value={display}
         onChange={handleChange}
         onKeyDown={handleKeyDown}

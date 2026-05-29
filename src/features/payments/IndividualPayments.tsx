@@ -164,11 +164,11 @@ export function IndividualPayments({ client: c, onChange }: Props) {
               <tbody>
                 <tr className="border-b border-border bg-surface/50">
                   <td className="px-4 py-2 text-[12px] text-text-lt italic">Prior year credit</td>
-                  <td className="px-3 py-2"><DollarInput className="w-24" value={pd.cFed} onChange={e => setField('cFed', e.target.value)} placeholder="0" /></td>
+                  <td className="px-3 py-2"><DollarInput ghost className="w-24 font-mono text-right" value={pd.cFed} onChange={e => setField('cFed', e.target.value)} placeholder="—" /></td>
                   <td className="px-2 py-2 text-center text-text-lt/40 text-lg">—</td>
                   {!noStateTax && (
                     <>
-                      <td className="px-3 py-2"><DollarInput className="w-24" value={pd.cCA} onChange={e => setField('cCA', e.target.value)} placeholder="0" /></td>
+                      <td className="px-3 py-2"><DollarInput ghost className="w-24 font-mono text-right" value={pd.cCA} onChange={e => setField('cCA', e.target.value)} placeholder="—" /></td>
                       <td className="px-2 py-2 text-center text-text-lt/40 text-lg">—</td>
                     </>
                   )}
@@ -182,7 +182,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                       </div>
                     </td>
                     <td className="px-3 py-2">
-                      <DollarInput className="w-24" value={pd[q.fk] as string} onChange={e => setField(q.fk, e.target.value)} placeholder="0" />
+                      <DollarInput ghost className="w-24 font-mono text-right" value={pd[q.fk] as string} onChange={e => setField(q.fk, e.target.value)} placeholder="—" />
                     </td>
                     <td className="px-2 py-2">
                       <div className="flex gap-1 justify-center">
@@ -193,7 +193,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                     {!noStateTax && (
                       <>
                         <td className="px-3 py-2">
-                          <DollarInput className="w-24" value={pd[q.ck] as string} onChange={e => setField(q.ck, e.target.value)} placeholder="0" />
+                          <DollarInput ghost className="w-24 font-mono text-right" value={pd[q.ck] as string} onChange={e => setField(q.ck, e.target.value)} placeholder="—" />
                         </td>
                         <td className="px-2 py-2">
                           <div className="flex gap-1 justify-center">
@@ -232,11 +232,11 @@ export function IndividualPayments({ client: c, onChange }: Props) {
               <tbody>
                 <tr className="border-b border-border bg-surface/50">
                   <td className="px-4 py-2 text-[12px] text-text-lt italic">Prior year credit</td>
-                  <td className="px-3 py-2"><DollarInput className="w-24" value={pd.cFed} onChange={e => setField('cFed', e.target.value)} placeholder="0" /></td>
+                  <td className="px-3 py-2"><DollarInput ghost className="w-24 font-mono text-right" value={pd.cFed} onChange={e => setField('cFed', e.target.value)} placeholder="—" /></td>
                   <td className="px-3 py-2 text-text-lt/40">—</td>
                   {!noStateTax && (
                     <>
-                      <td className="px-3 py-2"><DollarInput className="w-24" value={pd.cCA} onChange={e => setField('cCA', e.target.value)} placeholder="0" /></td>
+                      <td className="px-3 py-2"><DollarInput ghost className="w-24 font-mono text-right" value={pd.cCA} onChange={e => setField('cCA', e.target.value)} placeholder="—" /></td>
                       <td className="px-3 py-2 text-text-lt/40">—</td>
                     </>
                   )}
@@ -263,7 +263,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                         </div>
                       </td>
                       <td className="px-3 py-2">
-                        <DollarInput className="w-24" value={pd[q.fk] as string} onChange={e => setField(q.fk, e.target.value)} placeholder="0" />
+                        <DollarInput ghost className="w-24 font-mono text-right" value={pd[q.fk] as string} onChange={e => setField(q.fk, e.target.value)} placeholder="—" />
                       </td>
                       <td className="px-3 py-2">
                         <StatusPill status={fStatus} onClick={() => cycleStatus(q.fsk, fStatus)} />
@@ -279,7 +279,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                       {!noStateTax && (
                         <>
                           <td className="px-3 py-2">
-                            <DollarInput className="w-24" value={pd[q.ck] as string} onChange={e => setField(q.ck, e.target.value)} placeholder="0" />
+                            <DollarInput ghost className="w-24 font-mono text-right" value={pd[q.ck] as string} onChange={e => setField(q.ck, e.target.value)} placeholder="—" />
                           </td>
                           <td className="px-3 py-2">
                             <StatusPill status={cStatus} onClick={() => cycleStatus(q.csk, cStatus)} />

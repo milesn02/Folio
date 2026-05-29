@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { useClientStore, selectFilteredClients } from '@/store/clientStore'
 import { quarterDate, fmt, parseDollar } from '@/lib/utils'
+import { calcSavings } from '@/lib/calculations'
 import type { DbClient } from '@/lib/supabase'
 import type { PayStatus } from '@/lib/types'
 
@@ -78,6 +79,12 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
   const clients = useClientStore(selectFilteredClients)
   const items = useMemo(() => getItems(clients), [clients])
 
+  const totalSavings = useMemo(
+    () => clients.reduce((sum, c) => sum + calcSavings(c.data), 0),
+    [clients],
+  )
+  const overdueCount = items.filter(i => i.daysAway < 0).length
+
   const groups = useMemo(() => {
     const map = new Map<string, DeadlineItem[]>()
     for (const item of items) {
@@ -106,6 +113,31 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
 
   return (
     <div className="flex-1 overflow-y-auto bg-surface px-8 py-7">
+
+      {/* Firm stats strip */}
+      <div className="flex items-center gap-8 mb-8 pb-7 border-b border-border">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt mb-0.5">Clients</p>
+          <p className="font-serif text-[26px] text-navy tracking-tight leading-none">{clients.length}</p>
+        </div>
+        <div className="w-px h-8 bg-border" />
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt mb-0.5">Savings Delivered</p>
+          <p className="font-serif text-[26px] text-accent tracking-tight leading-none">
+            {totalSavings > 0 ? fmt(totalSavings) : '—'}
+          </p>
+        </div>
+        {overdueCount > 0 && (
+          <>
+            <div className="w-px h-8 bg-border" />
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt mb-0.5">Overdue</p>
+              <p className="font-serif text-[26px] text-danger tracking-tight leading-none">{overdueCount}</p>
+            </div>
+          </>
+        )}
+      </div>
+
       <h2 className="font-serif text-3xl text-navy tracking-tight mb-6">Upcoming Deadlines</h2>
       {Array.from(groups.entries()).map(([dateKey, groupItems]) => {
         const { daysAway, dueDate, quarter } = groupItems[0]
@@ -121,7 +153,7 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
                 : <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">{daysAway}d away</span>
               }
             </div>
-            <div className="bg-white rounded-xl border border-border/60 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-border shadow overflow-hidden">
               {groupItems.map((item, i) => (
                 <button
                   key={item.clientKey}

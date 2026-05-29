@@ -109,13 +109,17 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
                 <p className="text-[11px] text-text-lt mt-0.5">{r.d}</p>
               </div>
               <div className="flex flex-col items-end gap-0.5">
-                <DollarInput
-                  className={cn('w-32 text-right font-mono', isInactive && 'line-through decoration-text-lt')}
-                  value={displayVal}
-                  onChange={e => !isAuto && setAmount(r.k, e.target.value)}
-                  readOnly={isAuto}
-                  placeholder="0"
-                />
+                {isInactive && !displayVal ? (
+                  <span className="w-32 text-right text-[14px] text-text-lt/40 font-mono pr-3">—</span>
+                ) : (
+                  <DollarInput
+                    className={cn('w-32 text-right font-mono', isInactive && 'opacity-40 line-through decoration-text-lt')}
+                    value={displayVal}
+                    onChange={e => !isAuto && setAmount(r.k, e.target.value)}
+                    readOnly={isAuto}
+                    placeholder="—"
+                  />
+                )}
               </div>
               {isPast && (
                 <div className="flex flex-col items-end gap-0.5">

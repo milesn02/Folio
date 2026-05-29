@@ -171,7 +171,7 @@ export function Sidebar({ onNewClient }: SidebarProps) {
                 key={c.client_key}
                 onClick={() => setActiveKey(c.client_key)}
                 className={cn(
-                  'group w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg mb-px text-left',
+                  'relative group w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg mb-px text-left',
                   'transition-all duration-150',
                   activeKey === c.client_key
                     ? 'bg-white/[0.10] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
@@ -182,7 +182,7 @@ export function Sidebar({ onNewClient }: SidebarProps) {
                 <div className={cn(
                   'absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full transition-all duration-200',
                   activeKey === c.client_key ? 'h-5 bg-accent opacity-100' : 'h-0 opacity-0',
-                )} style={{ position: 'static', transform: 'none' }} />
+                )} />
                 <Avatar name={c.data.name || '?'} size="sm" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">

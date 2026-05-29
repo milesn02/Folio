@@ -75,19 +75,31 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Editorial statement — true center, bold */}
-        <div className="relative flex-1 flex items-center" style={{ animation: 'enter 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s both' }}>
+        {/* Editorial statement — centered, line-by-line entrance */}
+        <div className="relative flex-1 flex items-center">
           <div>
-            <div className="mb-6" style={{ width: '40px', height: '1px', background: 'rgba(200,169,110,0.4)' }} />
-            <p
-              className="font-serif leading-[1.1]"
-              style={{ fontSize: '52px', color: 'rgba(255,255,255,0.72)', letterSpacing: '-1.5px' }}
-            >
-              Know every<br />
-              number.<br />
-              Show every<br />
-              result.
-            </p>
+            <div
+              className="mb-6"
+              style={{
+                width: '40px', height: '1px',
+                background: 'rgba(200,169,110,0.5)',
+                animation: 'enter 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both',
+              }}
+            />
+            {['Know every', 'number.', 'Show every', 'result.'].map((line, i) => (
+              <span
+                key={line}
+                className="block font-serif leading-[1.1]"
+                style={{
+                  fontSize: '52px',
+                  color: 'rgba(255,255,255,0.88)',
+                  letterSpacing: '-1.5px',
+                  animation: `enter 0.65s cubic-bezier(0.16,1,0.3,1) ${0.22 + i * 0.09}s both`,
+                }}
+              >
+                {line}
+              </span>
+            ))}
           </div>
         </div>
 

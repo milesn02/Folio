@@ -56,11 +56,12 @@ export function StrategyPanel({ stratKey, client, onChange, onClose }: Props) {
     return () => window.removeEventListener('keydown', handler)
   }, [open, onClose])
 
-  // Lock background scroll while panel is open
+  // Lock the client tab scroll container while panel is open
   useEffect(() => {
     if (!open) return
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    const el = document.getElementById('client-scroll')
+    if (el) el.style.overflow = 'hidden'
+    return () => { if (el) el.style.overflow = '' }
   }, [open])
 
   if (!open) return null

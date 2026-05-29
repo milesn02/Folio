@@ -9,10 +9,8 @@ React + TypeScript + Vite + Tailwind + Supabase tax advisory platform.
 - Fonts: DM Serif Display, DM Sans, JetBrains Mono
 
 ## Design System
-- Color tokens: `navy` (forest green #1a3f28), `accent` (gold #c8a96e), `surface`, `border`, `text`
-- Cards use `rounded-xl shadow-sm border border-border/70`
-- Base font: 14px, min text size 11px
-- Animations: `animate-enter` for page/tab transitions (spring easing)
+See `design-system/MASTER.md` for the full reference — colors, typography, cards, status indicators, anti-patterns.
+Always follow it. Never use raw Tailwind colors or pixel font sizes.
 
 ## gstack
 Available skills: /office-hours, /plan-ceo-review, /plan-eng-review, /plan-design-review,

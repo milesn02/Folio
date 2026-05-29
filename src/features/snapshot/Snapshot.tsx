@@ -488,7 +488,7 @@ function KpiCard({
   label: string; value: string; rawValue?: number; sub?: string; valueClass?: string; accent?: boolean; large?: boolean; dark?: boolean
 }) {
   const counted = useCountUp(rawValue ?? 0)
-  const displayValue = rawValue != null ? fmt(counted) : value
+  const displayValue = rawValue != null && rawValue !== 0 ? fmt(counted) : value
 
   return (
     <div className={cn(

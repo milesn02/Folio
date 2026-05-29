@@ -49,7 +49,7 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
         <CardTitle>Tax Savings Summary</CardTitle>
         <div className="flex items-center gap-3">
           <div className="flex gap-1">
-            {Array.from({ length: 5 }, (_, i) => String(thisYear - i)).map(y => (
+            {Array.from({ length: 6 }, (_, i) => String(thisYear - i)).map(y => (
               <button
                 key={y}
                 onClick={() => setYear(y)}

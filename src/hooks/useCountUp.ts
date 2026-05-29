@@ -14,7 +14,10 @@ export function useCountUp(target: number, duration = 850): number {
       return
     }
     mounted.current = true
-    if (!target) return
+    if (!target) {
+      setValue(0)
+      return
+    }
 
     let raf: number
     const t0 = performance.now()
@@ -34,7 +37,7 @@ export function useCountUp(target: number, duration = 850): number {
 
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [target])
+  }, [target, duration])
 
   return value
 }

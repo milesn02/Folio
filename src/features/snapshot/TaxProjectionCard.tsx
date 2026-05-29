@@ -69,7 +69,7 @@ export function TaxProjectionCard({ client: c }: Props) {
             <div className="flex items-baseline gap-2">
               <span className="font-serif text-[18px] text-accent tracking-tight">{fmt(savings)}</span>
               {reduction > 0 && (
-                <span className="text-[11px] font-semibold text-green-600 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">
+                <span className="text-[11px] font-semibold text-success bg-success-bg border border-success-border px-1.5 py-0.5 rounded-full">
                   −{reduction}% tax
                 </span>
               )}
@@ -77,7 +77,7 @@ export function TaxProjectionCard({ client: c }: Props) {
           </div>
           <div className="h-1.5 rounded-full bg-border overflow-hidden">
             <div
-              className="h-full rounded-full bg-accent transition-all duration-700"
+              className="h-full rounded-full bg-success transition-all duration-700"
               style={{ width: `${Math.min(reduction, 100)}%` }}
             />
           </div>

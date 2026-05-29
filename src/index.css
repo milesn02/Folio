@@ -78,6 +78,17 @@
   .stagger-5 { animation-delay: 200ms; }
   .stagger-6 { animation-delay: 240ms; }
 
+  /* Login panel ambient drift */
+  @keyframes ambient-drift {
+    0%, 100% { transform: translate(0, 0) scale(1);    opacity: 0.4; }
+    40%       { transform: translate(8%, -6%) scale(1.06); opacity: 0.65; }
+    70%       { transform: translate(-4%, 5%) scale(0.97); opacity: 0.35; }
+  }
+  @keyframes ambient-drift-2 {
+    0%, 100% { transform: translate(0, 0) scale(1);      opacity: 0.25; }
+    50%      { transform: translate(-8%, 7%) scale(1.08); opacity: 0.45; }
+  }
+
   /* Both opacity and transform need to be hidden before animation */
   [class*="animate-enter"] {
     animation-fill-mode: both;

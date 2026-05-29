@@ -41,8 +41,29 @@ export default function Login() {
           }}
         />
 
+        {/* Ambient glow — gold, top-right */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: '420px', height: '420px',
+            top: '-15%', right: '-15%',
+            background: 'radial-gradient(circle, rgba(200,169,110,0.10) 0%, transparent 68%)',
+            animation: 'ambient-drift 13s ease-in-out infinite',
+          }}
+        />
+        {/* Ambient glow — green, bottom-left */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: '340px', height: '340px',
+            bottom: '0%', left: '-8%',
+            background: 'radial-gradient(circle, rgba(38,92,58,0.55) 0%, transparent 68%)',
+            animation: 'ambient-drift-2 17s ease-in-out infinite',
+          }}
+        />
+
         {/* Wordmark */}
-        <div className="relative">
+        <div className="relative" style={{ animation: 'enter 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s both' }}>
           <div className="flex items-center gap-2 mb-2">
             <span className="font-serif text-white leading-none" style={{ fontSize: '40px', letterSpacing: '-1px' }}>
               Folio
@@ -55,7 +76,7 @@ export default function Login() {
         </div>
 
         {/* Editorial statement */}
-        <div className="relative">
+        <div className="relative" style={{ animation: 'enter 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s both' }}>
           <p
             className="font-serif leading-[1.15]"
             style={{ fontSize: '32px', color: 'rgba(255,255,255,0.18)', letterSpacing: '-0.5px' }}
@@ -68,7 +89,7 @@ export default function Login() {
         </div>
 
         {/* Footer */}
-        <p className="relative text-[10px] uppercase tracking-[0.1em]" style={{ color: 'rgba(255,255,255,0.18)' }}>
+        <p className="relative text-[10px] uppercase tracking-[0.1em]" style={{ color: 'rgba(255,255,255,0.18)', animation: 'enter 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both' }}>
           Secure · Encrypted · Advisor access only
         </p>
       </div>

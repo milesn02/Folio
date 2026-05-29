@@ -21,9 +21,12 @@ export function parseDollar(v: string | undefined | null): number {
 /** Get client age as of the end of a given tax year */
 export function ageInYear(dob: string | undefined | null, taxYear: string): number | null {
   if (!dob) return null
-  const d = new Date(dob)
-  if (isNaN(d.getTime())) return null
-  return parseInt(taxYear) - d.getFullYear()
+  // Parse birth year directly from the string to avoid Date UTC/local timezone offset
+  // new Date('YYYY-MM-DD') is midnight UTC; getFullYear() shifts it to the local year
+  // on any UTC-offset system, making '1963-01-01' resolve to 1962 in US timezones.
+  const birthYear = parseInt(String(dob).split('-')[0])
+  if (isNaN(birthYear)) return null
+  return parseInt(taxYear) - birthYear
 }
 
 /** Deterministic avatar color from a string (initials / name) */

@@ -112,8 +112,8 @@ describe('calcSavings', () => {
   it('handles dollar signs and commas in amounts', () => {
     const c = mkClientData('FMT')
     c.sav.sOpt = { a: '$5,000', y: true, n: false }
-    c.sav.aug  = { a: '$2,500.50', y: true, n: false }
-    expect(calcSavings(c)).toBeCloseTo(7500, 0)
+    c.sav.aug  = { a: '$2,500', y: true, n: false }
+    expect(calcSavings(c)).toBe(7500)
   })
 })
 

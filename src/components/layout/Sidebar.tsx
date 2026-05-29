@@ -119,8 +119,8 @@ export function Sidebar({ onNewClient }: SidebarProps) {
             placeholder="Search clients…"
             className={cn(
               'w-full pl-8 pr-12 py-2 rounded-lg text-sm',
-              'bg-white/[0.07] border border-white/10 text-white placeholder:text-white/25',
-              'outline-none focus:bg-white/[0.10] focus:border-white/20 transition-all duration-150',
+              'bg-white/[0.10] border border-white/[0.16] text-white placeholder:text-white/30',
+              'outline-none focus:bg-white/[0.13] focus:border-white/[0.28] transition-all duration-150',
             )}
           />
           <kbd className="absolute right-6 top-1/2 -translate-y-1/2 text-2xs font-mono text-white/20 border border-white/10 rounded px-1 py-px pointer-events-none">
@@ -153,7 +153,7 @@ export function Sidebar({ onNewClient }: SidebarProps) {
 
         {/* Clients header */}
         <div className="px-4 pt-1.5 pb-1 flex items-center justify-between">
-          <p className="text-[10px] font-bold text-white/20 uppercase tracking-[.12em]">Clients</p>
+          <p className="text-[10px] font-bold text-white/40 uppercase tracking-[.12em]">Clients</p>
           <p className="text-[10px] font-semibold text-white/20 tabular-nums">
             {(searchQuery || advisorFilter) && filtered.length !== clients.length
               ? `${filtered.length} of ${clients.length}`

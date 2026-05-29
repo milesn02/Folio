@@ -75,17 +75,20 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Editorial statement — centered in the remaining space */}
+        {/* Editorial statement — true center, bold */}
         <div className="relative flex-1 flex items-center" style={{ animation: 'enter 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s both' }}>
-          <p
-            className="font-serif leading-[1.12]"
-            style={{ fontSize: '38px', color: 'rgba(255,255,255,0.42)', letterSpacing: '-0.75px' }}
-          >
-            Know every<br />
-            number.<br />
-            Show every<br />
-            result.
-          </p>
+          <div>
+            <div className="mb-6" style={{ width: '40px', height: '1px', background: 'rgba(200,169,110,0.4)' }} />
+            <p
+              className="font-serif leading-[1.1]"
+              style={{ fontSize: '52px', color: 'rgba(255,255,255,0.72)', letterSpacing: '-1.5px' }}
+            >
+              Know every<br />
+              number.<br />
+              Show every<br />
+              result.
+            </p>
+          </div>
         </div>
 
         {/* Footer */}

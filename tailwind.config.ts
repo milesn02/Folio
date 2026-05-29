@@ -28,8 +28,8 @@ export default {
         text: {
           DEFAULT: '#0e1a11',
           md: '#364039',
-          lt: '#6a7a6d',
-          xs: '#9aaa9d',
+          lt: '#4a5c4d',
+          xs: '#6a7a6d',
         },
         success: {
           DEFAULT: '#1a7a4a',

@@ -1,5 +1,4 @@
 import { Search, SlidersHorizontal, ChevronDown, Plus, ChevronLeft, ChevronRight, Settings } from 'lucide-react'
-import { PortfolioSummary } from './PortfolioSummary'
 import { useNavigate } from 'react-router-dom'
 import { cn, relativeTime, quarterDate } from '@/lib/utils'
 import { Avatar } from '@/components/ui'
@@ -147,9 +146,6 @@ export function Sidebar({ onNewClient }: SidebarProps) {
             </select>
           </div>
         )}
-
-        {/* Portfolio summary */}
-        <PortfolioSummary />
 
         {/* Clients header */}
         <div className="px-4 pt-1.5 pb-1 flex items-center justify-between">

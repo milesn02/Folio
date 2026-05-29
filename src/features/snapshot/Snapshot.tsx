@@ -1,8 +1,9 @@
-import { useMemo, useState, useRef, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import { Card, CardHeader, CardTitle, CardBody, Field, Modal } from '@/components/ui'
 import { StrategyPanel, hasPanel } from './StrategyPanel'
 import { TaxProjectionCard } from './TaxProjectionCard'
 import { GapAnalysis } from './GapAnalysis'
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
 import { inputCls } from '@/components/ui/Field'
 import { calcSavings, calcSavingsRows } from '@/lib/calculations'
 import { SKS, STRATEGY_LABELS, FILING_STATUSES, ETYPES, STATES, CUR_YEAR, SAVS_TO_SKS } from '@/lib/constants'
@@ -328,18 +329,6 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
 function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange: (d: ClientData) => void }) {
   const [pickerOpen, setPickerOpen] = useState(false)
   const [openPanel, setOpenPanel] = useState<StrategyKey | null>(null)
-  const pickerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!pickerOpen) return
-    function handleOutside(e: MouseEvent) {
-      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
-        setPickerOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleOutside)
-    return () => document.removeEventListener('mousedown', handleOutside)
-  }, [pickerOpen])
   const active = SKS.filter(k => c.strat[k]?.y)
   const inactive = SKS.filter(k => !c.strat[k]?.y)
   const savRows = useMemo(() => calcSavingsRows(c), [c])
@@ -367,32 +356,26 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
     <Card>
       <CardHeader>
         <CardTitle>Tax Savings by Strategy</CardTitle>
-        <div className="relative" ref={pickerRef}>
-          <button
-            onClick={() => setPickerOpen(v => !v)}
-            className="flex items-center gap-1 px-3 py-1.5 border border-dashed border-border rounded-md text-[12px] font-semibold text-text-lt hover:border-accent hover:text-accent transition-colors"
-          >
-            <span className="text-[15px] leading-none">+</span> Add strategy
-          </button>
-          {pickerOpen && inactive.length > 0 && (
-            <div className="absolute top-full right-0 mt-1.5 z-20 bg-white border border-border rounded-[10px] shadow-lg py-1.5 min-w-[180px]">
-              {inactive.map(k => (
-                <button
-                  key={k}
-                  onClick={() => activate(k)}
-                  className="w-full text-left px-4 py-2 text-[13px] text-text hover:bg-surface transition-colors"
-                >
-                  {STRATEGY_LABELS[k]}
-                </button>
-              ))}
-            </div>
-          )}
-          {pickerOpen && inactive.length === 0 && (
-            <div className="absolute top-full right-0 mt-1.5 z-20 bg-white border border-border rounded-[10px] shadow-lg px-4 py-3 text-[12px] text-text-lt min-w-[160px]">
-              All strategies active
-            </div>
-          )}
-        </div>
+        <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+          <PopoverTrigger asChild>
+            <button className="flex items-center gap-1 px-3 py-1.5 border border-dashed border-border rounded-md text-xs font-semibold text-text-lt hover:border-accent hover:text-accent transition-colors cursor-pointer">
+              <span className="text-sm leading-none">+</span> Add strategy
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="p-1.5 min-w-[190px]">
+            {inactive.length > 0 ? inactive.map(k => (
+              <button
+                key={k}
+                onClick={() => activate(k)}
+                className="w-full text-left px-3 py-2 text-sm text-text hover:bg-surface rounded-lg transition-colors cursor-pointer"
+              >
+                {STRATEGY_LABELS[k]}
+              </button>
+            )) : (
+              <p className="px-3 py-2.5 text-xs text-text-lt">All strategies active</p>
+            )}
+          </PopoverContent>
+        </Popover>
       </CardHeader>
       <CardBody className="p-0">
         {active.length === 0 ? (

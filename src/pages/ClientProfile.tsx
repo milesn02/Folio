@@ -1,4 +1,5 @@
 import { useCallback, lazy, Suspense, useState, useEffect } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useClientStore, selectActiveClient } from '@/store/clientStore'
 import { useUiStore } from '@/store/uiStore'
 import { usePersist } from '@/hooks/useClients'
@@ -146,10 +147,13 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
 
 function TabSkeleton() {
   return (
-    <div className="flex flex-col gap-3 animate-pulse">
-      <div className="h-32 bg-white rounded-[10px] border border-border" />
-      <div className="h-20 bg-white rounded-[10px] border border-border" />
-      <div className="h-48 bg-white rounded-[10px] border border-border" />
+    <div className="flex flex-col gap-4">
+      <Skeleton className="h-[140px] w-full" />
+      <div className="grid grid-cols-4 gap-3">
+        {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-20" />)}
+      </div>
+      <Skeleton className="h-48 w-full" />
+      <Skeleton className="h-64 w-full" />
     </div>
   )
 }

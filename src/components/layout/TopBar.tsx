@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { FileDown, StickyNote, MoreHorizontal, Trash2, BookOpen } from 'lucide-react'
 import { cn, initials } from '@/lib/utils'
 import { Button } from '@/components/ui'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { TABS, TAB_LABELS, type TabId } from '@/lib/constants'
 import { useClientStore, selectActiveClient } from '@/store/clientStore'
 import { useUiStore } from '@/store/uiStore'
@@ -84,22 +85,39 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
               </span>
             </div>
           )}
-          <Button variant="ghost" size="sm" onClick={openNotes} className="gap-1.5" title="View client notes">
-            <StickyNote className="w-3.5 h-3.5" />
-            Notes
-          </Button>
-          <Button variant="ghost" size="sm" onClick={onDownloadReport} className="gap-1.5" title="Download annual engagement report PDF">
-            <BookOpen className="w-3.5 h-3.5" />
-            Report
-          </Button>
-          <Button variant="ghost" size="sm" onClick={onDownloadSummary} className="gap-1.5" title="Download one-page client summary PDF">
-            <FileDown className="w-3.5 h-3.5" />
-            Summary
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" onClick={openNotes} className="gap-1.5">
+                <StickyNote className="w-3.5 h-3.5" />Notes
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>View client notes</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" onClick={onDownloadReport} className="gap-1.5">
+                <BookOpen className="w-3.5 h-3.5" />Report
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Annual engagement report PDF</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" onClick={onDownloadSummary} className="gap-1.5">
+                <FileDown className="w-3.5 h-3.5" />Summary
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>One-page client summary PDF</TooltipContent>
+          </Tooltip>
           <div className="relative" ref={menuRef}>
-            <Button variant="ghost" size="sm" onClick={() => setMenuOpen(o => !o)} className="px-2" title="More options">
-              <MoreHorizontal className="w-4 h-4" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" onClick={() => setMenuOpen(o => !o)} className="px-2">
+                  <MoreHorizontal className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>More options</TooltipContent>
+            </Tooltip>
             {menuOpen && (
               <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-border rounded-lg shadow-lg z-20 py-1">
                 <button

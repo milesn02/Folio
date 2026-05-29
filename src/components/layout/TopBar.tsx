@@ -61,7 +61,7 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
       {/* Action row */}
       <div className="flex items-center justify-between px-6 py-3 border-b border-border/40">
         <div className="flex items-center gap-3">
-          <h1 className="text-base font-semibold text-text tracking-tight truncate">{clientName}</h1>
+          <h1 className="text-lg font-semibold text-text tracking-tight truncate">{clientName}</h1>
           {savedAt && (
             <span className="text-xs text-text-xs">{savedLabel(savedAt)}</span>
           )}

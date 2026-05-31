@@ -52,12 +52,13 @@ function StatusSelect({ status, onChange }: { status: PayStatus; onChange: (s: P
   )
 }
 
-function DaysBadge({ date }: { date: Date }) {
+function DaysBadge({ date, paid }: { date: Date; paid?: boolean }) {
+  if (paid) return null
   const today = new Date(); today.setHours(0, 0, 0, 0)
   const d = new Date(date); d.setHours(0, 0, 0, 0)
   const days = Math.round((d.getTime() - today.getTime()) / 86400000)
   if (days < 0) return (
-    <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-red-50 text-danger border border-red-200">
+    <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-danger-bg text-danger border border-danger-border">
       {Math.abs(days)}d overdue
     </span>
   )
@@ -234,7 +235,7 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                       <td className="px-4 py-2 font-medium text-text">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           {formatDate(q.date)} — Q{q.n}
-                          <DaysBadge date={q.date} />
+                          <DaysBadge date={q.date} paid={fStatus === 'paid' && (noStateTax || cStatus === 'paid')} />
                         </div>
                         <div className="flex gap-2.5 mt-1">
                           <a href="https://directpay.irs.gov" target="_blank" rel="noopener noreferrer"

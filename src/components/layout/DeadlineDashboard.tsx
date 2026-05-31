@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { useClientStore, selectFilteredClients } from '@/store/clientStore'
-import { quarterDate, fmt, parseDollar } from '@/lib/utils'
+import { quarterDate, fmt, parseDollar, cn } from '@/lib/utils'
 import { calcSavings } from '@/lib/calculations'
 import type { DbClient } from '@/lib/supabase'
 import type { PayStatus } from '@/lib/types'
@@ -75,6 +75,24 @@ function getItems(clients: DbClient[]): DeadlineItem[] {
   return results.sort((a, b) => a.daysAway - b.daysAway)
 }
 
+function StatusBadge({ status }: { status: PayStatus }) {
+  if (status === 'paid')
+    return <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-success-bg text-success border border-success-border whitespace-nowrap">Paid</span>
+  if (status === 'scheduled')
+    return <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-accent/10 text-accent-dk border border-accent/25 whitespace-nowrap">Scheduled</span>
+  return <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-danger-bg text-danger border border-danger-border whitespace-nowrap">Unpaid</span>
+}
+
+function UrgencyBadge({ daysAway }: { daysAway: number }) {
+  if (daysAway < 0)
+    return <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-danger-bg text-danger border border-danger-border">{Math.abs(daysAway)}d overdue</span>
+  if (daysAway === 0)
+    return <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-danger-bg text-danger border border-danger-border">Due today</span>
+  if (daysAway <= 7)
+    return <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-info-bg text-info border border-info-border">{daysAway}d away</span>
+  return <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-surface-dk text-text-md border border-border">{daysAway}d away</span>
+}
+
 export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: string) => void }) {
   const clients = useClientStore(selectFilteredClients)
   const items = useMemo(() => getItems(clients), [clients])
@@ -114,71 +132,69 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
   return (
     <div className="flex-1 overflow-y-auto bg-surface px-8 py-7">
 
-      {/* Firm stats strip */}
-      <div className="flex items-center gap-8 mb-8 pb-7 border-b border-border">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt mb-0.5">Clients</p>
-          <p className="font-serif text-[26px] text-navy tracking-tight leading-none">{clients.length}</p>
-        </div>
-        <div className="w-px h-8 bg-border" />
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt mb-0.5">Savings Delivered</p>
-          <p className="font-serif text-[26px] text-accent-dk tracking-tight leading-none">
-            {totalSavings > 0 ? fmt(totalSavings) : '—'}
-          </p>
-        </div>
+      {/* Firm context — compact single line, not a hero metric strip */}
+      <div className="flex items-center gap-3 text-[12px] text-text-lt mb-6 pb-5 border-b border-border">
+        <span>{clients.length} {clients.length === 1 ? 'client' : 'clients'}</span>
+        {totalSavings > 0 && (
+          <>
+            <span className="text-border-dk">·</span>
+            <span><span className="text-accent-dk font-semibold">{fmt(totalSavings)}</span> in savings delivered</span>
+          </>
+        )}
         {overdueCount > 0 && (
           <>
-            <div className="w-px h-8 bg-border" />
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[.05em] text-text-lt mb-0.5">Overdue</p>
-              <p className="font-serif text-[26px] text-danger tracking-tight leading-none">{overdueCount}</p>
-            </div>
+            <span className="text-border-dk">·</span>
+            <span className="text-danger font-semibold">{overdueCount} overdue</span>
           </>
         )}
       </div>
 
-      <h2 className="font-serif text-3xl text-navy tracking-tight mb-6">Upcoming Deadlines</h2>
+      <h2 className="text-xl font-semibold text-navy tracking-tight mb-5">Upcoming deadlines</h2>
+
       {Array.from(groups.entries()).map(([dateKey, groupItems]) => {
         const { daysAway, dueDate, quarter } = groupItems[0]
         const label = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
         return (
-          <div key={dateKey} className="mb-7 animate-enter">
-            <div className="flex items-center gap-2.5 mb-3">
-              <h3 className="text-sm font-semibold text-text-md">Q{quarter} — {label}</h3>
-              {daysAway < 0
-                ? <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-danger-bg text-danger border border-danger-border">{Math.abs(daysAway)}d overdue</span>
-                : daysAway === 0
-                ? <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Due today</span>
-                : <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">{daysAway}d away</span>
-              }
+          <div key={dateKey} className="mb-6 animate-enter">
+            <div className="flex items-center gap-2.5 mb-2.5">
+              <h3 className="text-[13px] font-semibold text-text-md">Q{quarter} — {label}</h3>
+              <UrgencyBadge daysAway={daysAway} />
             </div>
-            <div className="bg-white rounded-xl border border-border shadow overflow-hidden">
+            <div className="rounded-xl overflow-hidden border border-border bg-white shadow-[0_2px_12px_rgba(26,63,40,0.07)]">
               {groupItems.map((item, i) => (
                 <button
                   key={item.clientKey}
                   onClick={() => onSelectClient(item.clientKey)}
-                  className={`w-full flex items-center gap-4 px-5 py-3.5 text-left hover:bg-surface/60 transition-colors duration-150 ${i > 0 ? 'border-t border-border/50' : ''}`}
+                  className={cn(
+                    'w-full flex items-center gap-6 px-5 py-4 text-left hover:bg-surface/70 active:bg-surface transition-colors duration-150',
+                    i > 0 && 'border-t border-border/50',
+                  )}
                 >
-                  <span className="flex-1 text-sm font-semibold text-text">{item.clientName}</span>
-                  <div className="flex items-center gap-6">
+                  <span className="flex-1 text-[14px] font-semibold text-text">{item.clientName}</span>
+                  <div className="flex items-center gap-5">
                     {item.fedAmount > 0 && (
                       <div className="text-right">
-                        <p className="text-xs font-bold uppercase tracking-[.06em] text-text-xs mb-0.5">Federal</p>
-                        <p className={`font-serif text-base font-medium ${item.fedStatus === 'paid' ? 'text-success' : 'text-navy'}`}>
-                          {fmt(item.fedAmount)}{item.fedStatus === 'paid' ? ' ✓' : ''}
-                        </p>
+                        <div className="flex items-baseline gap-1.5 justify-end mb-1">
+                          <span className="font-serif text-[17px] text-navy leading-none">{fmt(item.fedAmount)}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-wide text-text-xs">Fed</span>
+                        </div>
+                        <div className="flex justify-end">
+                          <StatusBadge status={item.fedStatus} />
+                        </div>
                       </div>
                     )}
                     {item.stateAmount > 0 && (
                       <div className="text-right">
-                        <p className="text-xs font-bold uppercase tracking-[.06em] text-text-xs mb-0.5">State</p>
-                        <p className={`font-serif text-base font-medium ${item.stateStatus === 'paid' ? 'text-success' : 'text-navy'}`}>
-                          {fmt(item.stateAmount)}{item.stateStatus === 'paid' ? ' ✓' : ''}
-                        </p>
+                        <div className="flex items-baseline gap-1.5 justify-end mb-1">
+                          <span className="font-serif text-[17px] text-navy leading-none">{fmt(item.stateAmount)}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-wide text-text-xs">State</span>
+                        </div>
+                        <div className="flex justify-end">
+                          <StatusBadge status={item.stateStatus} />
+                        </div>
                       </div>
                     )}
-                    <ChevronRight className="w-4 h-4 text-text-xs" />
+                    <ChevronRight className="w-4 h-4 text-border-dk flex-shrink-0" />
                   </div>
                 </button>
               ))}

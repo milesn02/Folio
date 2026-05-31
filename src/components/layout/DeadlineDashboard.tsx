@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { useClientStore, selectFilteredClients } from '@/store/clientStore'
 import { quarterDate, fmt, parseDollar, cn } from '@/lib/utils'
-import { calcSavings } from '@/lib/calculations'
 import type { DbClient } from '@/lib/supabase'
 import type { PayStatus } from '@/lib/types'
 
@@ -97,12 +96,6 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
   const clients = useClientStore(selectFilteredClients)
   const items = useMemo(() => getItems(clients), [clients])
 
-  const totalSavings = useMemo(
-    () => clients.reduce((sum, c) => sum + calcSavings(c.data), 0),
-    [clients],
-  )
-  const overdueCount = items.filter(i => i.daysAway < 0).length
-
   const groups = useMemo(() => {
     const map = new Map<string, DeadlineItem[]>()
     for (const item of items) {
@@ -131,23 +124,6 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
 
   return (
     <div className="flex-1 overflow-y-auto bg-surface px-8 py-7">
-
-      {/* Firm context — compact single line, not a hero metric strip */}
-      <div className="flex items-center gap-3 text-[12px] text-text-lt mb-6 pb-5 border-b border-border">
-        <span>{clients.length} {clients.length === 1 ? 'client' : 'clients'}</span>
-        {totalSavings > 0 && (
-          <>
-            <span className="text-border-dk">·</span>
-            <span><span className="text-accent-dk font-semibold">{fmt(totalSavings)}</span> in savings delivered</span>
-          </>
-        )}
-        {overdueCount > 0 && (
-          <>
-            <span className="text-border-dk">·</span>
-            <span className="text-danger font-semibold">{overdueCount} overdue</span>
-          </>
-        )}
-      </div>
 
       <h2 className="text-xl font-semibold text-navy tracking-tight mb-5">Upcoming deadlines</h2>
 

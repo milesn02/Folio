@@ -18,7 +18,7 @@ function findGaps(c: ClientData): Gap[] {
   const hasIncome = !!(c.payrollByYear || c.retByYear)
 
   if (hasEntities && !active('retPlan')) {
-    gaps.push({ key: 'retPlan', reason: 'Entity owner — retirement plan typically reduces $20k–$60k+ in taxes', priority: 'high' })
+    gaps.push({ key: 'retPlan', reason: 'Entity owner — a retirement plan is often the highest-leverage tax reduction available', priority: 'high' })
   }
   if (hasSCorp && !active('pte')) {
     gaps.push({ key: 'pte', reason: 'S-Corp in CA/NY/IL — PTE election bypasses the $10k SALT cap', priority: 'high' })
@@ -33,7 +33,7 @@ function findGaps(c: ClientData): Gap[] {
     gaps.push({ key: 'backdoor', reason: 'High-income earner with a retirement plan — backdoor Roth adds tax-free growth', priority: 'medium' })
   }
   if (hasIncome && !active('health')) {
-    gaps.push({ key: 'health', reason: 'HSA is triple tax-advantaged — deductible, grows tax-free, tax-free withdrawals', priority: 'medium' })
+    gaps.push({ key: 'health', reason: 'HSA contributions are deductible, grow tax-free, and withdraw tax-free for medical costs', priority: 'medium' })
   }
 
   return gaps.slice(0, 4) // cap at 4 recommendations

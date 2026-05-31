@@ -313,9 +313,9 @@ export function SalarySchedule({ client: c, onChange }: Props) {
           <table className="w-full text-[13px]">
             <thead>
               <tr className="bg-navy">
-                <th className="text-left px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[.04em] text-accent/80">Item</th>
-                <th className="text-right px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[.04em] text-accent/80">Per {perLbl[entry.freq ?? 'Monthly'] ?? 'Period'}</th>
-                <th className="text-right px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[.04em] text-accent/80">Annual</th>
+                <th scope="col" className="text-left px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[.04em] text-accent/80">Item</th>
+                <th scope="col" className="text-right px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[.04em] text-accent/80">Per {perLbl[entry.freq ?? 'Monthly'] ?? 'Period'}</th>
+                <th scope="col" className="text-right px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[.04em] text-accent/80">Annual</th>
               </tr>
             </thead>
             <tbody>
@@ -353,10 +353,10 @@ export function SalarySchedule({ client: c, onChange }: Props) {
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="bg-surface border-b border-border">
-                  <th className="text-left px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt">Item</th>
-                  <th className="text-right px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt">{prevYear}</th>
-                  <th className="text-right px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt">{year}</th>
-                  <th className="text-right px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt">Change</th>
+                  <th scope="col" className="text-left px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt">Item</th>
+                  <th scope="col" className="text-right px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt">{prevYear}</th>
+                  <th scope="col" className="text-right px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt">{year}</th>
+                  <th scope="col" className="text-right px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt">Change</th>
                 </tr>
               </thead>
               <tbody>
@@ -411,15 +411,15 @@ export function SalarySchedule({ client: c, onChange }: Props) {
               <table className="w-full text-[12px]">
                 <thead>
                   <tr className="bg-navy">
-                    <th className="text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Period</th>
-                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Gross</th>
-                    {(calc.tradDefer > 0 || calc.rothDefer > 0) && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">401(k)</th>}
-                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Fed Withholding</th>
-                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Soc. Security</th>
-                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Medicare</th>
-                    {calc.stateWHTot > 0 && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">State Withholding</th>}
-                    {calc.sdiTax > 0 && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">CA SDI</th>}
-                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Net</th>
+                    <th scope="col" className="text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Period</th>
+                    <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Gross</th>
+                    {(calc.tradDefer > 0 || calc.rothDefer > 0) && <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">401(k)</th>}
+                    <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Fed Withholding</th>
+                    <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Soc. Security</th>
+                    <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Medicare</th>
+                    {calc.stateWHTot > 0 && <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">State Withholding</th>}
+                    {calc.sdiTax > 0 && <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">CA SDI</th>}
+                    <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Net</th>
                   </tr>
                 </thead>
                 <tbody>

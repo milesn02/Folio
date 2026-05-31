@@ -132,7 +132,7 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
         client={client}
         onClientChange={handleChange}
       />
-      <div id="client-scroll" className="flex-1 overflow-y-auto px-6 py-5">
+      <main id="main-content" className="flex-1 overflow-y-auto px-6 py-5">
         <ErrorBoundary>
           <Suspense fallback={<TabSkeleton />}>
             <div key={activeTab} className="animate-enter">
@@ -140,7 +140,7 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
             </div>
           </Suspense>
         </ErrorBoundary>
-      </div>
+      </main>
 
       <Modal
         open={deleteModal}

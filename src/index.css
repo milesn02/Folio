@@ -17,10 +17,18 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   html, body, #root {
     height: 100%;
     margin: 0;
     padding: 0;
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
   }
 
   body {
@@ -76,6 +84,12 @@
   .stagger-4 { animation-delay: 160ms; }
   .stagger-5 { animation-delay: 200ms; }
   .stagger-6 { animation-delay: 240ms; }
+
+  /* Slide-in from right (client settings panel) */
+  @keyframes slide-in-right {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
 
   /* Login panel ambient drift */
   @keyframes ambient-drift {

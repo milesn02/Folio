@@ -146,9 +146,9 @@ export function IndividualPayments({ client: c, onChange }: Props) {
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="bg-surface border-b border-border">
-                  <th className="text-left px-4 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[28%]">Due date</th>
-                  <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt">Federal</th>
-                  <th className="text-center px-2 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[14%]">Auth / Void</th>
+                  <th scope="col" className="text-left px-4 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[28%]">Due date</th>
+                  <th scope="col" className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt">Federal</th>
+                  <th scope="col" className="text-center px-2 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[14%]">Auth / Void</th>
                   {noStateTax ? (
                     <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt/40" colSpan={2}>
                       No state income tax ({clientState})
@@ -214,17 +214,17 @@ export function IndividualPayments({ client: c, onChange }: Props) {
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="bg-surface border-b border-border">
-                  <th className="text-left px-4 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[28%]">Due date</th>
-                  <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt">Federal</th>
-                  <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[18%]">Status / Acct</th>
+                  <th scope="col" className="text-left px-4 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[28%]">Due date</th>
+                  <th scope="col" className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt">Federal</th>
+                  <th scope="col" className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[18%]">Status / Acct</th>
                   {noStateTax ? (
                     <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt/40" colSpan={2}>
                       No state income tax ({clientState})
                     </th>
                   ) : (
                     <>
-                      <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt">{clientState}</th>
-                      <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[18%]">Status / Acct</th>
+                      <th scope="col" className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt">{clientState}</th>
+                      <th scope="col" className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-[.04em] text-text-lt w-[18%]">Status / Acct</th>
                     </>
                   )}
                 </tr>

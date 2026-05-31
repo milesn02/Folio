@@ -71,10 +71,10 @@ export function EntityPayments({ client: c, onChange }: Props) {
           <table className="w-full text-[13px]">
             <thead>
               <tr className="bg-surface border-b border-border">
-                <th className="text-left px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[12%]">Date</th>
-                <th className="text-left px-3 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[28%]">Type</th>
-                <th className="text-left px-3 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[24%]">Amount</th>
-                <th className="text-center px-2 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[20%]">Auth / Void</th>
+                <th scope="col" className="text-left px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[12%]">Date</th>
+                <th scope="col" className="text-left px-3 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[28%]">Type</th>
+                <th scope="col" className="text-left px-3 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[24%]">Amount</th>
+                <th scope="col" className="text-center px-2 py-2 text-[10.5px] font-semibold uppercase tracking-[.04em] text-text-lt w-[20%]">Auth / Void</th>
               </tr>
             </thead>
             <tbody>

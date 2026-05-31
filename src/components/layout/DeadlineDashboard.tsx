@@ -79,7 +79,7 @@ function StatusBadge({ status }: { status: PayStatus }) {
   if (status === 'paid')
     return <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-success-bg text-success border border-success-border whitespace-nowrap">Paid</span>
   if (status === 'scheduled')
-    return <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-accent/10 text-accent-dk border border-accent/25 whitespace-nowrap">Scheduled</span>
+    return <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-info-bg text-info border border-info-border whitespace-nowrap">Scheduled</span>
   return <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-danger-bg text-danger border border-danger-border whitespace-nowrap">Unpaid</span>
 }
 
@@ -88,7 +88,7 @@ function UrgencyBadge({ daysAway }: { daysAway: number }) {
     return <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-danger-bg text-danger border border-danger-border">{Math.abs(daysAway)}d overdue</span>
   if (daysAway === 0)
     return <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-danger-bg text-danger border border-danger-border">Due today</span>
-  if (daysAway <= 7)
+  if (daysAway <= 30)
     return <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-info-bg text-info border border-info-border">{daysAway}d away</span>
   return <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-surface-dk text-text-md border border-border">{daysAway}d away</span>
 }
@@ -171,27 +171,19 @@ export function DeadlineDashboard({ onSelectClient }: { onSelectClient: (key: st
                   )}
                 >
                   <span className="flex-1 text-[14px] font-semibold text-text">{item.clientName}</span>
-                  <div className="flex items-center gap-5">
+                  <div className="flex items-center gap-6">
                     {item.fedAmount > 0 && (
                       <div className="text-right">
-                        <div className="flex items-baseline gap-1.5 justify-end mb-1">
-                          <span className="font-serif text-[17px] text-navy leading-none">{fmt(item.fedAmount)}</span>
-                          <span className="text-[10px] font-bold uppercase tracking-wide text-text-xs">Fed</span>
-                        </div>
-                        <div className="flex justify-end">
-                          <StatusBadge status={item.fedStatus} />
-                        </div>
+                        <p className="text-[10px] font-bold uppercase tracking-[.06em] text-text-xs mb-0.5">Federal</p>
+                        <p className="font-serif text-[16px] text-navy leading-none mb-1">{fmt(item.fedAmount)}</p>
+                        <StatusBadge status={item.fedStatus} />
                       </div>
                     )}
                     {item.stateAmount > 0 && (
                       <div className="text-right">
-                        <div className="flex items-baseline gap-1.5 justify-end mb-1">
-                          <span className="font-serif text-[17px] text-navy leading-none">{fmt(item.stateAmount)}</span>
-                          <span className="text-[10px] font-bold uppercase tracking-wide text-text-xs">State</span>
-                        </div>
-                        <div className="flex justify-end">
-                          <StatusBadge status={item.stateStatus} />
-                        </div>
+                        <p className="text-[10px] font-bold uppercase tracking-[.06em] text-text-xs mb-0.5">State</p>
+                        <p className="font-serif text-[16px] text-navy leading-none mb-1">{fmt(item.stateAmount)}</p>
+                        <StatusBadge status={item.stateStatus} />
                       </div>
                     )}
                     <ChevronRight className="w-4 h-4 text-border-dk flex-shrink-0" />

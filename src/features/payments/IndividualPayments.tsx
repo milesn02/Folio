@@ -23,23 +23,6 @@ function getClientState(c: ClientData): string {
   return c.entities?.[0]?.state || 'CA'
 }
 
-const STATUS_CYCLE: PayStatus[] = ['unpaid', 'scheduled', 'paid']
-
-const STATUS_TEXT: Record<PayStatus, string> = {
-  unpaid:    'text-danger',
-  scheduled: 'text-accent-dk',
-  paid:      'text-success',
-}
-const STATUS_DOTS: Record<PayStatus, string> = {
-  unpaid:    'bg-danger',
-  scheduled: 'bg-accent',
-  paid:      'bg-success',
-}
-const STATUS_LABELS: Record<PayStatus, string> = {
-  unpaid:    'Unpaid',
-  scheduled: 'Scheduled',
-  paid:      'Paid',
-}
 
 // Derive status from legacy booleans for old records that predate the status field
 function deriveStatus(s: PayStatus | undefined, a?: boolean, v?: boolean): PayStatus {
@@ -49,28 +32,23 @@ function deriveStatus(s: PayStatus | undefined, a?: boolean, v?: boolean): PaySt
   return 'unpaid'
 }
 
-function StatusPill({ status, onClick }: { status: PayStatus; onClick: () => void }) {
-  if (status === 'unpaid') {
-    return (
-      <button
-        onClick={onClick}
-        className="inline-flex items-center gap-1 text-[11px] font-semibold transition-colors whitespace-nowrap px-2 py-0.5 rounded bg-red-50 text-danger border border-red-200 hover:bg-red-100"
-      >
-        {STATUS_LABELS[status]}
-      </button>
-    )
-  }
+function StatusSelect({ status, onChange }: { status: PayStatus; onChange: (s: PayStatus) => void }) {
   return (
-    <button
-      onClick={onClick}
+    <select
+      value={status}
+      onChange={e => onChange(e.target.value as PayStatus)}
       className={cn(
-        'inline-flex items-center gap-1.5 text-xs font-medium transition-colors whitespace-nowrap',
-        STATUS_TEXT[status],
+        'text-[11px] font-semibold rounded px-2 py-1 border cursor-pointer transition-colors',
+        'focus:outline-none focus:ring-1 focus:ring-accent/40 focus:border-accent/50',
+        status === 'unpaid'    && 'text-danger border-danger-border bg-danger-bg',
+        status === 'scheduled' && 'text-accent-dk border-accent/25 bg-white',
+        status === 'paid'      && 'text-success border-success-border bg-success-bg',
       )}
     >
-      <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', STATUS_DOTS[status])} />
-      {STATUS_LABELS[status]}
-    </button>
+      <option value="unpaid">Unpaid</option>
+      <option value="scheduled">Scheduled</option>
+      <option value="paid">Paid</option>
+    </select>
   )
 }
 
@@ -117,11 +95,6 @@ export function IndividualPayments({ client: c, onChange }: Props) {
 
   function setField(key: keyof PayData, value: string | boolean | PayStatus) {
     onChange({ ...c, payByYear: { ...c.payByYear, [year]: { ...pd, [key]: value } } })
-  }
-
-  function cycleStatus(key: keyof PayData, current: PayStatus) {
-    const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(current) + 1) % STATUS_CYCLE.length]
-    setField(key, next)
   }
 
   // ── Legacy quarters (≤2025) ──────────────────────────────────
@@ -276,15 +249,17 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                         <DollarInput ghost className="w-24 font-mono text-right" value={pd[q.fk] as string} onChange={e => setField(q.fk, e.target.value)} placeholder="—" />
                       </td>
                       <td className="px-3 py-2">
-                        <StatusPill status={fStatus} onClick={() => cycleStatus(q.fsk, fStatus)} />
-                        {fShowAcct && (
-                          <input
-                            className={cn(inputCls, 'w-20 mt-1.5 text-center font-mono text-[12px]')}
-                            value={pd[q.facct] as string}
-                            onChange={e => setField(q.facct, e.target.value)}
-                            placeholder="Acct ****"
-                          />
-                        )}
+                        <div className="flex items-center gap-2">
+                          <StatusSelect status={fStatus} onChange={s => setField(q.fsk, s)} />
+                          {fShowAcct && (
+                            <input
+                              className={cn(inputCls, 'w-20 font-mono text-[12px] text-center')}
+                              value={pd[q.facct] as string}
+                              onChange={e => setField(q.facct, e.target.value)}
+                              placeholder="Acct ****"
+                            />
+                          )}
+                        </div>
                       </td>
                       {!noStateTax && (
                         <>
@@ -292,15 +267,17 @@ export function IndividualPayments({ client: c, onChange }: Props) {
                             <DollarInput ghost className="w-24 font-mono text-right" value={pd[q.ck] as string} onChange={e => setField(q.ck, e.target.value)} placeholder="—" />
                           </td>
                           <td className="px-3 py-2">
-                            <StatusPill status={cStatus} onClick={() => cycleStatus(q.csk, cStatus)} />
-                            {cShowAcct && (
-                              <input
-                                className={cn(inputCls, 'w-20 mt-1.5 text-center font-mono text-[12px]')}
-                                value={pd[q.cacct] as string}
-                                onChange={e => setField(q.cacct, e.target.value)}
-                                placeholder="Acct ****"
-                              />
-                            )}
+                            <div className="flex items-center gap-2">
+                              <StatusSelect status={cStatus} onChange={s => setField(q.csk, s)} />
+                              {cShowAcct && (
+                                <input
+                                  className={cn(inputCls, 'w-20 font-mono text-[12px] text-center')}
+                                  value={pd[q.cacct] as string}
+                                  onChange={e => setField(q.cacct, e.target.value)}
+                                  placeholder="Acct ****"
+                                />
+                              )}
+                            </div>
                           </td>
                         </>
                       )}

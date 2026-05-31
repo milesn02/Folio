@@ -105,7 +105,7 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
             <div
               key={r.k}
               className={cn(
-                'grid items-center px-5 py-3 transition-opacity',
+                'grid items-center px-5 py-3 transition-colors hover:bg-surface',
                 i < SAVS.length - 1 && 'border-b border-border',
                 isInactive && 'opacity-40',
               )}
@@ -139,7 +139,7 @@ export function TaxSavings({ client: c, onChange }: TaxSavingsProps) {
                   {variance !== null && (
                     <span className={cn(
                       'text-[10px] font-semibold',
-                      variance >= 0 ? 'text-green-600' : 'text-danger',
+                      variance >= 0 ? 'text-success' : 'text-danger',
                     )}>
                       {variance >= 0 ? '+' : ''}{variance}%
                     </span>

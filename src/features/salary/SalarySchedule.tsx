@@ -299,7 +299,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
             <div className="pb-1.5">
               <p className="text-[11px] font-semibold text-text-lt uppercase tracking-[.03em] mb-1.5">Contribution limit</p>
               <div className={cn('text-[12px] font-semibold px-3 py-1.5 rounded-md border',
-                over ? 'bg-red-50 text-danger border-red-200' : 'bg-success-bg text-success border-success-bd')}>
+                over ? 'bg-danger-bg text-danger border-danger-border' : 'bg-success-bg text-success border-success-border')}>
                 {fmt(calc.deferLim)} — {over ? `Over by ${fmt(calc.deferRaw - calc.deferLim)}` : `${fmt(calc.deferLim - calc.deferRaw)} remaining`}
               </div>
             </div>
@@ -320,7 +320,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
             </thead>
             <tbody>
               {tableRows.map(([label, per, ann, sub], i) => (
-                <tr key={i} className="border-t border-border hover:bg-surface/50 transition-colors">
+                <tr key={i} className="border-t border-border hover:bg-surface/70 transition-colors duration-150">
                   <td className={cn('px-4 py-2', sub ? 'pl-8 text-text-lt' : 'font-medium text-text')}>{label}</td>
                   <td className={cn('px-4 py-2 text-right font-serif', sub ? 'text-danger' : 'text-navy')}>
                     {per !== 0 ? (per < 0 ? `(${fmt(-per, 2)})` : fmt(per, 2)) : '—'}
@@ -373,7 +373,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                   const delta = curr - prev
                   const isNet = label === 'Net take-home'
                   return (
-                    <tr key={label} className={cn('border-t border-border', isNet && 'bg-surface font-semibold')}>
+                    <tr key={label} className={cn('border-t border-border hover:bg-surface/70 transition-colors duration-150', isNet && 'bg-surface font-semibold')}>
                       <td className="px-4 py-2.5 text-text">{label}</td>
                       <td className="px-4 py-2.5 text-right font-serif text-text-lt">{prev > 0 ? fmt(prev) : '—'}</td>
                       <td className="px-4 py-2.5 text-right font-serif text-navy">{curr > 0 ? fmt(curr) : '—'}</td>
@@ -424,7 +424,7 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                 </thead>
                 <tbody>
                   {calc.periodCalcs.map((p, i) => (
-                    <tr key={i} className={cn('border-t border-border', i % 2 === 0 ? 'bg-white' : 'bg-surface/50')}>
+                    <tr key={i} className={cn('border-t border-border hover:bg-surface/70 transition-colors duration-150', i % 2 === 0 ? 'bg-white' : 'bg-surface/50')}>
                       <td className="px-3 py-2 font-medium text-text">{p.period}</td>
                       <td className="px-3 py-2 text-right font-serif text-navy">{fmt(p.gross, 2)}</td>
                       {(calc.tradDefer > 0 || calc.rothDefer > 0) && (

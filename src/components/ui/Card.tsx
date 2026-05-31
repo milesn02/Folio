@@ -11,7 +11,7 @@ export function Card({ className, accent, elevated, flush, ...props }: CardProps
     <div
       className={cn(
         'rounded-xl bg-white border border-border',
-        elevated ? 'shadow-md' : 'shadow',
+        elevated ? 'shadow-[0_4px_20px_rgba(26,63,40,0.12)]' : 'shadow-[0_2px_12px_rgba(26,63,40,0.07)]',
         accent && 'border-l-[3px] border-l-accent',
         flush && 'overflow-hidden',
         className,

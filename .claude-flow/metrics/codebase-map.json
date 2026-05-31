@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-05-31T04:00:29.280Z",
+  "projectRoot": "C:\\Users\\miles\\folio-app",
+  "structure": {
+    "hasPackageJson": true,
+    "hasTsConfig": true,
+    "hasClaudeConfig": true,
+    "hasClaudeFlow": true
+  },
+  "scannedAt": 1780200029281
+}

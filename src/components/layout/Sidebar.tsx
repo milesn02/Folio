@@ -44,7 +44,7 @@ function StatusDot({ status }: { status: ClientStatus }) {
     <span className={cn(
       'w-2 h-2 rounded-full flex-shrink-0',
       status === 'overdue'  && 'bg-danger',
-      status === 'upcoming' && 'bg-amber-400',
+      status === 'upcoming' && 'bg-accent',
       status === 'ok'       && 'bg-success',
     )} title={
       status === 'overdue'  ? 'Payment overdue' :
@@ -60,7 +60,7 @@ function HighlightText({ text, query }: { text: string; query: string }) {
   return (
     <>
       {text.slice(0, idx)}
-      <span className="font-bold text-white">{text.slice(idx, idx + query.length)}</span>
+      <span className="font-bold text-accent">{text.slice(idx, idx + query.length)}</span>
       {text.slice(idx + query.length)}
     </>
   )
@@ -101,7 +101,7 @@ export function Sidebar({ onNewClient }: SidebarProps) {
         {/* Logo */}
         <button className="px-5 pb-5 pt-1 text-left group" onClick={() => setActiveKey(null)}>
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-serif text-[26px] text-white tracking-tight leading-none group-hover:text-accent/90 transition-colors duration-200">Folio</span>
+            <span className="font-sans text-[26px] font-semibold text-white tracking-tight leading-none group-hover:text-accent/90 transition-colors duration-200">Folio</span>
             <div className="w-[5px] h-[5px] rounded-full bg-accent flex-shrink-0" />
           </div>
           <p className="text-[10px] text-white/25 uppercase tracking-[.12em] font-semibold">

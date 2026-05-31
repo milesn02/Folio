@@ -19,7 +19,7 @@ const STATUS_LABELS: Record<StrategyStatus, string> = {
   complete:     'Complete ✓',
 }
 const STATUS_STYLES: Record<StrategyStatus, string> = {
-  considering:  'text-text-xs',
+  considering:  'text-text-lt',
   committed:    'text-accent-dk',
   implementing: 'text-navy',
   complete:     'text-success',
@@ -102,8 +102,8 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
           }}
         >
           <KpiCard label={`Est. Tax Savings — ${CUR_YEAR}`} value={tot ? fmt(tot) : '—'} rawValue={tot || 0} accent large />
-          <KpiCard label="Strategies Active" value={String(stratCount)} sub={`/ ${SKS.length} total`} dark />
-          <KpiCard label="Combined Rate" value={combinedRate} sub={rateDetail} dark />
+          <KpiCard label="Strategies Active" value={String(stratCount)} sub={`/ ${SKS.length} total`} dark valueClass="font-sans font-semibold text-[22px] tracking-tight text-white" />
+          <KpiCard label="Combined Rate" value={combinedRate} sub={rateDetail} dark valueClass="font-sans font-semibold text-[22px] tracking-tight text-white" />
           <KpiCard
             label="Advisor"
             value={c.adv || '—'}
@@ -441,7 +441,7 @@ function StrategiesCard({ client: c, onChange }: { client: ClientData; onChange:
                   )}
                   <button
                     onClick={e => { e.stopPropagation(); deactivate(k) }}
-                    className="w-5 h-5 flex items-center justify-center rounded-full text-text-lt hover:bg-red-50 hover:text-danger transition-colors text-[14px] leading-none ml-1"
+                    className="w-5 h-5 flex items-center justify-center rounded-full text-text-lt hover:bg-danger/[0.08] hover:text-danger transition-colors text-[14px] leading-none ml-1"
                     aria-label={`Remove ${STRATEGY_LABELS[k]}`}
                   >×</button>
                 </div>

@@ -26,12 +26,12 @@ function getClientState(c: ClientData): string {
 const STATUS_CYCLE: PayStatus[] = ['unpaid', 'scheduled', 'paid']
 
 const STATUS_TEXT: Record<PayStatus, string> = {
-  unpaid:    'text-text-xs',
+  unpaid:    'text-danger',
   scheduled: 'text-accent-dk',
   paid:      'text-success',
 }
 const STATUS_DOTS: Record<PayStatus, string> = {
-  unpaid:    'bg-border-dk',
+  unpaid:    'bg-danger',
   scheduled: 'bg-accent',
   paid:      'bg-success',
 }
@@ -50,6 +50,16 @@ function deriveStatus(s: PayStatus | undefined, a?: boolean, v?: boolean): PaySt
 }
 
 function StatusPill({ status, onClick }: { status: PayStatus; onClick: () => void }) {
+  if (status === 'unpaid') {
+    return (
+      <button
+        onClick={onClick}
+        className="inline-flex items-center gap-1 text-[11px] font-semibold transition-colors whitespace-nowrap px-2 py-0.5 rounded bg-red-50 text-danger border border-red-200 hover:bg-red-100"
+      >
+        {STATUS_LABELS[status]}
+      </button>
+    )
+  }
   return (
     <button
       onClick={onClick}
@@ -74,12 +84,12 @@ function DaysBadge({ date }: { date: Date }) {
     </span>
   )
   if (days === 0) return (
-    <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+    <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-accent/10 text-accent-dk border border-accent/30">
       Due today
     </span>
   )
   if (days <= 14) return (
-    <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+    <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-accent/10 text-accent-dk border border-accent/30">
       {days}d away
     </span>
   )

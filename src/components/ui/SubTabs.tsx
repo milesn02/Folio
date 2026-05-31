@@ -18,7 +18,7 @@ export function SubTabs({ tabs, active, onChange, className }: SubTabsProps) {
             'px-3 py-1 rounded-md text-[12px] font-semibold transition-all duration-150',
             active === t
               ? 'bg-white text-text shadow-sm border border-border'
-              : 'text-text-lt hover:text-text hover:bg-white/60',
+              : 'text-text-lt hover:text-text hover:bg-surface-dk',
           )}
         >
           {t}

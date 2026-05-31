@@ -62,12 +62,12 @@ export function GapAnalysis({ client: c, onActivate }: Props) {
             className={cn(
               'flex items-start gap-3.5 px-5 py-4 transition-colors',
               i < gaps.length - 1 && 'border-b border-border',
-              g.priority === 'high' ? 'bg-amber-50/60 hover:bg-amber-50' : 'hover:bg-surface/50',
+              g.priority === 'high' ? 'bg-accent/[0.06] hover:bg-accent/[0.10]' : 'hover:bg-surface/50',
             )}
           >
             <div className={cn(
               'mt-[3px] w-2 h-2 rounded-full flex-shrink-0',
-              g.priority === 'high' ? 'bg-amber-500' : 'bg-border-dk',
+              g.priority === 'high' ? 'bg-accent' : 'bg-border-dk',
             )} />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-semibold text-text">{STRATEGY_LABELS[g.key]}</p>
@@ -77,9 +77,7 @@ export function GapAnalysis({ client: c, onActivate }: Props) {
               onClick={() => onActivate(g.key)}
               className={cn(
                 'flex-shrink-0 text-[11px] font-semibold px-3 py-1.5 rounded-md transition-all whitespace-nowrap',
-                g.priority === 'high'
-                  ? 'text-amber-700 bg-amber-100 hover:bg-amber-200 border border-amber-300'
-                  : 'text-accent bg-accent/[0.07] hover:bg-accent/[0.13] border border-accent/30 hover:border-accent/50',
+                'text-accent bg-accent/[0.07] hover:bg-accent/[0.13] border border-accent/30 hover:border-accent/50',
               )}
             >
               Activate

@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
-import { FileDown, StickyNote, MoreHorizontal, Trash2, BookOpen } from 'lucide-react'
+import { FileDown, StickyNote, MoreHorizontal, Trash2, BookOpen, SlidersHorizontal } from 'lucide-react'
 import { cn, initials } from '@/lib/utils'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { TABS, TAB_LABELS, type TabId } from '@/lib/constants'
 import { useClientStore, selectActiveClient } from '@/store/clientStore'
 import { useUiStore } from '@/store/uiStore'
+import { ClientSettingsModal } from '@/features/snapshot/ClientSettingsModal'
+import type { ClientData } from '@/lib/types'
 import type { PresenceUser } from '@/hooks/usePresence'
 
 interface TopBarProps {
@@ -14,6 +16,8 @@ interface TopBarProps {
   savedAt: Date | null
   clientName: string
   presence?: PresenceUser[]
+  client: ClientData
+  onClientChange: (data: ClientData) => void
 }
 
 function savedLabel(savedAt: Date | null): string {
@@ -24,9 +28,9 @@ function savedLabel(savedAt: Date | null): string {
   return `Saved ${Math.floor(mins / 60)}h ago`
 }
 
-export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt, clientName, presence = [] }: TopBarProps) {
+export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt, clientName, presence = [], client, onClientChange }: TopBarProps) {
   const { activeTab, setActiveTab } = useClientStore()
-  const { openNotes } = useUiStore()
+  const { openNotes, clientSettingsOpen, openClientSettings, closeClientSettings } = useUiStore()
   const activeClient = useClientStore(selectActiveClient)
   const strat = activeClient?.data?.strat
   const [menuOpen, setMenuOpen] = useState(false)
@@ -54,6 +58,7 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
   }
 
   return (
+    <>
     <div className="flex items-stretch h-[52px] border-b border-border/60 bg-white flex-shrink-0 overflow-hidden">
 
       {/* Client name + saved */}
@@ -129,6 +134,19 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
         <Tooltip>
           <TooltipTrigger asChild>
             <button
+              onClick={openClientSettings}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-medium text-text-lt hover:text-text hover:bg-surface transition-all cursor-pointer"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Client</span>
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Client settings</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
               onClick={openNotes}
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-medium text-text-lt hover:text-text hover:bg-surface transition-all cursor-pointer"
             >
@@ -191,5 +209,14 @@ export function TopBar({ onDelete, onDownloadSummary, onDownloadReport, savedAt,
         </div>
       </div>
     </div>
+
+    <ClientSettingsModal
+
+      open={clientSettingsOpen}
+      onClose={closeClientSettings}
+      client={client}
+      onChange={onClientChange}
+    />
+  </>
   )
 }

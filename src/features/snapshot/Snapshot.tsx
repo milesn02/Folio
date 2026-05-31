@@ -81,14 +81,6 @@ export function Snapshot({ client: c, onChange }: SnapshotProps) {
               opacity: 0.035,
             }}
           />
-          {/* Gold ambient glow — top right */}
-          <div className="absolute top-0 right-0 w-96 h-64 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at top right, rgba(200,169,110,0.10), transparent 68%)' }}
-          />
-          {/* Decorative gold line at top */}
-          <div className="absolute top-0 left-0 right-0 h-[1.5px]"
-            style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(200,169,110,0.55) 35%, rgba(200,169,110,0.55) 65%, transparent 100%)' }}
-          />
           <div className="relative">
             <h2 className="font-serif text-[32px] text-white tracking-tight leading-tight mb-3.5">
               {c.name || 'New Client'}

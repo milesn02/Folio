@@ -414,11 +414,11 @@ export function SalarySchedule({ client: c, onChange }: Props) {
                     <th className="text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Period</th>
                     <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Gross</th>
                     {(calc.tradDefer > 0 || calc.rothDefer > 0) && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">401(k)</th>}
-                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Fed WH</th>
-                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">SS</th>
+                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Fed Withholding</th>
+                    <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Soc. Security</th>
                     <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Medicare</th>
-                    {calc.stateWHTot > 0 && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">State WH</th>}
-                    {calc.sdiTax > 0 && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">SDI</th>}
+                    {calc.stateWHTot > 0 && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">State Withholding</th>}
+                    {calc.sdiTax > 0 && <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">CA SDI</th>}
                     <th className="text-right px-3 py-2 text-[10px] font-semibold uppercase tracking-[.04em] text-accent/80">Net</th>
                   </tr>
                 </thead>

@@ -18,6 +18,10 @@ export function useCountUp(target: number, duration = 850): number {
       setValue(0)
       return
     }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setValue(target)
+      return
+    }
 
     let raf: number
     const t0 = performance.now()

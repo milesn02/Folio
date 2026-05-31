@@ -8,6 +8,7 @@ import { usePresence } from '@/hooks/usePresence'
 import { supabase } from '@/lib/supabase'
 import { TopBar } from '@/components/layout/TopBar'
 import { Modal } from '@/components/ui/Modal'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 import { Snapshot } from '@/features/snapshot/Snapshot'
 import { TaxSavings } from '@/features/savings/TaxSavings'
 import { exportClientSummary } from '@/lib/pdfExport'
@@ -128,13 +129,17 @@ export default function ClientProfile({ firmId }: ClientProfileProps) {
         onDownloadSummary={handleDownloadSummary}
         onDownloadReport={handleDownloadReport}
         presence={presence}
+        client={client}
+        onClientChange={handleChange}
       />
       <div id="client-scroll" className="flex-1 overflow-y-auto px-6 py-5">
-        <Suspense fallback={<TabSkeleton />}>
-          <div key={activeTab} className="animate-enter">
-            {renderTab()}
-          </div>
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<TabSkeleton />}>
+            <div key={activeTab} className="animate-enter">
+              {renderTab()}
+            </div>
+          </Suspense>
+        </ErrorBoundary>
       </div>
 
       <Modal

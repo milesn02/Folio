@@ -75,7 +75,10 @@
   .scrollbar-none { scrollbar-width: none; }
   .scrollbar-none::-webkit-scrollbar { display: none; }
 
-  .font-num { font-family: 'JetBrains Mono', monospace; }
+  .font-num { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  /* Tabular figures in table cells so financial columns stay aligned */
+  td { font-variant-numeric: tabular-nums; }
 
   /* Staggered entrance animation helpers */
   .stagger-1 { animation-delay: 40ms; }
